@@ -13,3 +13,12 @@
 | P3 | ROUTER / PIXEL in separaten Repositories | Hardware-/Firmwareprofile, GrapheneOS-Regeln, unabhängige Freigaben |
 
 **Aktueller Stand:** Nur die lokale npm-App-Preview ist implementiert. Kein produktives Betriebssystem und keine reale Geräteänderung.
+
+## Zusätzliche Hauptbereiche (Wiki / Handbuch / Projekte)
+
+| Track | Nächster Gate | Test / Evidence |
+|---|---|---|
+| Wiki | Redaktionspipeline mit Quellen-/Lizenzfreigabe | Einträge nach Herkunft und Status nachvollziehen |
+| Handbuch | Historische 21/22 Kapitel mit öffentlichen Ergänzungen abgleichen | Diff/Hash, keine Originaldatei entfernt |
+| Projekt-Kanban | GitHub-Issue-/Projects-Anbindung erst nach Schnittstellenfreigabe | Derzeit nur browserlokaler JSON-Export |
+| Windows/npm | Realer Windows-E2E-Test und grünes CI | `npm test`, `npm exec`, Playwright, Statusbericht |

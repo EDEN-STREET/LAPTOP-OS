@@ -7,8 +7,8 @@ Der lokale Windows-Nutzer startet EDEN ausschliesslich via npm. Der GitHub-Publi
 Nur nachdem die `.tgz`-Datei heruntergeladen wurde und `gh auth status` lokal erfolgreich ist:
 
 ```cmd
-npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.3.tgz" -- eden publish-github --dry-run
-npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.3.tgz" -- eden publish-github
+npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.4.tgz" -- eden publish-github --dry-run
+npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.4.tgz" -- eden publish-github
 ```
 
 Beim zweiten Aufruf muss `PUBLISH EDEN-STREET/LAPTOP-OS` eingegeben werden. Es werden ausschliesslich versionierte, freigegebene Quelltexte in einen NEUEN Branch geschrieben; `main` bleibt unangetastet. Der entstehende Pull Request ist ein Entwurf. Nach Review und manuellem Merge ist der GitHub-npm-Aufruf bereit.
@@ -24,7 +24,7 @@ playwright-cli --help
 EDEN in einem CMD-Fenster starten:
 
 ```cmd
-npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.3.tgz" -- eden launch
+npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.4.tgz" -- eden launch
 ```
 
 Die nachfolgenden Befehle in einem **zweiten** CMD-Fenster ausfuehren:
