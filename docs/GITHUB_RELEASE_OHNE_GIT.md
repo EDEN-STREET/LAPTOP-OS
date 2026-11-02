@@ -1,3 +1,5 @@
+# Statusupdate nach PR #2: Der Windows-npm-Starter liegt bereits in `main`. Die folgende historische Anleitung dokumentiert den früheren 403-Blocker und ist für diesen Stand nicht mehr aktuell.
+
 # EDEN LAPTOP-OS – Veröffentlichung in GitHub, ohne Git oder Antigravity
 
 **Aktueller Blocker:** Für `EDEN-STREET/LAPTOP-OS` ist die GitHub-App-Schreibberechtigung noch nicht aktiv (403 beim Branch-Anlegen). Die sichere lokale Starterversion ist fertig, aber noch nicht in GitHub veröffentlicht. Keine gegenteiligen Aussagen machen.

@@ -1,6 +1,6 @@
 # 🟢 EDEN LAPTOP-OS · npm-only Windows Setup
 
-**V0.8.0-preview.3 · NOUZ-Term UI · geführter, nicht-destruktiver Einstieg**
+**V0.8.0-preview.4 · NOUZ-Term UI · geführter, nicht-destruktiver Einstieg**
 
 > Die npm-Version installiert eine **lokale EDEN-Browseranwendung und einen Einrichtungsassistenten**. Sie ersetzt **nicht** Windows, Kali, Tails oder Qubes OS und verändert weder Partitionen noch Firmware. Reale OS-Installation erfordert später separate Hardwareprüfung, Backup, offizielle Installationsmedien und Freigabe.
 
@@ -16,7 +16,7 @@ Dieser Befehl lädt den GitHub-Quellcode **direkt als Tarball über npm**. **Git
 
 **Voraussetzung:** Auf Windows 10/11 muss Node.js 22 oder neuer inklusive npm bereits installiert sein. Ohne npm lässt sich kein npm-Befehl ausführen. Node.js bitte von [nodejs.org](https://nodejs.org/) installieren und CMD neu öffnen.
 
-**WICHTIG – GitHub-Status:** Der aktuelle `main`-Branch enthält noch nicht diesen Starter. Der Befehl funktioniert daher erst nach der Veröffentlichung des Inhalts dieser Übergabe auf GitHub. Nicht als sofort einsatzbereite GitHub-Veröffentlichung ausgeben.
+**Veröffentlichungsstatus:** Der npm-Starter wurde mit PR #2 auf `main` übernommen. Das Wiki-/Handbuch-/Kanban-Update wird als eigener Integrationszweig geprüft. Der GitHub-Tarball-Start setzt weiterhin Node.js/npm und einen erreichbaren GitHub-Branch voraus.
 
 ### Zusätzliche Funktionen (weiterhin nur npm)
 
@@ -32,7 +32,7 @@ npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/h
 
 Nur nach Bestätigung:
 
-- App: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.3\web\`
+- App: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.4\web\`
 - Optionaler Plan: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\state\setup-plan.json`
 - Weboberfläche: <http://127.0.0.1:8765/setup.html> (nur auf dem eigenen Rechner erreichbar)
 - Server stoppen: **Strg+C**
@@ -69,7 +69,17 @@ Lizenz: MIT. Status: **Vorschau**, noch nicht hardware- oder produktiv verifizie
 Der lokale Nutzer hat gemaess dem vorhandenen Pruefbericht bereits eine authentifizierte GitHub CLI (`gh`). Der ChatGPT-GitHub-Connector selbst hat **keinen** Schreibzugriff. Daher kann der npm-Starter auf dem Laptop den Upload sicher ausloesen, ohne manuelle Git-Befehle.
 
 ```cmd
-npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.3.tgz" -- eden publish-github
+npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.4.tgz" -- eden publish-github
 ```
 
 Der Befehl zeigt zuvor eine exakte Dateiliste, verlangt die Eingabe `PUBLISH EDEN-STREET/LAPTOP-OS`, erstellt nur einen neuen Branch und ein Draft PR. Kein ungepruefter Merge in `main`. Mehr dazu in [Playwright und Release](docs/PLAYWRIGHT_UND_RELEASE.md).
+
+## EDEN Hauptbereiche: Wiki · Handbuch · Projekte/Kanban
+
+Der npm-Starter öffnet die NOUZ-Workbench. Von dort sind die **drei Hauptbereiche** erreichbar:
+
+- **Wiki:** `http://127.0.0.1:8765/wiki.html` – suchbarer lokaler Wissenshub, technische Zusammenfassungen mit Nachweisstatus.
+- **Handbuch:** `http://127.0.0.1:8765/handbuch.html` – öffentliche, erweiterte Kapitel-/Versionsnavigation. Historische Originale verbleiben separat.
+- **Projekte/Kanban:** `http://127.0.0.1:8765/projects.html` – getrennte lokale Projektspuren für Wiki, Handbuch, LAPTOP-OS sowie spätere ROUTER/PIXEL-Strecken; Backlog/In Arbeit/Prüfung/Erledigt, lokaler JSON-Export/Import.
+
+**Achtung:** Das Kanban wird nur in diesem Browserprofil gespeichert, es wird nicht mit GitHub Projects synchronisiert. Keine Passwörter oder PRIVATE-Quellen eintragen. Siehe `docs/WIKI_UND_HANDBUCH.md` und `docs/PROJEKTE_KANBAN.md`.

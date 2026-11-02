@@ -1,6 +1,6 @@
 {
   "name": "eden-laptop-os",
-  "version": "0.8.0-preview.3",
+  "version": "0.8.0-preview.4",
   "private": true,
   "description": "EDEN LAPTOP-OS npm-only Windows launcher: gefuehrte lokale NOUZ-UI, sichere Vorpruefung, keine Systemeingriffe",
   "type": "module",
