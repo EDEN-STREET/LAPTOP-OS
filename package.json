@@ -1,0 +1,42 @@
+{
+  "name": "eden-laptop-os",
+  "version": "0.8.0-preview.3",
+  "private": true,
+  "description": "EDEN LAPTOP-OS npm-only Windows launcher: gefuehrte lokale NOUZ-UI, sichere Vorpruefung, keine Systemeingriffe",
+  "type": "module",
+  "bin": {
+    "eden": "./bin/eden.mjs"
+  },
+  "scripts": {
+    "setup": "node bin/eden.mjs setup",
+    "doctor": "node bin/eden.mjs doctor",
+    "start": "node bin/eden.mjs launch",
+    "status": "node bin/eden.mjs status",
+    "verify": "node bin/eden.mjs verify",
+    "test": "node --test tests/*.test.mjs",
+    "launch": "node bin/eden.mjs launch",
+    "publish:preview": "node bin/eden.mjs publish-github --dry-run"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "files": [
+    "bin/",
+    "lib/",
+    "web/",
+    "docs/",
+    "tests/",
+    "LICENSE",
+    "README.md",
+    "npm-shrinkwrap.json"
+  ],
+  "keywords": [
+    "eden",
+    "windows",
+    "setup",
+    "guided",
+    "security",
+    "no-destructive-operations"
+  ]
+}
