@@ -1,4 +1,28 @@
-# 🟢 EDEN LAPTOP-OS · npm-only Windows Setup
+# 🟢 EDEN LAPTOP-OS – EDEN Suite Projektbereich
+
+**LAPTOP-OS ist ein Modul von EDEN Suite unter der Dachmarke EDEN STREET.** Die vorhandenen npm- und Browser-Demos bleiben erhalten. Der Universal-OS-Installer ist noch nicht implementiert.
+
+[🌐 Live-Vorschau (GitHub Pages)](https://eden-street.github.io/.github/preview.html?surface=terminal) · [📘 Dokumentation](https://github.com/EDEN-STREET/.github/blob/main/docs/EDEN-STREET-MASTERDOKUMENTATION.md) · [📚 Wiki](https://github.com/EDEN-STREET/.github/blob/main/docs/WIKI.md) · [🖥️ UI-Vorschauen](docs/EDEN-SUITE-VORSCHAU.md) · [🔁 Workflows](docs/WORKFLOW-REFERENZEN.md) · [🤖 llms.txt](llms.txt) · [🛡️ Issues](https://github.com/EDEN-STREET/LAPTOP-OS/issues)
+
+[![LAPTOP-OS Projektvorschau – schematisches SVG](https://raw.githubusercontent.com/EDEN-STREET/.github/main/docs/media/previews/laptop.svg)](https://eden-street.github.io/.github/preview.html?surface=terminal)
+
+### Vorschauen und reproduzierbare Workflows
+
+| EDEN-Term | Setup | Builder |
+|---|---|---|
+| [![EDEN-Term](https://raw.githubusercontent.com/EDEN-STREET/.github/main/docs/media/previews/terminal.svg)](https://eden-street.github.io/.github/preview.html?surface=terminal) | [![EDEN Setup](https://raw.githubusercontent.com/EDEN-STREET/.github/main/docs/media/previews/setup.svg)](https://eden-street.github.io/.github/preview.html?surface=setup) | [![EDEN Builder](https://raw.githubusercontent.com/EDEN-STREET/.github/main/docs/media/previews/builder.svg)](https://eden-street.github.io/.github/preview.html?surface=builder) |
+
+| LAPTOP-OS Preflight | Universal Bootstrap |
+|---|---|
+| [![Preflight Workflow](https://raw.githubusercontent.com/EDEN-STREET/.github/main/docs/media/workflows/WF-09.svg)](https://eden-street.github.io/.github/workflow.html?id=09) | [![Bootstrap Workflow](https://raw.githubusercontent.com/EDEN-STREET/.github/main/docs/media/workflows/WF-12.svg)](https://eden-street.github.io/.github/workflow.html?id=12) |
+
+**[Öffentliches EDEN Suite Portal](https://eden-street.github.io/.github/)** · **[Alle 17 Workflows und zugehörigen Agenten-Aufträge](https://github.com/EDEN-STREET/.github/blob/main/docs/prompts/README.md)**
+
+> **Status der Bilder:** Skalierbare Illustrationen, keine realen Screenshots. Die interaktiven HTML-Vorschauen unter `https://eden-street.github.io/.github/` sind reine **DEMO-Simulationen** ohne Geräteverbindung. Keine echte OS-Installation und kein Router-/Firmwareeingriff.
+
+---
+
+## Bestehender LAPTOP-OS-Schnellstart
 
 **V0.8.0-preview.4 · EDEN-Term UI · geführter, nicht-destruktiver Einstieg**
 
@@ -12,11 +36,11 @@ Nachdem **dieses Projekt** im GitHub-Repository `EDEN-STREET/LAPTOP-OS` veröffe
 npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/heads/main.tar.gz -- eden
 ```
 
-Dieser Befehl lädt den GitHub-Quellcode **direkt als Tarball über npm**. **Git muss dafür nicht installiert sein.** `npm exec` startet den EDEN-Assistenten aus dem heruntergeladenen Paket. Nach Zustimmung legt er ausschließlich eine neue EDEN-Version im Benutzerverzeichnis an, fragt nach einem optionalen Installationsplan und öffnet die **lokale EDEN-Workbench**.
+Dieser Befehl lädt den GitHub-Quellcode **direkt als Tarball über npm**. **Git muss dafür nicht installiert sein.** `npm exec` startet den EDEN-Assistenten aus dem heruntergeladenen Paket. Nach Zustimmung legt er ausschließlich eine neue EDEN-Version im Benutzerverzeichnis an, fragt nach einem optionalen Installationsplan und öffnet die **lokale EDEN-Term-Workbench**.
 
 **Voraussetzung:** Auf Windows 10/11 muss Node.js 22 oder neuer inklusive npm bereits installiert sein. Ohne npm lässt sich kein npm-Befehl ausführen. Node.js bitte von [nodejs.org](https://nodejs.org/) installieren und CMD neu öffnen.
 
-**Veröffentlichungsstatus:** Der npm-Starter wurde mit PR #2 auf `main` übernommen. Das Wiki-/Handbuch-/Kanban-Update wird als eigener Integrationszweig geprüft. Der GitHub-Tarball-Start setzt weiterhin Node.js/npm und einen erreichbaren GitHub-Branch voraus.
+**Veröffentlichungsstatus:** Der npm-Starter wurde mit PR #2 auf `main` übernommen. Das Wiki-/Handbuch-/Kanban-Update ist integriert. Der GitHub-Tarball-Start setzt weiterhin Node.js/npm und einen erreichbaren GitHub-Branch voraus.
 
 ### Zusätzliche Funktionen (weiterhin nur npm)
 
@@ -76,7 +100,7 @@ Der Befehl zeigt zuvor eine exakte Dateiliste, verlangt die Eingabe `PUBLISH EDE
 
 ## EDEN Hauptbereiche: Wiki · Handbuch · Projekte/Kanban
 
-Der npm-Starter öffnet die EDEN-Workbench. Von dort sind die **drei Hauptbereiche** erreichbar:
+Der npm-Starter öffnet die EDEN-Term-Workbench. Von dort sind die **drei Hauptbereiche** erreichbar:
 
 - **Wiki:** `http://127.0.0.1:8765/wiki.html` – suchbarer lokaler Wissenshub, technische Zusammenfassungen mit Nachweisstatus.
 - **Handbuch:** `http://127.0.0.1:8765/handbuch.html` – öffentliche, erweiterte Kapitel-/Versionsnavigation. Historische Originale verbleiben separat.

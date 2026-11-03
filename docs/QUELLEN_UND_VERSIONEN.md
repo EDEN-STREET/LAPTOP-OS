@@ -2,7 +2,7 @@
 
 - Ursprüngliche EDEN-V0.7.5-Handbuch-/Testlabore: als historische Offlinequellen getrennt erhalten.
 - EDEN-V0.8.0-Integrationskandidat: größere lokale Dokumentations-/UI-/Quellenbasis; nicht vollständig in diesem npm-Paket veröffentlicht.
-- Nutzerseitige visuelle Referenz `DkZ_EDEN_Terminal_Demo.html`: Grundlage der EDEN/Crown-Dreiturm-UI, in der npm-Ausgabe neongrün.
+- Nutzerseitige visuelle Referenz (`historischer EDEN-Term-Entwurf`, Original separat archiviert): Grundlage der EDEN/Crown-Dreiturm-UI, in der npm-Ausgabe neongrün.
 - `web/builder.html`: freigegebene Demo-Struktur des rein simulierten V0.8.0-Workflow-Builders.
 - `web/*`: öffentlich geeignete statische Preview-Seiten und lokaler Setup-Assistent.
 
