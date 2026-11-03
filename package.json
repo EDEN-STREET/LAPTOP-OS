@@ -10,6 +10,8 @@
   "scripts": {
     "setup": "node bin/eden.mjs setup",
     "doctor": "node bin/eden.mjs doctor",
+    "gate5": "node bin/eden.mjs gate5",
+    "preflight": "node bin/eden.mjs preflight",
     "start": "node bin/eden.mjs launch",
     "status": "node bin/eden.mjs status",
     "verify": "node bin/eden.mjs verify",
@@ -23,6 +25,7 @@
   "license": "MIT",
   "files": [
     "bin/",
+    "config/",
     "lib/",
     "web/",
     "docs/",

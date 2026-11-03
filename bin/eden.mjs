@@ -6,11 +6,17 @@ import { stdin as input, stdout as output } from 'node:process';
 import { BUILD, TARGETS, systemSnapshot, buildPlan, safePlanPath, savePlanOnce, publicRoot, resolvePublicFile, installedWebRoot, installUserUI } from '../lib/core.mjs';
 import { startServer } from '../lib/server.mjs';
 import { publishGithub } from '../lib/github-publisher.mjs';
+import { evaluateGate5Preflight, formatGate5ReportText, saveGate5Report } from '../lib/gate5-preflight.mjs';
 
 const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'onboard';
 const json = process.argv.includes('--json');
 const noOpen = process.argv.includes('--no-open');
 const planOnly = process.argv.includes('--plan-only');
+const strictMode = process.argv.includes('--strict');
+const readArgValue = (prefix) => {
+  const found = process.argv.find((arg) => arg.startsWith(`${prefix}=`));
+  return found ? found.slice(prefix.length + 1) : undefined;
+};
 const banner = () => console.log(`\n◆ EDEN LAPTOP-OS · ${BUILD} · NPM ONLY · SICHERE VORSCHAU\n`);
 
 function doctor() {
@@ -100,15 +106,40 @@ async function launch() {
     return 0;
   }catch(e){console.error(`Startfehler: ${e.code||e.message} · ggf. läuft EDEN schon auf Port 8765.`);return 1;}
 }
+function gate5() {
+  const profileId = readArgValue('--profile');
+  const configPath = readArgValue('--config');
+  const savePath = readArgValue('--save-report');
+  const report = evaluateGate5Preflight({ profileId, configPath });
+  if (savePath) {
+    try {
+      const saved = saveGate5Report(report, savePath);
+      if (!json) console.log(`Gate-5-Bericht gespeichert (ohne Überschreiben): ${saved}`);
+    } catch (e) {
+      console.error(`Gate-5-Bericht konnte nicht gespeichert werden: ${e.code || e.message}`);
+      return 1;
+    }
+  }
+  if (json) {
+    console.log(JSON.stringify(report, null, 2));
+  } else {
+    console.log(formatGate5ReportText(report));
+  }
+  if (report.config_error) return 2;
+  if (strictMode && report.overall_status === 'BLOCKED') return 1;
+  return 0;
+}
 function help(){
   banner();
-  console.log('eden                Geführter npm-Einstieg mit lokaler Installation und UI\neden setup          Geführtes Setup mit Freigabe\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
+  console.log('eden                Geführter npm-Einstieg mit lokaler Installation und UI\neden setup          Geführtes Setup mit Freigabe\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden gate5          Gate-5 Universal Hardware Preflight (strikt lesend, --json, --profile=...)\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
   console.log('\nNur npm benötigt (Node.js inkl. npm muss bereits installiert sein).\nKeine Disk-/Firmware-/Router-/OS-Modifikation.');return 0;
 }
 try{
   const rc=command==='onboard'||command==='setup'?await setup():
     command==='launch'||command==='start'?await launch():
-    command==='doctor'?doctor():command==='status'?status():
+    command==='doctor'?doctor():
+    command==='gate5'||command==='preflight'?gate5():
+    command==='status'?status():
     command==='verify'?verify():command==='publish-github'?(await publishGithub({dryRun:process.argv.includes('--dry-run')}),0):help();
   process.exitCode=rc;
 }catch(e){console.error(`EDEN hat sicher gestoppt: ${e.message}`);process.exitCode=1;}
