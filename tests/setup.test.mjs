@@ -39,7 +39,7 @@ test('local HTTP serves UI, rejects post and traversal',async()=>{
     const address=server.address(),base=`http://127.0.0.1:${address.port}`;
     const ui=await fetch(base+'/');
     assert.equal(ui.status,200);
-    assert.match(await ui.text(),/NOUZ-TERM|NOUZ-Term/);
+    assert.match(await ui.text(),/EDEN-TERM|EDEN-Term|NOUZ-TERM|NOUZ-Term/);
     const bad=await fetch(base+'/../../LICENSE');
     assert.notEqual(bad.status,200);
     const post=await fetch(base+'/',{method:'POST'});

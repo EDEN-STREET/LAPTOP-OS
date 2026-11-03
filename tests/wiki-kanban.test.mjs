@@ -13,7 +13,8 @@ test('main navigation includes Wiki, Handbook and Kanban',()=>{
 });
 test('wiki main section includes sources and search',()=>{
  const html=fs.readFileSync(path.join(web,'wiki.html'),'utf8');
- for(const word of ['wikiQuery','wikiTopic','Policy Broker','Vertrauenszonen','NOUZ-Term'])assert.ok(html.includes(word),word);
+ for(const word of ['wikiQuery','wikiTopic','Policy Broker','Vertrauenszonen'])assert.ok(html.includes(word),word);
+ assert.ok(html.includes('EDEN-Term')||html.includes('NOUZ-Term'),'EDEN-Term/NOUZ-Term');
 });
 test('kanban has separate project tracks and four status columns',()=>{
  const js=fs.readFileSync(path.join(web,'projects.js'),'utf8');
