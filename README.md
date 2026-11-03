@@ -1,6 +1,6 @@
 # 🟢 EDEN LAPTOP-OS · npm-only Windows Setup
 
-**V0.8.0-preview.4 · NOUZ-Term UI · geführter, nicht-destruktiver Einstieg**
+**V0.8.0-preview.4 · EDEN-Term UI · geführter, nicht-destruktiver Einstieg**
 
 > Die npm-Version installiert eine **lokale EDEN-Browseranwendung und einen Einrichtungsassistenten**. Sie ersetzt **nicht** Windows, Kali, Tails oder Qubes OS und verändert weder Partitionen noch Firmware. Reale OS-Installation erfordert später separate Hardwareprüfung, Backup, offizielle Installationsmedien und Freigabe.
 
@@ -12,7 +12,7 @@ Nachdem **dieses Projekt** im GitHub-Repository `EDEN-STREET/LAPTOP-OS` veröffe
 npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/heads/main.tar.gz -- eden
 ```
 
-Dieser Befehl lädt den GitHub-Quellcode **direkt als Tarball über npm**. **Git muss dafür nicht installiert sein.** `npm exec` startet den EDEN-Assistenten aus dem heruntergeladenen Paket. Nach Zustimmung legt er ausschließlich eine neue EDEN-Version im Benutzerverzeichnis an, fragt nach einem optionalen Installationsplan und öffnet die **lokale NOUZ-Workbench**.
+Dieser Befehl lädt den GitHub-Quellcode **direkt als Tarball über npm**. **Git muss dafür nicht installiert sein.** `npm exec` startet den EDEN-Assistenten aus dem heruntergeladenen Paket. Nach Zustimmung legt er ausschließlich eine neue EDEN-Version im Benutzerverzeichnis an, fragt nach einem optionalen Installationsplan und öffnet die **lokale EDEN-Workbench**.
 
 **Voraussetzung:** Auf Windows 10/11 muss Node.js 22 oder neuer inklusive npm bereits installiert sein. Ohne npm lässt sich kein npm-Befehl ausführen. Node.js bitte von [nodejs.org](https://nodejs.org/) installieren und CMD neu öffnen.
 
@@ -42,7 +42,7 @@ Keine Adminrechte, kein Autostart, keine Systemkonfiguration, kein Flashen, kein
 ## Was ist enthalten?
 
 - Windows-kompatibles Node.js-CLI mit lesendem Preflight, geführter Freigabe und Benutzerprofil-Installation
-- EDEN NOUZ-Term Workbench im neongrünen Dreiturm-Layout
+- EDEN-Term Workbench im neongrünen Dreiturm-Layout
 - Offline-fähiger Demo-Builder und Dokumentationsansichten für Einrichtung, Handbuch, Toolbox, Grimoire, Testlabor und Quellen
 - lokaler Read-only-HTTP-Server, keine Netzwerk- oder Shell-Agenten
 - sichere öffentliche Dokumentation, Sicherheitsvertrag, Roadmap und Regressionstests
@@ -76,7 +76,7 @@ Der Befehl zeigt zuvor eine exakte Dateiliste, verlangt die Eingabe `PUBLISH EDE
 
 ## EDEN Hauptbereiche: Wiki · Handbuch · Projekte/Kanban
 
-Der npm-Starter öffnet die NOUZ-Workbench. Von dort sind die **drei Hauptbereiche** erreichbar:
+Der npm-Starter öffnet die EDEN-Workbench. Von dort sind die **drei Hauptbereiche** erreichbar:
 
 - **Wiki:** `http://127.0.0.1:8765/wiki.html` – suchbarer lokaler Wissenshub, technische Zusammenfassungen mit Nachweisstatus.
 - **Handbuch:** `http://127.0.0.1:8765/handbuch.html` – öffentliche, erweiterte Kapitel-/Versionsnavigation. Historische Originale verbleiben separat.

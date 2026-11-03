@@ -2,7 +2,7 @@
 
 | Phase | Umsetzung | Abnahmekriterium |
 |---|---|---|
-| P0 | npm-Tarball-Kommando ohne Git, Preflight, Benutzerprofil-App, lokale NOUZ-UI | Auf Windows 10/11 verifizierter npm-Neustart, Paket-/HTTP-/UI-Tests, kein Adminbedarf |
+| P0 | npm-Tarball-Kommando ohne Git, Preflight, Benutzerprofil-App, lokale EDEN-UI | Auf Windows 10/11 verifizierter npm-Neustart, Paket-/HTTP-/UI-Tests, kein Adminbedarf |
 | P0 | GitHub-Releasefreigabe für `EDEN-STREET/LAPTOP-OS` | Branch, PR, CI, Review, Merge, veröffentlichter TAR und unveränderliche Versionierung |
 | P0 | Lokale Quellen-/Lizenz- und Prüfsummenabnahme | Nur freigegebene TECHNICAL-Dateien im öffentlichen Repo, PRIVATE separat |
 | P0 | Command Registry und separater Policy Broker | Versionierte Sperren, negative Tests gegen unbegründete Rechte |

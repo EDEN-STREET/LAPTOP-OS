@@ -17,7 +17,7 @@ function doctor() {
   const s = systemSnapshot();
   const checks = [
     { id:'node',ok:s.node_suitable,message:s.node_suitable?`Node ${s.node} bereit`:`Node ${s.node} zu alt: >=22 benötigt` },
-    { id:'ui',ok:s.ui_present,message:s.ui_present?'NOUZ-UI und Installer vorhanden':'NOUZ-UI fehlt' },
+    { id:'ui',ok:s.ui_present,message:s.ui_present?'EDEN-UI und Installer vorhanden':'EDEN-UI fehlt' },
     { id:'source',ok:s.offline_bundle_present,optional:true,message:s.offline_bundle_present?'Historisches Offline-Handbuch lokal':'Historisches Vollhandbuch separat (optional)'},
     { id:'installed',ok:s.user_install_present,optional:true,message:s.user_install_present?'EDEN-App im Benutzerprofil installiert':'Noch keine lokale dauerhafte App-Kopie'},
   ];
@@ -102,7 +102,7 @@ async function launch() {
 }
 function help(){
   banner();
-  console.log('eden                Geführter npm-Einstieg mit lokaler Installation und UI\neden setup          Geführtes Setup mit Freigabe\neden launch         NOUZ-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
+  console.log('eden                Geführter npm-Einstieg mit lokaler Installation und UI\neden setup          Geführtes Setup mit Freigabe\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
   console.log('\nNur npm benötigt (Node.js inkl. npm muss bereits installiert sein).\nKeine Disk-/Firmware-/Router-/OS-Modifikation.');return 0;
 }
 try{

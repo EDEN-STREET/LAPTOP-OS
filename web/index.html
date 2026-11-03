@@ -162,7 +162,7 @@ body:before{
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
 <style id="eden-integration-delta">
-/* Delta: single additional navigation row; NOUZ's original 3-tower geometry is untouched */
+/* Delta: single additional navigation row; EDEN's original 3-tower geometry is untouched */
 .app{grid-template-rows:44px auto minmax(0,1fr) 44px}
 .integration-tabs{display:flex;gap:8px;overflow-x:auto;padding:3px 4px 5px;align-items:center;scrollbar-width:thin}
 .integration-tabs a{flex:none;display:inline-flex;align-items:center;padding:8px 12px;border:1px solid rgba(102,255,143,.22);border-radius:12px;text-decoration:none;color:#69aaff;background:rgba(8,16,12,.82);font:700 11px ui-monospace,monospace;box-shadow:inset 0 1px rgba(255,255,255,.04),0 7px 18px rgba(0,0,0,.25)}
@@ -222,14 +222,14 @@ body:before{
         </div>
         <div class="term-body">
           <div class="graph-bg">
-            <div class="node n1">GitNexus</div><div class="node n2">NOUZ</div><div class="node n3">LLM-Wiki</div><div class="node n4">Graphify</div><div class="node n5">renderer</div>
+            <div class="node n1">GitNexus</div><div class="node n2">EDEN</div><div class="node n3">LLM-Wiki</div><div class="node n4">Graphify</div><div class="node n5">renderer</div>
           </div>
           <div id="log" class="log"><span class="muted">[context]</span> repo=eden-workbench  branch=design/neon-green [DEMO]
 <span class="muted">[herd]</span>    root=architect  agent=ui-review  pane=demo:01
-<span class="muted">[knowledge]</span> <span class="c-green">GNX◌ GF◌ LW◌ LLMS◌ NOUZ◌ ATUIN◌  [DEMO]</span>
+<span class="muted">[knowledge]</span> <span class="c-green">GNX◌ GF◌ LW◌ LLMS◌ EDEN◌ ATUIN◌  [DEMO]</span>
 
 <span class="c-cyan">ui-preview@eden</span> <span class="c-purple">~/EDEN/workbench/design</span>
-$ preview layout --source nouz-term
+$ preview layout --source eden-term
 
 SOURCE-BASED VISUAL PREVIEW · NO REAL TOOLS
 [BEISPIEL] test renderer::projection ........ <span class="c-green">ok</span>
@@ -243,12 +243,12 @@ SOURCE-BASED VISUAL PREVIEW · NO REAL TOOLS
 
 <span class="muted">[atuin]</span> stored · mock history · no disk write
 <span class="muted">[gitnexus]</span> impact: demo graph / no live repository connection
-<span class="muted">[nouz]</span> example nodes · no live index</div>
+<span class="muted">[eden]</span> example nodes · no live index</div>
         </div>
       </section>
 
       <section class="panel inputbox">
-        <div class="suggest"><b>CONTEXT</b><span>EDEN demo · Quelldatei: DkZ_NOUZ_Terminal_Demo.html · keine Live-Dienste</span><button class="micro-help" data-help="command" title="Befehle und sichere Nutzung erklären">ⓘ</button></div>
+        <div class="suggest"><b>CONTEXT</b><span>EDEN demo · Quelldatei: DkZ_EDEN_Terminal_Demo.html · keine Live-Dienste</span><button class="micro-help" data-help="command" title="Befehle und sichere Nutzung erklären">ⓘ</button></div>
         <div class="prompt"><span class="p">❯</span><input id="cmd" aria-label="EDEN Demo-Kommandos" autocomplete="off" spellcheck="false" placeholder="Demo-Eingabe: help · @Agent · #EDEN · /Datei · ?Navi · Strg+P"></div>
       </section>
     </main>
@@ -269,7 +269,7 @@ SOURCE-BASED VISUAL PREVIEW · NO REAL TOOLS
         <div class="krow"><b>Graphify</b><span>Graphdaten: Beispiel</span><span class="ready">DEMO</span></div>
         <div class="krow"><b>LLM-Wiki</b><span>Wissen: Beispiel</span><span class="ready">DEMO</span></div>
         <div class="krow"><b>llms.txt</b><span>EDEN-handbook</span><span class="ready">DEMO</span></div>
-        <div class="krow"><b>NOUZ</b><span>NOUZ: Beispiel</span><span class="ready">DEMO</span></div>
+        <div class="krow"><b>EDEN</b><span>EDEN: Beispiel</span><span class="ready">DEMO</span></div>
       </div>
     </aside>
   </div>
@@ -282,11 +282,11 @@ SOURCE-BASED VISUAL PREVIEW · NO REAL TOOLS
 
 <div id="palette" class="palette" aria-hidden="true">
   <div class="palette-card" role="dialog" aria-modal="true" aria-label="EDEN Befehlspalette">
-    <input id="palInput" aria-label="Suche in der Demo-Palette" placeholder="fzf unified palette — files, history, navi, NOUZ, agents, GitNexus…">
+    <input id="palInput" aria-label="Suche in der Demo-Palette" placeholder="fzf unified palette — files, history, navi, EDEN, agents, GitNexus…">
     <div class="results">
       <div class="res" role="option" aria-selected="false"><span class="type">FILE</span><span class="res-name">EDEN/source-handbook/crown-notch.html</span><span class="source">Superfile</span></div>
       <div class="res" role="option" aria-selected="false"><span class="type">AGENT</span><span class="res-name">@ui-review</span><span class="source">Herdr</span></div>
-      <div class="res" role="option" aria-selected="false"><span class="type">KNOWLEDGE</span><span class="res-name">EDEN Sicherheitsarchitektur</span><span class="source">NOUZ</span></div>
+      <div class="res" role="option" aria-selected="false"><span class="type">KNOWLEDGE</span><span class="res-name">EDEN Sicherheitsarchitektur</span><span class="source">EDEN</span></div>
       <div class="res" role="option" aria-selected="false"><span class="type">SYMBOL</span><span class="res-name">PolicyBroker::review</span><span class="source">GitNexus</span></div>
       <div class="res" role="option" aria-selected="false"><span class="type">HISTORY</span><span class="res-name">preview ui --read-only</span><span class="source">Atuin</span></div>
       <div class="res" role="option" aria-selected="false"><span class="type">COMMAND</span><span class="res-name">help · status · builder</span><span class="source">Navi</span></div>
@@ -306,14 +306,14 @@ const palette = document.querySelector('#palette');
 const palInput = document.querySelector('#palInput');
 const firstLog = log.innerHTML;
 const tabLogs = {herd:firstLog};
-const sourceUI = 'DkZ_NOUZ_Terminal_Demo.html';
+const sourceUI = 'DkZ_EDEN_Terminal_Demo.html';
 let currentTab = 'herd';
 let focusBeforeDialog = null;
 const content = {
   herd: ['HERD · Demo-Übersicht', 'Agentenstruktur und Beispielausgaben bleiben an ihrem festen Platz.', 'Klicke rechts auf einen Agenten, um ihn im Terminal-Kontext zu markieren.'],
   files: ['FILES · Superfile-Layout', 'Der linke File-Tower bleibt dauerhaft erhalten.', 'Dateien nur als exemplarische Einträge · kein Zugriff auf echte lokale Verzeichnisse.'],
   knowledge: ['KNOWLEDGE · Quellen- und Statusansicht', 'Auf der rechten Seite bleiben Herd- und Wissensdienste sichtbar.', 'Alle Dienstzahlen sind Original-Demodaten, keine Live-Statusabfrage.'],
-  services: ['SERVICES · Integrationsrollen', 'Ghostty = Terminaloberfläche · Zellij = Panels/Sitzungen · Herdr = Agentenübersicht.', 'Superfile = Datei-Tower · NOUZ/GitNexus/Graphify = Wissens-/Graph-Konzept.'],
+  services: ['SERVICES · Integrationsrollen', 'Ghostty = Terminaloberfläche · Zellij = Panels/Sitzungen · Herdr = Agentenübersicht.', 'Superfile = Datei-Tower · EDEN/GitNexus/Graphify = Wissens-/Graph-Konzept.'],
 };
 function append(text, cls=''){
   const line=document.createElement('div'); line.className=cls;
@@ -356,7 +356,7 @@ function helpTopic(topic){
     command:['Eingabehilfe', 'Tippe „help“, „status“, „herd“, „files“, „knowledge“, „services“, „builder“ oder „clear“. Präfixe @, #, / und ? zeigen ausschließlich Beispielantworten. Es wird keine Shell ausgeführt und keine Nachricht verschickt.'],
     files:['Superfile-Tower · Demo', 'Behalte links die Hierarchie und Einrückungen bei. Ein Klick markiert eine Zeile und erläutert die Auswahl in der Mitte. Es gibt keine Dateisystemberechtigung.'],
     agents:['Herdr/Agenten · Demo', 'Der Baum rechts zeigt mögliche Agentenrollen, nicht tatsächlich laufende Prozesse. Ein Klick setzt den visuellen Fokus und protokolliert eine Demo-Meldung.'],
-    sources:['Quellen- und Wissensbereich', 'Rechts bleiben die einzelnen Dienste ATUIN, GitNexus, Graphify, LLM-Wiki, llms.txt und NOUZ sichtbar. Zahlen sind Mock-Daten. Für EDEN muss jeder reale Dienst später separat angebunden, geprüft und autorisiert werden.'],
+    sources:['Quellen- und Wissensbereich', 'Rechts bleiben die einzelnen Dienste ATUIN, GitNexus, Graphify, LLM-Wiki, llms.txt und EDEN sichtbar. Zahlen sind Mock-Daten. Für EDEN muss jeder reale Dienst später separat angebunden, geprüft und autorisiert werden.'],
     palette:['Palette · Strg+P', 'Öffne Strg+P. Suche nach Files, Wissen, Commands, Agenten oder Symbolen. Pfeiltasten wählen Treffer; Enter übernimmt eine Vorschau, Escape schließt. Kein Eintrag führt Systemkommandos aus.'],
     governance:['Sicherheitsgrenzen', 'Das ist eine optische Referenz für die zukünftige EDEN-V0.8-Oberfläche, keine Implementierung von Ghostty, Zellij, Herdr oder einem Policy Broker. Keine echten Geräte, Schlüssel, Dateien oder privilegierten Prozesse werden berührt.']
   };
@@ -372,7 +372,7 @@ function doCommand(value){
  if(key in content){switchTab(key);return}
  if(key==='builder'){append('[builder] Geplante EDEN-Anbindung: Workflows · Skill-Registry · Preflight · Review · Rollback');append('[safety] Design-/Navigationsdemo; kein ausführbarer Workflow','muted');return}
  if(v.startsWith('@')){append('[herdr-demo] Auswahl vorgemerkt: '+v.slice(0,80),'c-purple');return}
- if(v.startsWith('#')){append('[nouz-demo] Filtervorschau: '+v.slice(0,80),'c-purple');return}
+ if(v.startsWith('#')){append('[eden-demo] Filtervorschau: '+v.slice(0,80),'c-purple');return}
  if(v.startsWith('/')){append('[files-demo] Pfadvorschau: '+v.slice(0,80),'c-cyan');return}
  if(v.startsWith('?')){append('[navi-demo] Nur Hilfe/Erklärung: '+v.slice(0,80),'c-cyan');return}
  append('[safe-block] Unbekannte Eingabe: Kein echtes Shell-Kommando ausgeführt. Nutze help.','muted');

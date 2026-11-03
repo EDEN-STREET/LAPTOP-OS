@@ -9,7 +9,7 @@
 
 ## Verbindliche Herkunft und Schutzklassen
 
-Grundlagen sind der bestehende öffentliche npm-Starter, EDEN-Handbuch V0.7.5 Offline (historischer Entwurf mit 21 Teilen), der V0.8.0 Integrationskandidat (ergänzter Teil XXII) und die NOUZ-Term-Benutzerreferenz. Nicht alle historischen Quellen wurden als öffentliche Publikation freigegeben. Daher enthält das Repo ausschließlich eigenständig formulierte, allgemein gehaltene TECHNICAL-Zusammenfassungen. Originale werden nicht verändert und nicht ins öffentliche Repository kopiert.
+Grundlagen sind der bestehende öffentliche npm-Starter, EDEN-Handbuch V0.7.5 Offline (historischer Entwurf mit 21 Teilen), der V0.8.0 Integrationskandidat (ergänzter Teil XXII) und die EDEN-Term-Benutzerreferenz. Nicht alle historischen Quellen wurden als öffentliche Publikation freigegeben. Daher enthält das Repo ausschließlich eigenständig formulierte, allgemein gehaltene TECHNICAL-Zusammenfassungen. Originale werden nicht verändert und nicht ins öffentliche Repository kopiert.
 
 Die Rubriken unterscheiden `DOKUMENTIERT`, `UI-DEMO`, `PLAN / NICHT VERIFIZIERT`, `TESTBEDARF`. Keine Oberflächenaussage ersetzt VM-/Hardwaretests. Vor künftiger Veröffentlichung jedes Dokuments sind Datenklasse (TECHNICAL/PRIVATE/UNTRUSTED/EVIDENCE), Urheberrecht/Lizenz, Quelle, SHA-256, Versionsstand, Review und ausdrückliche Freigabe zu prüfen.
 

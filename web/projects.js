@@ -3,7 +3,7 @@
 const KEY='eden.kanban.v1';
 const COLUMNS=[['backlog','BACKLOG'],['doing','IN ARBEIT'],['review','PRÜFUNG'],['done','ERLEDIGT']];
 const seed={schema:'eden.kanban/1',projects:[
- {id:'wiki',name:'Wiki / Wissenshub',description:'Artikel, Quellenprovenienz, NOUZ-Knowledge und Wissensstruktur'},
+ {id:'wiki',name:'Wiki / Wissenshub',description:'Artikel, Quellenprovenienz, EDEN-Knowledge und Wissensstruktur'},
  {id:'handbook',name:'EDEN Handbuch',description:'Historische Kapitel bewahren, technische Ergänzungen versionieren und prüfen'},
  {id:'laptop',name:'LAPTOP-OS',description:'Windows/npm-Start, CI, sichere lokalen Setup-Workflows und Abnahme'},
  {id:'router',name:'ROUTER – Folgeprojekt',description:'Erst nach Laptop-Gate: Hardwareprofile, Firmware-/Netzprüfungen, Recovery'},
@@ -11,7 +11,7 @@ const seed={schema:'eden.kanban/1',projects:[
 ],tickets:[
  {id:'wiki-1',project:'wiki',title:'Wiki-Hauptbereich und Suche',description:'Navigationsziel und suchbare Artikel im öffentlichen UI erreichbar',state:'review'},
  {id:'wiki-2',project:'wiki',title:'Quellen- und Freigabegate',description:'Jeder importierte Artikel braucht Herkunft, Lizenz, Datenklasse und Quellenstatus',state:'backlog'},
- {id:'wiki-3',project:'wiki',title:'Knowledge-Adapter abgrenzen',description:'NOUZ / LLM-Wiki sind Konzeptrollen, keine behaupteten Live-Dienste',state:'backlog'},
+ {id:'wiki-3',project:'wiki',title:'Knowledge-Adapter abgrenzen',description:'EDEN / LLM-Wiki sind Konzeptrollen, keine behaupteten Live-Dienste',state:'backlog'},
  {id:'handbook-1',project:'handbook',title:'Handbuch als Hauptbereich',description:'Alte Kapitel behalten, öffentliche Navigationsstruktur ergänzen, Versionsgrenzen kennzeichnen',state:'review'},
  {id:'handbook-2',project:'handbook',title:'V0.7.5 / V0.8.0 Inhaltsvergleich',description:'Datei- und Kapitelregister mit Prüfsummen und Nachweisgrad; kein Überschreiben historischer Originale',state:'backlog'},
  {id:'handbook-3',project:'handbook',title:'Offline-Handbuch-Paket-Freigabe',description:'Lizenz, PRIVATE/UNTRUSTED und sensible Angaben vor jeder Veröffentlichung prüfen',state:'backlog'},

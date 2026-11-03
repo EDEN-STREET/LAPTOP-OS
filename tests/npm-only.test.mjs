@@ -20,7 +20,7 @@ test('npm-only CLI exposes a bin, supports Node 22+, has lockfile, no lifecycle 
   assert.equal(BUILD,pkg.version);
 });
 
-test('every NOUZ menu item resolves to an actual public page, no private archive bundled',()=>{
+test('every EDEN menu item resolves to an actual public page, no private archive bundled',()=>{
   const root=path.join(ROOT,'web');
   const home=fs.readFileSync(path.join(root,'index.html'),'utf8');
   for(const file of ['setup.html','handbuch.html','builder.html','toolbox.html','grimoire.html','testlab.html','quellen.html']) {
