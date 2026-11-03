@@ -6,7 +6,7 @@ import { stdin as input, stdout as output } from 'node:process';
 import { BUILD, TARGETS, systemSnapshot, buildPlan, safePlanPath, savePlanOnce, publicRoot, resolvePublicFile, installedWebRoot, installUserUI } from '../lib/core.mjs';
 import { startServer } from '../lib/server.mjs';
 import { publishGithub } from '../lib/github-publisher.mjs';
-import { evaluateGate5Preflight, formatGate5ReportText, saveGate5Report } from '../lib/gate5-preflight.mjs';
+import { evaluateGate5Preflight, formatGate5ReportText, saveGate5Report, computeGate5ExitCode } from '../lib/gate5-preflight.mjs';
 
 const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'onboard';
 const json = process.argv.includes('--json');
@@ -125,13 +125,11 @@ function gate5() {
   } else {
     console.log(formatGate5ReportText(report));
   }
-  if (report.config_error) return 2;
-  if (strictMode && report.overall_status === 'BLOCKED') return 1;
-  return 0;
+  return computeGate5ExitCode(report, { strict: strictMode });
 }
 function help(){
   banner();
-  console.log('eden                Geführter npm-Einstieg mit lokaler Installation und UI\neden setup          Geführtes Setup mit Freigabe\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden gate5          Gate-5 Universal Hardware Preflight (strikt lesend, --json, --profile=...)\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
+  console.log('eden                Geführter npm-Einstieg mit lokaler Installation und UI\neden setup          Geführtes Setup mit Freigabe\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden gate5          Gate-5 Universal Hardware Preflight (strikt lesend, --json, --profile=..., --strict)\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
   console.log('\nNur npm benötigt (Node.js inkl. npm muss bereits installiert sein).\nKeine Disk-/Firmware-/Router-/OS-Modifikation.');return 0;
 }
 try{

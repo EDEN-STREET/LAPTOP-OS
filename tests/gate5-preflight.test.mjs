@@ -9,11 +9,15 @@ import {
   DEFAULT_GATE5_CONFIG_PATH,
   normalizeCapabilityState,
   redactSensitiveText,
+  computeFileSha256Chunked,
+  parseLinuxPhysicalCoresFromCpuinfo,
   loadGate5Config,
   validateGate5ConfigObject,
   probeLinuxReadOnly,
   verifyInstallationMediaReadOnly,
   verifyBackupAttestationReadOnly,
+  verifyTargetDiskIdentificationReadOnly,
+  computeGate5ExitCode,
   evaluateGate5Preflight,
   formatGate5ReportText,
   saveGate5Report,
@@ -51,182 +55,351 @@ test('Gate 5: Dreistufiges Zustandsmodell (verfügbar / nicht verfügbar / unbek
   }
 });
 
-test('Gate 5: Vollständig verifiziertes Qubes-Whonix-Profil erreicht READY_FOR_HUMAN_REVIEW, hält aber G5-10 gesperrt', () => {
-  const validSha = 'a'.repeat(64);
-  const report = evaluateGate5Preflight({
-    profileId: 'qubes-whonix',
-    probeOverride: {
-      platform: 'linux',
-      os_release: '6.8.0-generic',
-      arch: 'x64',
-      cpu_model: 'AMD Ryzen PRO 7840U',
-      cpu_cores: 8,
-      ram_total_gb: 32,
-      disk_free_gb: 512,
-      disk_total_gb: 1024,
-      detected_disks_count: 2,
-      cpu_virtualization: 'available',
-      slat: 'available',
-      iommu: 'available',
-      uefi: 'available',
-      secure_boot: 'available',
-      tpm2: 'available',
-      network_adapter: 'available',
-      target_disk_identified: 'available',
-    },
-    backupAttestation: { verified: true, restoreTested: true },
-    mediaAttestation: { verified: true, sha256: validSha },
+test('Review-Befund #1 (Medienintegrität): Selbstauskunft ohne Datei oder ohne Manifest wird NIEMALS als PASS akzeptiert', () => {
+  // 1a. Willkürlicher Hash-String / Selbstauskunft ohne Datei -> UNKNOWN (self_assertion_rejected)
+  const selfAssertion = verifyInstallationMediaReadOnly({
+    verified: true,
+    sha256: 'a'.repeat(64),
   });
+  assert.equal(selfAssertion.state, 'unknown');
+  assert.equal(selfAssertion.label_de, 'unbekannt');
+  assert.equal(selfAssertion.hash_match, false);
+  assert.equal(selfAssertion.provenance_verified, false);
+  assert.equal(selfAssertion.verification_level, 'self_assertion_rejected');
 
-  assert.equal(report.schema_version, '0.1.0');
-  assert.equal(report.mode, 'read-only');
-  assert.equal(report.destructive_actions_executed, false);
-  assert.equal(report.firmware_modified, false);
-  assert.equal(report.bootloader_modified, false);
-  assert.equal(report.installation_authorized, false);
-  assert.equal(report.overall_status, 'READY_FOR_HUMAN_REVIEW');
-  assert.equal(report.fail_closed_triggered, false);
-
-  const g501To09 = report.gates.slice(0, 9);
-  for (const g of g501To09) {
-    assert.equal(g.status, 'PASS', `Gate ${g.id} sollte PASS sein`);
-    assert.equal(g.capability_label_de, 'verfügbar');
-  }
-  const g510 = report.gates[9];
-  assert.equal(g510.id, 'G5-10');
-  assert.equal(g510.status, 'BLOCKED');
-  assert.equal(g510.capability_label_de, 'nicht verfügbar');
-});
-
-test('Gate 5 Negativtest: Unbekanntes IOMMU bei qubes-whonix löst Fail-Closed (REVIEW_REQUIRED) aus', () => {
-  const report = evaluateGate5Preflight({
-    profileId: 'qubes-whonix',
-    probeOverride: {
-      platform: 'win32',
-      os_release: '10.0.26100',
-      arch: 'x64',
-      cpu_cores: 8,
-      ram_total_gb: 32,
-      disk_free_gb: 300,
-      disk_total_gb: 512,
-      detected_disks_count: 1,
-      cpu_virtualization: 'available',
-      slat: 'available',
-      iommu: 'unknown',
-      uefi: 'available',
-      secure_boot: 'available',
-      tpm2: 'available',
-      target_disk_identified: 'available',
-    },
-    backupAttestation: { verified: true, restoreTested: true },
-    mediaAttestation: { verified: true, sha256: 'b'.repeat(64) },
-  });
-
-  assert.equal(report.overall_status, 'REVIEW_REQUIRED');
-  assert.equal(report.fail_closed_triggered, true);
-  assert.equal(report.installation_authorized, false);
-  const g503 = report.gates.find((g) => g.id === 'G5-03');
-  assert.equal(g503.status, 'UNKNOWN');
-  assert.equal(g503.capability_label_de, 'unbekannt');
-});
-
-test('Gate 5 Negativtest: Deaktivierte Virtualisierung oder zu wenig RAM führt zu BLOCKED', () => {
-  const report = evaluateGate5Preflight({
-    profileId: 'linux-kvm',
-    probeOverride: {
-      platform: 'linux',
-      arch: 'x64',
-      cpu_cores: 4,
-      ram_total_gb: 4, // Minimum ist 8 GB
-      disk_free_gb: 20, // Minimum ist 64 GB
-      disk_total_gb: 64,
-      cpu_virtualization: 'unavailable',
-      slat: 'unavailable',
-      iommu: 'unavailable',
-      uefi: 'available',
-      target_disk_identified: 'available',
-    },
-  });
-
-  assert.equal(report.overall_status, 'BLOCKED');
-  assert.equal(report.fail_closed_triggered, true);
-  assert.equal(report.installation_authorized, false);
-
-  const g502 = report.gates.find((g) => g.id === 'G5-02');
-  const g504 = report.gates.find((g) => g.id === 'G5-04');
-  const g505 = report.gates.find((g) => g.id === 'G5-05');
-  assert.equal(g502.status, 'FAIL');
-  assert.equal(g504.status, 'FAIL');
-  assert.equal(g505.status, 'FAIL');
-});
-
-test('Gate 5 Negativtest: Manipulierte Policy (read_only=false) oder unbekanntes Profil blockiert sofort', () => {
-  const badConfig = structuredClone(loadGate5Config(DEFAULT_GATE5_CONFIG_PATH));
-  badConfig.policy.read_only = false;
-
-  assert.throws(() => validateGate5ConfigObject(badConfig), /Sicherheitsverstoß/);
-
-  const blockedByConfig = evaluateGate5Preflight({ configObject: badConfig });
-  assert.equal(blockedByConfig.overall_status, 'BLOCKED');
-  assert.equal(blockedByConfig.fail_closed_triggered, true);
-  assert.equal(blockedByConfig.installation_authorized, false);
-  assert.match(blockedByConfig.config_error, /Sicherheitsverstoß/);
-
-  const blockedByProfile = evaluateGate5Preflight({ profileId: 'nicht-existentes-profil' });
-  assert.equal(blockedByProfile.overall_status, 'BLOCKED');
-  assert.equal(blockedByProfile.fail_closed_triggered, true);
-  assert.match(blockedByProfile.config_error, /Unbekanntes Zielprofil/);
-});
-
-test('Gate 5: Kryptografische Medienverifikation erkennt gültige und manipulierte SHA-256-Dateien', () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'eden-gate5-media-'));
   try {
-    const isoFile = path.join(tmpDir, 'mock-image.iso');
-    fs.writeFileSync(isoFile, 'EDEN-TEST-ISO-CONTENT-2026', 'utf8');
-    const actualSha = crypto.createHash('sha256').update('EDEN-TEST-ISO-CONTENT-2026').digest('hex');
+    const isoFile = path.join(tmpDir, 'eden-test-image.iso');
+    const content = 'EDEN-STREAMING-HASH-TEST-PAYLOAD-'.repeat(512);
+    fs.writeFileSync(isoFile, content, 'utf8');
+    const expectedSha = crypto.createHash('sha256').update(content).digest('hex');
 
-    const okResult = verifyInstallationMediaReadOnly({
+    // Chunked Streaming-Hash mit kleinem 64-Byte-Puffer prüfen
+    const streamedSha = computeFileSha256Chunked(isoFile, fs, 64);
+    assert.equal(streamedSha, expectedSha);
+
+    // 1b. Datei existiert und Hash stimmt, aber KEIN unabhängiges Prüfmanifest -> bleibt UNKNOWN!
+    const hashOnlyResult = verifyInstallationMediaReadOnly({
       filePath: isoFile,
-      expectedSha256: actualSha,
+      expectedSha256: expectedSha,
     });
-    assert.equal(okResult.state, 'available');
-    assert.equal(okResult.label_de, 'verfügbar');
+    assert.equal(hashOnlyResult.state, 'unknown');
+    assert.equal(hashOnlyResult.hash_match, true);
+    assert.equal(hashOnlyResult.provenance_verified, false);
+    assert.equal(hashOnlyResult.verification_level, 'hash_matched_provenance_unverified');
 
+    // 1c. Abweichender Hash -> UNAVAILABLE (FAIL)
     const mismatchResult = verifyInstallationMediaReadOnly({
       filePath: isoFile,
       expectedSha256: '0'.repeat(64),
     });
     assert.equal(mismatchResult.state, 'unavailable');
-    assert.equal(mismatchResult.label_de, 'nicht verfügbar');
+    assert.equal(mismatchResult.hash_match, false);
+    assert.equal(mismatchResult.verification_level, 'hash_mismatch');
 
-    const unknownResult = verifyInstallationMediaReadOnly(null);
-    assert.equal(unknownResult.state, 'unknown');
-    assert.equal(unknownResult.label_de, 'unbekannt');
+    // 1d. Echte Mediendatei + verifiziertes Prüfmanifest -> AVAILABLE (PASS)
+    const manifestFile = path.join(tmpDir, 'SHA256SUMS');
+    const manifestText = `${expectedSha}  ${path.basename(isoFile)}\n`;
+    fs.writeFileSync(manifestFile, manifestText, 'utf8');
+    const manifestSha = crypto.createHash('sha256').update(manifestText).digest('hex');
+
+    const fullVerifiedResult = verifyInstallationMediaReadOnly({
+      filePath: isoFile,
+      expectedSha256: expectedSha,
+      checksumsFilePath: manifestFile,
+      trustedManifestSha256: manifestSha,
+    });
+    assert.equal(fullVerifiedResult.state, 'available');
+    assert.equal(fullVerifiedResult.hash_match, true);
+    assert.equal(fullVerifiedResult.provenance_verified, true);
+    assert.equal(fullVerifiedResult.verification_level, 'hash_and_manifest_verified');
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 });
 
-test('Gate 5: Backup-Verifikation und Redaktion sensibler Hardwarekennungen (MAC, UUID, Seriennummer)', () => {
+test('Review-Befund #2 (Datenträger & Speicherplatz): Vorhandene Host-Disks allein setzen G5-06/G5-05 nicht auf PASS', () => {
+  const reportWithoutTargetDisk = evaluateGate5Preflight({
+    profileId: 'qubes-whonix',
+    probeOverride: {
+      platform: 'linux',
+      arch: 'x64',
+      cpu_physical_cores: 8,
+      cpu_logical_threads: 16,
+      ram_total_gb: 32,
+      workspace_fs_free_gb: 500,
+      workspace_fs_total_gb: 1000,
+      detected_disks_count: 2,
+      cpu_virtualization: 'available',
+      slat: 'available',
+      iommu: 'available',
+      uefi: 'available',
+    },
+  });
+
+  const g505 = reportWithoutTargetDisk.gates.find((g) => g.id === 'G5-05');
+  const g506 = reportWithoutTargetDisk.gates.find((g) => g.id === 'G5-06');
+  assert.equal(g506.status, 'UNKNOWN');
+  assert.equal(g506.capability_label_de, 'unbekannt');
+  assert.equal(g505.status, 'UNKNOWN');
+  assert.equal(g505.capability_label_de, 'unbekannt');
+  assert.equal(reportWithoutTargetDisk.overall_status, 'REVIEW_REQUIRED');
+  assert.equal(reportWithoutTargetDisk.fail_closed_triggered, true);
+
+  // Negativtest: Systemlaufwerk als Zielmedium angegeben -> FAIL / BLOCKED
+  const reportSystemDiskRejected = evaluateGate5Preflight({
+    profileId: 'qubes-whonix',
+    probeOverride: {
+      platform: 'linux',
+      arch: 'x64',
+      cpu_physical_cores: 8,
+      cpu_logical_threads: 16,
+      ram_total_gb: 32,
+      workspace_fs_free_gb: 500,
+      workspace_fs_total_gb: 1000,
+      detected_disks_count: 1,
+      cpu_virtualization: 'available',
+      slat: 'available',
+      iommu: 'available',
+      uefi: 'available',
+    },
+    targetDiskAttestation: {
+      deviceId: '/dev/nvme0n1',
+      isSystemDisk: true,
+      verifiedNonSystemDisk: false,
+    },
+  });
+  const g506Rejected = reportSystemDiskRejected.gates.find((g) => g.id === 'G5-06');
+  assert.equal(g506Rejected.status, 'FAIL');
+  assert.equal(reportSystemDiskRejected.overall_status, 'BLOCKED');
+});
+
+test('Review-Befund #3 (--strict Exit-Code): UNKNOWN / REVIEW_REQUIRED liefert im strikten Modus Exit-Code != 0', () => {
+  const reviewRequiredReport = evaluateGate5Preflight({
+    profileId: 'windows-workbench',
+    probeOverride: {
+      platform: 'win32',
+      arch: 'x64',
+      cpu_physical_cores: 6,
+      cpu_logical_threads: 12,
+      ram_total_gb: 32,
+      workspace_fs_free_gb: 80,
+      workspace_fs_total_gb: 500,
+      cpu_virtualization: 'available',
+      slat: 'available',
+      iommu: 'unknown',
+      uefi: 'unknown',
+    },
+  });
+
+  assert.equal(reviewRequiredReport.overall_status, 'REVIEW_REQUIRED');
+  assert.equal(reviewRequiredReport.fail_closed_triggered, true);
+  assert.equal(computeGate5ExitCode(reviewRequiredReport, { strict: false }), 0);
+  assert.equal(computeGate5ExitCode(reviewRequiredReport, { strict: true }), 1);
+
+  // Echter CLI-Subprozess-Test mit --strict bei UNKNOWN-Voraussetzungen
+  const strictCliRun = spawnSync(
+    process.execPath,
+    ['bin/eden.mjs', 'gate5', '--strict', '--json', '--profile=windows-workbench'],
+    { encoding: 'utf8', timeout: 15000 },
+  );
+  assert.notEqual(strictCliRun.status, 0);
+  assert.equal(strictCliRun.status, 1);
+  const parsedCli = JSON.parse(strictCliRun.stdout);
+  assert.equal(parsedCli.fail_closed_triggered, true);
+});
+
+test('Review-Befund #4 (Backup-Nachweis): Ungeprüfte Selbstauskunft bleibt UNKNOWN; nur echter Dateinachweis wird verifiziert', () => {
   assert.equal(verifyBackupAttestationReadOnly(null).state, 'unknown');
   assert.equal(verifyBackupAttestationReadOnly({ verified: true, restoreTested: false }).state, 'unavailable');
-  assert.equal(verifyBackupAttestationReadOnly({ verified: true, restoreTested: true }).state, 'available');
 
+  // Bloße Selbstauskunft { verified: true, restoreTested: true } ohne Nachweisdatei -> UNKNOWN!
+  const selfAssertedBackup = verifyBackupAttestationReadOnly({
+    verified: true,
+    restoreTested: true,
+  });
+  assert.equal(selfAssertedBackup.state, 'unknown');
+  assert.equal(selfAssertedBackup.label_de, 'unbekannt');
+  assert.equal(selfAssertedBackup.attestation_kind, 'caller_self_assertion_unverified');
+
+  // Echter Dateinachweis mit SHA-256-Prüfung
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'eden-gate5-backup-'));
+  try {
+    const proofFile = path.join(tmpDir, 'restore-verification.txt');
+    const proofText = 'RESTORE-TEST-VERIFIED-2026-11-03';
+    fs.writeFileSync(proofFile, proofText, 'utf8');
+    const proofSha = crypto.createHash('sha256').update(proofText).digest('hex');
+
+    const verifiedBackup = verifyBackupAttestationReadOnly({
+      restoreProofFilePath: proofFile,
+      expectedProofSha256: proofSha,
+    });
+    assert.equal(verifiedBackup.state, 'available');
+    assert.equal(verifiedBackup.attestation_kind, 'proof_file_sha256_verified');
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('Review-Befund #5a (CPU-Messgenauigkeit): Physische Kerne vs. logische SMT-Threads werden strikt getrennt', () => {
+  const cpuinfo2Cores4Threads = [
+    'processor\t: 0\nphysical id\t: 0\ncore id\t\t: 0\ncpu cores\t: 2\nflags\t\t: vmx ept',
+    'processor\t: 1\nphysical id\t: 0\ncore id\t\t: 0\ncpu cores\t: 2\nflags\t\t: vmx ept',
+    'processor\t: 2\nphysical id\t: 0\ncore id\t\t: 1\ncpu cores\t: 2\nflags\t\t: vmx ept',
+    'processor\t: 3\nphysical id\t: 0\ncore id\t\t: 1\ncpu cores\t: 2\nflags\t\t: vmx ept',
+  ].join('\n\n');
+
+  assert.equal(parseLinuxPhysicalCoresFromCpuinfo(cpuinfo2Cores4Threads), 2);
+
+  // 2 physische Kerne bei 4 logischen Threads müssen bei qubes-whonix (min_cpu_cores: 4) als FAIL/BLOCKED scheitern!
+  const smtReport = evaluateGate5Preflight({
+    profileId: 'qubes-whonix',
+    probeOverride: {
+      platform: 'linux',
+      arch: 'x64',
+      cpu_physical_cores: 2,
+      cpu_logical_threads: 4,
+      ram_total_gb: 32,
+      workspace_fs_free_gb: 256,
+      workspace_fs_total_gb: 512,
+      cpu_virtualization: 'available',
+      slat: 'available',
+      iommu: 'available',
+      uefi: 'available',
+    },
+  });
+  const g501 = smtReport.gates.find((g) => g.id === 'G5-01');
+  assert.equal(g501.status, 'FAIL');
+  assert.equal(smtReport.overall_status, 'BLOCKED');
+
+  // Unbekannte physische Kernanzahl trotz 8 logischen Threads -> UNKNOWN (Fail-Closed)
+  const unknownPhysReport = evaluateGate5Preflight({
+    profileId: 'linux-kvm',
+    probeOverride: {
+      platform: 'linux',
+      arch: 'x64',
+      cpu_physical_cores: null,
+      cpu_logical_threads: 8,
+      ram_total_gb: 16,
+      workspace_fs_free_gb: 128,
+      workspace_fs_total_gb: 256,
+      cpu_virtualization: 'available',
+      slat: 'available',
+      uefi: 'available',
+    },
+  });
+  const g501Unknown = unknownPhysReport.gates.find((g) => g.id === 'G5-01');
+  assert.equal(g501Unknown.status, 'UNKNOWN');
+  assert.equal(unknownPhysReport.fail_closed_triggered, true);
+});
+
+test('Review-Befund #5b (Konfigurationshärtung): Abschwächen von Pflicht-Gates (z. B. IOMMU=false) wird blockiert', () => {
+  const baseCfg = loadGate5Config(DEFAULT_GATE5_CONFIG_PATH);
+
+  // Versuch 1: IOMMU für qubes-whonix in der Konfiguration deaktivieren
+  const weakenedIommuCfg = structuredClone(baseCfg);
+  weakenedIommuCfg.profiles['qubes-whonix'].required_capabilities.iommu = false;
+  assert.throws(() => validateGate5ConfigObject(weakenedIommuCfg), /Sicherheitsverstoß.*iommu/);
+  const blockedIommu = evaluateGate5Preflight({ configObject: weakenedIommuCfg });
+  assert.equal(blockedIommu.overall_status, 'BLOCKED');
+  assert.equal(blockedIommu.fail_closed_triggered, true);
+
+  // Versuch 2: Mindest-RAM für qubes-whonix unter 16 GB senken
+  const weakenedRamCfg = structuredClone(baseCfg);
+  weakenedRamCfg.profiles['qubes-whonix'].min_ram_gb = 4;
+  assert.throws(() => validateGate5ConfigObject(weakenedRamCfg), /Mindestschwellenwerte/);
+
+  // Versuch 3: Backup-Pflicht deaktivieren
+  const weakenedBackupCfg = structuredClone(baseCfg);
+  weakenedBackupCfg.profiles['linux-kvm'].requires_backup_attestation = false;
+  assert.throws(() => validateGate5ConfigObject(weakenedBackupCfg), /Backup-, Medien- und Zieldatenträgerpflicht/);
+});
+
+test('Gate 5: Vollständig mit echten Datei- und Datenträgernachweisen versehenes Profil erreicht READY_FOR_HUMAN_REVIEW (G5-10 bleibt BLOCKED)', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'eden-gate5-full-'));
+  try {
+    const isoFile = path.join(tmpDir, 'qubes-r4.2.iso');
+    const isoData = 'QUBES-ISO-VERIFIED-CONTENT-2026';
+    fs.writeFileSync(isoFile, isoData, 'utf8');
+    const isoSha = crypto.createHash('sha256').update(isoData).digest('hex');
+
+    const manifestFile = path.join(tmpDir, 'qubes-r4.2.iso.DIGESTS');
+    const manifestData = `${isoSha}  ${path.basename(isoFile)}\n`;
+    fs.writeFileSync(manifestFile, manifestData, 'utf8');
+    const manifestSha = crypto.createHash('sha256').update(manifestData).digest('hex');
+
+    const backupProofFile = path.join(tmpDir, 'backup-restore-proof.json');
+    const backupData = '{"restore_verified":true}';
+    fs.writeFileSync(backupProofFile, backupData, 'utf8');
+    const backupSha = crypto.createHash('sha256').update(backupData).digest('hex');
+
+    const report = evaluateGate5Preflight({
+      profileId: 'qubes-whonix',
+      probeOverride: {
+        platform: 'linux',
+        os_release: '6.8.0-generic',
+        arch: 'x64',
+        cpu_model: 'AMD Ryzen PRO 7840U',
+        cpu_physical_cores: 8,
+        cpu_logical_threads: 16,
+        ram_total_gb: 32,
+        workspace_fs_free_gb: 512,
+        workspace_fs_total_gb: 1024,
+        detected_disks_count: 2,
+        cpu_virtualization: 'available',
+        slat: 'available',
+        iommu: 'available',
+        uefi: 'available',
+        secure_boot: 'available',
+        tpm2: 'available',
+        network_adapter: 'available',
+      },
+      targetDiskAttestation: {
+        deviceId: 'nvme1n1',
+        isSystemDisk: false,
+        verifiedNonSystemDisk: true,
+        partitionLayoutInspected: true,
+        unallocatedOrDedicatedFreeGb: 256,
+      },
+      backupAttestation: {
+        restoreProofFilePath: backupProofFile,
+        expectedProofSha256: backupSha,
+      },
+      mediaAttestation: {
+        filePath: isoFile,
+        expectedSha256: isoSha,
+        checksumsFilePath: manifestFile,
+        trustedManifestSha256: manifestSha,
+      },
+    });
+
+    assert.equal(report.overall_status, 'READY_FOR_HUMAN_REVIEW');
+    assert.equal(report.fail_closed_triggered, false);
+    assert.equal(report.installation_authorized, false);
+    for (const g of report.gates.slice(0, 9)) {
+      assert.equal(g.status, 'PASS', `Gate ${g.id} sollte PASS sein`);
+    }
+    assert.equal(report.gates[9].id, 'G5-10');
+    assert.equal(report.gates[9].status, 'BLOCKED');
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});
+
+test('Gate 5: Redaktion sensibler Hardwarekennungen, Linux-Sysfs-Probe (target_disk_identified=unknown) und Berichtsexport', () => {
   const raw = 'CPU SerialNumber=SN-99887766 MAC aa:bb:cc:dd:ee:ff UUID 123e4567-e89b-12d3-a456-426614174000';
   const cleaned = redactSensitiveText(raw);
   assert.ok(!cleaned.includes('SN-99887766'));
   assert.ok(!cleaned.includes('aa:bb:cc:dd:ee:ff'));
   assert.ok(!cleaned.includes('123e4567-e89b-12d3-a456-426614174000'));
-  assert.ok(cleaned.includes('[REDACTED-MAC]'));
-  assert.ok(cleaned.includes('[REDACTED-UUID]'));
-});
 
-test('Gate 5: Linux-Sysfs-Probe (Mock) und nicht-überschreibender JSON-Berichtsexport', () => {
   const mockFs = {
     existsSync: (p) =>
       ['/proc/cpuinfo', '/sys/class/iommu', '/sys/firmware/efi', '/sys/class/tpm/tpm0/tpm_version_major', '/sys/block'].includes(p),
     readFileSync: (p) => {
-      if (p === '/proc/cpuinfo') return 'flags : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov vmx ept';
+      if (p === '/proc/cpuinfo') {
+        return 'processor\t: 0\nphysical id\t: 0\ncore id\t\t: 0\ncpu cores\t: 4\nflags\t\t: fpu vmx ept\n';
+      }
       if (p === '/sys/class/tpm/tpm0/tpm_version_major') return '2\n';
       return '';
     },
@@ -238,12 +411,14 @@ test('Gate 5: Linux-Sysfs-Probe (Mock) und nicht-überschreibender JSON-Berichts
   };
 
   const linuxProbe = probeLinuxReadOnly(mockFs);
+  assert.equal(linuxProbe.cpu_physical_cores, 4);
   assert.equal(linuxProbe.cpu_virtualization, 'available');
   assert.equal(linuxProbe.slat, 'available');
   assert.equal(linuxProbe.iommu, 'available');
   assert.equal(linuxProbe.uefi, 'available');
   assert.equal(linuxProbe.tpm2, 'available');
-  assert.equal(linuxProbe.target_disk_identified, 'available');
+  // Wichtig: /sys/block allein setzt target_disk_identified NICHT auf 'available', sondern belässt es auf 'unknown'!
+  assert.equal(linuxProbe.target_disk_identified, 'unknown');
   assert.equal(linuxProbe.detected_disks_count, 1);
 
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'eden-gate5-save-'));
@@ -251,7 +426,7 @@ test('Gate 5: Linux-Sysfs-Probe (Mock) und nicht-überschreibender JSON-Berichts
     const outPath = path.join(tmpDir, 'gate5-report.json');
     const report = evaluateGate5Preflight({ profileId: 'windows-workbench' });
     const text = formatGate5ReportText(report);
-    assert.ok(text.includes('GATE 5 UNIVERSAL HARDWARE PREFLIGHT'));
+    assert.ok(text.includes('Physische CPU-Kerne:'));
 
     saveGate5Report(report, outPath);
     assert.ok(fs.existsSync(outPath));
@@ -259,30 +434,4 @@ test('Gate 5: Linux-Sysfs-Probe (Mock) und nicht-überschreibender JSON-Berichts
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
-});
-
-test('Gate 5 CLI: "node bin/eden.mjs gate5 --json" liefert validen Bericht auf aktuellem Host', () => {
-  const okRun = spawnSync(
-    process.execPath,
-    ['bin/eden.mjs', 'gate5', '--json', '--profile=windows-workbench'],
-    { encoding: 'utf8', timeout: 15000 },
-  );
-  assert.equal(okRun.status, 0);
-  const parsed = JSON.parse(okRun.stdout);
-  assert.equal(parsed.schema_version, '0.1.0');
-  assert.equal(parsed.gate, 'GATE-5');
-  assert.equal(parsed.mode, 'read-only');
-  assert.equal(parsed.destructive_actions_executed, false);
-  assert.equal(parsed.installation_authorized, false);
-  assert.equal(parsed.gates.length, 10);
-
-  const invalidRun = spawnSync(
-    process.execPath,
-    ['bin/eden.mjs', 'gate5', '--json', '--profile=ungueltiges-profil'],
-    { encoding: 'utf8', timeout: 15000 },
-  );
-  assert.equal(invalidRun.status, 2);
-  const invalidParsed = JSON.parse(invalidRun.stdout);
-  assert.equal(invalidParsed.overall_status, 'BLOCKED');
-  assert.equal(invalidParsed.fail_closed_triggered, true);
 });

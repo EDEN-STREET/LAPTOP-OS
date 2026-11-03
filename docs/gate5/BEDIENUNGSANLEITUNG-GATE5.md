@@ -1,9 +1,9 @@
 # Bedienungsanleitung — EDEN Gate 5 Universal Hardware Preflight (Einsteigerfreundlich)
 
-Diese Anleitung erklärt Schritt für Schritt, wie du mit **EDEN Gate 5** deinen Windows- oder Linux-Laptop sicher auf seine Eignung für EDEN LAPTOP-OS prüfst.
+Diese Anleitung erklärt Schritt für Schritt, wie du mit **EDEN Gate 5** deinen Windows- oder Linux-Laptop sicher im **reinen Lesemodus (Read-Only)** auf seine Eignung für EDEN LAPTOP-OS untersuchst.
 
 > **Wichtiges Sicherheitsversprechen:**  
-> Gate 5 arbeitet **ausschließlich im Nur-Lese-Modus (Read-Only)**. Es werden **keine** Festplatten partitioniert, **keine** Daten gelöscht und **keine** Einstellungen im BIOS/UEFI oder Bootloader verändert.
+> Gate 5 ist ein **rein lesendes Diagnosewerkzeug**. Es werden **keine** Festplatten partitioniert, **keine** Daten gelöscht und **keine** Einstellungen im BIOS/UEFI oder Bootloader verändert. Auch nach einem erfolgreichen Durchlauf wird **keine** Betriebssysteminstallation gestartet.
 
 ---
 
@@ -29,6 +29,12 @@ Oder direkt über das `eden`-Kommando:
 node bin/eden.mjs gate5
 ```
 
+Für automatisierte Skripte oder CI-Prüfungen gibt es den **strikten Modus (`--strict`)**, der bei jedem nicht vollständig verifizierten Status (`BLOCKED` oder `REVIEW_REQUIRED` / `unbekannt`) mit einem Fehlercode (`Exit-Code != 0`) endet:
+
+```bash
+node bin/eden.mjs gate5 --strict --json
+```
+
 ---
 
 ## 3. Bestimmtes Zielprofil prüfen
@@ -37,8 +43,8 @@ Standardmäßig prüft Gate 5 das strengste Sicherheitsprofil (`qubes-whonix`). 
 
 | Zielprofil | Befehl | Wann verwenden? |
 |:--|:--|:--|
-| **Qubes OS + Whonix** | `node bin/eden.mjs gate5 --profile=qubes-whonix` | Für maximale Hardware-Isolation auf eigenem Sicherheits-Laptop (mind. 16 GB RAM, VT-x/AMD-V + IOMMU) |
-| **Linux KVM + EDEN-Term** | `node bin/eden.mjs gate5 --profile=linux-kvm` | Für Linux-Laptops mit virtuellen Maschinen (mind. 8 GB RAM) |
+| **Qubes OS + Whonix** | `node bin/eden.mjs gate5 --profile=qubes-whonix` | Für maximale Hardware-Isolation auf eigenem Sicherheits-Laptop (mind. 16 GB RAM, mind. 4 physische CPU-Kerne, VT-x/AMD-V + IOMMU) |
+| **Linux KVM + EDEN-Term** | `node bin/eden.mjs gate5 --profile=linux-kvm` | Für Linux-Laptops mit virtuellen Maschinen (mind. 8 GB RAM, mind. 4 physische CPU-Kerne) |
 | **Windows Workbench** | `node bin/eden.mjs gate5 --profile=windows-workbench` | Für die lokale Nutzung der EDEN-Term-Oberfläche direkt unter Windows 11 |
 | **Tails Live-USB** | `node bin/eden.mjs gate5 --profile=tails-live` | Für den spurlosen Start von einem verifizierten USB-Stick (mind. 4 GB RAM) |
 | **Kali Audit-Profil** | `node bin/eden.mjs gate5 --profile=kali-audit` | Für isolierte Sicherheits- und Netzwerkprüfungen |
@@ -46,8 +52,6 @@ Standardmäßig prüft Gate 5 das strengste Sicherheitsprofil (`qubes-whonix`). 
 ---
 
 ## 4. Maschinenlesbaren JSON-Bericht erzeugen und speichern
-
-Für automatisierte Auswertungen oder zur Archivierung kannst du den Bericht im JSON-Format ausgeben oder in eine neue Datei schreiben lassen:
 
 ```bash
 # JSON direkt im Terminal anzeigen:
@@ -59,16 +63,16 @@ node bin/eden.mjs gate5 --profile=qubes-whonix --save-report=./mein-gate5-berich
 
 ---
 
-## 5. Was bedeuten die Ergebnisse?
+## 5. Was bedeuten die Ergebnisse (und was sind die Prüfgrenzen)?
 
 Gate 5 bewertet jede Eigenschaft mit genau einem von drei Begriffen:
 
-1. **`verfügbar` (`available`)** — Dein Laptop erfüllt diesen Punkt nachweislich.
-2. **`nicht verfügbar` (`unavailable`)** — Diese Funktion fehlt oder ist im BIOS/UEFI noch ausgeschaltet (z. B. Virtualisierung oder zu wenig freier Speicherplatz).
-3. **`unbekannt` (`unknown`)** — Die Information konnte im normalen Benutzerkonto nicht eindeutig ausgelesen werden oder ein Nachweis (wie Backup oder ISO-Prüfsumme) wurde noch nicht übergeben.
+1. **`verfügbar` (`available`)** — Der abgefragte Schwellenwert oder Systemindikator wurde im Rahmen der lesenden Betriebssystemabfrage bzw. Dateiprüfung als vorhanden gemeldet. *(Hinweis: Eine lesende Betriebssystemabfrage ersetzt keinen echten Boot-Test auf der Zielhardware und keinen manuellen Wiederherstellungstest eines externen Backups.)*
+2. **`nicht verfügbar` (`unavailable`)** — Diese Voraussetzung ist laut Systemabfrage unterschritten, fehlt oder ist im BIOS/UEFI deaktiviert (z. B. zu wenig RAM, zu wenige physische CPU-Kerne oder abweichende SHA-256-Prüfsumme).
+3. **`unbekannt` (`unknown`)** — Die Information konnte im nicht-privilegierten Benutzermodus technisch nicht zweifelsfrei ermittelt werden (z. B. IOMMU-Tabellen unter Windows ohne Adminrechte, noch nicht zugeordneter Zieldatenträger oder fehlendes Prüfmanifest). **Wichtig:** Bloße Selbstauskünfte ohne echte Prüfdatei werden grundsätzlich als `unbekannt` eingestuft.
 
 ### Bedeutung des Gesamtstatus (`overall_status`)
 
-- **`BLOCKED`:** Mindestens eine Pflichtvoraussetzung ist `nicht verfügbar` (z. B. zu wenig RAM).
-- **`REVIEW_REQUIRED`:** Keine Pflichtvoraussetzung ist fehlgeschlagen, aber mindestens ein Prüfpunkt steht noch auf `unbekannt` (z. B. IOMMU-Status im BIOS prüfen oder Backup-Nachweis ergänzen).
-- **`READY_FOR_HUMAN_REVIEW`:** Alle technischen Prüfpunkte `G5-01` bis `G5-09` sind `verfügbar`. Tor `G5-10` hält das System weiterhin sicher im Lesemodus, bis du selbst über das weitere Vorgehen entscheidest.
+- **`BLOCKED`:** Mindestens eine Pflichtvoraussetzung ist `nicht verfügbar` (`FAIL`) oder die Konfigurationsdatei verletzt die Sicherheitsvorgaben.
+- **`REVIEW_REQUIRED`:** Keine Pflichtvoraussetzung ist hart fehlgeschlagen, aber mindestens ein Prüfpunkt steht auf `unbekannt` (`UNKNOWN`). Nach dem **Fail-Closed-Prinzip** bleibt jede Freigabe gesperrt.
+- **`READY_FOR_HUMAN_REVIEW`:** Alle technischen Prüfpunkte `G5-01` bis `G5-09` wurden mit prüfbaren Nachweisen durchlaufen. Tor `G5-10` bleibt in Gate 5 v0.1.0 dennoch dauerhaft `BLOCKED` (`installation_authorized: false`), da dieses Modul ausschließlich der Diagnose dient.
