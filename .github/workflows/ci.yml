@@ -1,0 +1,44 @@
+name: "EDEN Node.js & Windows CI"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        node: [ 22 ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Verify clean lockfile install (npm ci)
+        run: npm ci
+
+      - name: Run automated test suite (npm test)
+        run: npm test
+
+      - name: Verify package tarball contents (npm pack --dry-run)
+        run: npm pack --dry-run
+
+      - name: Run read-only CLI preflight & verification
+        run: |
+          node bin/eden.mjs doctor --json
+          node bin/eden.mjs verify
+          node bin/eden.mjs publish-github --dry-run
