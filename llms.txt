@@ -1,0 +1,27 @@
+# EDEN LAPTOP-OS – llms.txt
+
+> EDEN STREET / EDEN Suite · Gerätestrecke LAPTOP-OS · öffentliche Entwicklungsvorschau
+
+## Primärquellen
+- [LAPTOP-OS README](https://github.com/EDEN-STREET/LAPTOP-OS/blob/main/README.md)
+- [Projektdemo und visuelle Navigation](https://github.com/EDEN-STREET/.github/blob/main/docs/areas/laptop/README.md)
+- [Masterdokumentation](https://github.com/EDEN-STREET/.github/blob/main/docs/EDEN-STREET-MASTERDOKUMENTATION.md)
+- [Workflow 09](https://github.com/EDEN-STREET/.github/blob/main/docs/prompts/09-laptop.md)
+- [Workflow 12](https://github.com/EDEN-STREET/.github/blob/main/docs/prompts/12-bootstrap.md)
+- [Workflow 15](https://github.com/EDEN-STREET/.github/blob/main/docs/prompts/15-quality.md)
+- [GitHub PRs](https://github.com/EDEN-STREET/LAPTOP-OS/pulls)
+
+## Zustände
+Npm-Starter und HTML-Weboberfläche sind Anwendungs-/Entwicklungsbausteine. Ein vollständig automatisierter Betriebssysteminstaller ist nicht vorhanden und nicht freigegeben. Qubes/Whonix werden als gesondert zu prüfendes Ziel behandelt.
+
+## Arbeitsvertrag
+1. Tatsächlichen Branch/Commit und parallele PRs abgleichen.
+2. Originale, UI-Struktur, interne APIs und Tests bewahren.
+3. Read-only Preflight, Risiko, Geräteverträglichkeit und Recovery unterscheiden.
+4. Keine echten Festplatten-, Partitions-, Firmware-, Router- oder Bootloaderänderungen ohne neue ausdrückliche Autorisierung.
+5. Demo, CI-Lauf und reale Hardwareabnahme getrennt ausweisen.
+6. Jede Änderung auf separatem Branch mit Diff, Tests und Rollback; keine automatischen Merges.
+7. Keine Tokens, Gerätekennungen oder vertraulichen Forschungsquellen veröffentlichen.
+
+## Weitere Anweisungen
+[EDEN Suite globales llms.txt](https://github.com/EDEN-STREET/.github/blob/main/llms.txt) · [Agentenrollen](https://github.com/EDEN-STREET/.github/blob/main/docs/AGENTEN-UND-WORKFLOWS.md)
