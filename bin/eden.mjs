@@ -6,8 +6,9 @@ import { stdin as input, stdout as output } from 'node:process';
 import { BUILD, TARGETS, systemSnapshot, buildPlan, safePlanPath, savePlanOnce, publicRoot, resolvePublicFile, installedWebRoot, installUserUI } from '../lib/core.mjs';
 import { startServer } from '../lib/server.mjs';
 import { publishGithub } from '../lib/github-publisher.mjs';
+import { quickstartState, prepareQuickstart } from '../lib/quickstart.mjs';
 
-const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'onboard';
+const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'quickstart';
 const json = process.argv.includes('--json');
 const noOpen = process.argv.includes('--no-open');
 const planOnly = process.argv.includes('--plan-only');
@@ -62,6 +63,46 @@ async function setup({launchAfter=true}={}) {
   return 0;
 }
 
+/** One-time consent for local user-owned EDEN UI only. No OS or disk actions. */
+async function quickstart() {
+  let state;
+  try { state=quickstartState(); }
+  catch(e) { console.error(`Sicherer Schnellstart gestoppt: ${e.message}`); return 1; }
+  banner();
+  let confirmed=false;
+  if(!state.consent_recorded) {
+    if(!input.isTTY || !output.isTTY) {
+      console.error('Erstfreigabe erfordert ein interaktives Terminal. Keine Dateien wurden angelegt.');
+      return 2;
+    }
+    console.log('EINMALIGE ZUSTIMMUNG – NUR LOKALE EDEN-BROWSER-APP');
+    console.log('Die App wird im Benutzerprofil abgelegt, ein reiner Qubes/Whonix-PLAN wird gespeichert,');
+    console.log('und die lokale Weboberflaeche startet. Keine Adminrechte, keine Windows-Loeschung,');
+    console.log('keine Festplatten-, Firmware-, Bootloader- oder Netzwerkaenderungen.');
+    console.log('Tails bleibt ein separates Live-System. Tor-Sicherheit wird hier nicht vorgetaeuscht.');
+    const rl=readline.createInterface({input,output});
+    try {
+      const answer=(await rl.question('Diese ausschliesslich lokalen Schritte erlauben? [ja/NEIN]: ')).trim().toLowerCase();
+      if(!['ja','j','yes','y'].includes(answer)) {
+        console.log('Nicht zugestimmt. Keine lokale Installation vorgenommen.');
+        return 2;
+      }
+      confirmed=true;
+    } finally { rl.close(); }
+  }
+  try {
+    const result=prepareQuickstart({confirmed});
+    if(result.status!=='READY') throw new Error('Sicherer Start nicht freigegeben.');
+    console.log(result.reused_consent?'Vorhandene lokale Freigabe wiederverwendet.':'Lokale EDEN-App einmalig freigegeben und angelegt.');
+    console.log('Plan: Qubes/Whonix – PLAN_ONLY; Tails getrennt; echte Systemaenderungen deaktiviert.');
+    if(planOnly) return 0;
+    return await launch();
+  } catch(e) {
+    console.error(`Sicherer Schnellstart gestoppt: ${e.code||e.message}`);
+    return 1;
+  }
+}
+
 function status() {
   banner();
   console.log(fs.existsSync(installedWebRoot())?'App-Version lokal vorhanden.':'Keine dauerhafte EDEN-App-Kopie.');
@@ -102,11 +143,12 @@ async function launch() {
 }
 function help(){
   banner();
-  console.log('eden                Geführter npm-Einstieg mit lokaler Installation und UI\neden setup          Geführtes Setup mit Freigabe\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
+  console.log('eden                Einmalige Zustimmung, dann automatische lokale EDEN-UI\neden quickstart     Sicherer Ein-Kommando-Start\neden setup          Erweiterter gefuehrter Planassistent\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
   console.log('\nNur npm benötigt (Node.js inkl. npm muss bereits installiert sein).\nKeine Disk-/Firmware-/Router-/OS-Modifikation.');return 0;
 }
 try{
-  const rc=command==='onboard'||command==='setup'?await setup():
+  const rc=command==='onboard'||command==='quickstart'?await quickstart():
+    command==='setup'?await setup():
     command==='launch'||command==='start'?await launch():
     command==='doctor'?doctor():command==='status'?status():
     command==='verify'?verify():command==='publish-github'?(await publishGithub({dryRun:process.argv.includes('--dry-run')}),0):help();

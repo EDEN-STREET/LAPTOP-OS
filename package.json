@@ -1,8 +1,8 @@
 {
   "name": "eden-laptop-os",
-  "version": "0.8.0-preview.4",
+  "version": "0.8.0-preview.5",
   "private": true,
-  "description": "EDEN LAPTOP-OS npm-only Windows launcher: gefuehrte lokale EDEN-UI, sichere Vorpruefung, keine Systemeingriffe",
+  "description": "EDEN LAPTOP-OS single-consent local npm preview for Windows/Linux; no operating-system or disk changes",
   "type": "module",
   "bin": {
     "eden": "./bin/eden.mjs"
@@ -10,12 +10,14 @@
   "scripts": {
     "setup": "node bin/eden.mjs setup",
     "doctor": "node bin/eden.mjs doctor",
-    "start": "node bin/eden.mjs launch",
+    "start": "node bin/eden.mjs quickstart",
     "status": "node bin/eden.mjs status",
     "verify": "node bin/eden.mjs verify",
     "test": "node --test tests/*.test.mjs",
     "launch": "node bin/eden.mjs launch",
-    "publish:preview": "node bin/eden.mjs publish-github --dry-run"
+    "publish:preview": "node bin/eden.mjs publish-github --dry-run",
+    "go": "node bin/eden.mjs quickstart",
+    "test:quickstart": "node --test tests/quickstart.test.mjs"
   },
   "engines": {
     "node": ">=22"
@@ -37,6 +39,11 @@
     "setup",
     "guided",
     "security",
-    "no-destructive-operations"
+    "no-destructive-operations",
+    "linux",
+    "virtual-machine",
+    "one-consent",
+    "qubes-whonix-plan",
+    "tails-live-separate"
   ]
 }
