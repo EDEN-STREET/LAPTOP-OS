@@ -9,6 +9,7 @@ import { publishGithub } from '../lib/github-publisher.mjs';
 import { quickstartState, prepareQuickstart } from '../lib/quickstart.mjs';
 import { buildRebootPlan, saveRebootPlanOnce, REBOOT_PLAN_STATUS } from '../lib/reboot-plan.mjs';
 import { evaluateGate5Preflight, formatGate5ReportText, saveGate5Report, computeGate5ExitCode } from '../lib/gate5-preflight.mjs';
+import { evaluateEdenReadiness } from '../lib/readiness-bridge.mjs';
 
 const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'quickstart';
 const json = process.argv.includes('--json');
@@ -158,6 +159,22 @@ function gate5() {
   // Exit 0 in normal mode means report generated only, never installation authorized.
   return computeGate5ExitCode(report,{strict:process.argv.includes('--strict')});
 }
+/** Combined read-only safety checklist. Even a complete local scan never authorizes OS installation. */
+function assessReadiness() {
+  let result;
+  try {result=evaluateEdenReadiness();}
+  catch(e){console.error('Readiness-Analyse gestoppt: '+e.message);return 2;}
+  if(json)console.log(JSON.stringify(result,null,2));
+  else {
+    banner();
+    console.log('EDEN Hardware + Reboot-Plan · LESEND · Installation nicht autorisiert');
+    console.log('Hardware: '+result.hardware_summary.overall_status);
+    console.log('Reboot-Plan: '+result.reboot_summary.result);
+    for(const gate of result.hardware_summary.gates) console.log(gate.id+': '+gate.status);
+    console.log('Windows-Loeschung NEIN · Neustart NEIN · Kill-Switch nicht verifiziert');
+  }
+  return process.argv.includes('--strict') ? 1 : 0;
+}
 function status() {
   banner();
   console.log(fs.existsSync(installedWebRoot())?'App-Version lokal vorhanden.':'Keine dauerhafte EDEN-App-Kopie.');
@@ -198,14 +215,14 @@ async function launch() {
 }
 function help(){
   banner();
-  console.log('eden                Einmalige Zustimmung, dann automatische lokale EDEN-UI\neden quickstart     Sicherer Ein-Kommando-Start\neden setup          Erweiterter gefuehrter Planassistent\neden gate5          Lesende Hardwarepruefung mit 10 Sicherheitsgates (--json, --strict)\neden reboot-plan    Lesenden Qubes-Reboot-Installationsplan pruefen (--json, --save-plan, --strict)\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
+  console.log('eden                Einmalige Zustimmung, dann automatische lokale EDEN-UI\neden quickstart     Sicherer Ein-Kommando-Start\neden setup          Erweiterter gefuehrter Planassistent\neden assess         Kombinierte lesende Hardware-/Reboot-Analyse (--json, --strict)\neden gate5          Lesende Hardwarepruefung mit 10 Sicherheitsgates (--json, --strict)\neden reboot-plan    Lesenden Qubes-Reboot-Installationsplan pruefen (--json, --save-plan, --strict)\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
   console.log('\nNur npm benötigt (Node.js inkl. npm muss bereits installiert sein).\nKeine Disk-/Firmware-/Router-/OS-Modifikation.');return 0;
 }
 try{
   const rc=command==='onboard'||command==='quickstart'?await quickstart():
     command==='setup'?await setup():
     command==='launch'||command==='start'?await launch():
-    command==='doctor'?doctor():command==='gate5'||command==='preflight'?gate5():command==='reboot-plan'?rebootPlan():command==='status'?status():
+    command==='doctor'?doctor():command==='assess'?assessReadiness():command==='gate5'||command==='preflight'?gate5():command==='reboot-plan'?rebootPlan():command==='status'?status():
     command==='verify'?verify():command==='publish-github'?(await publishGithub({dryRun:process.argv.includes('--dry-run')}),0):help();
   process.exitCode=rc;
 }catch(e){console.error(`EDEN hat sicher gestoppt: ${e.message}`);process.exitCode=1;}
