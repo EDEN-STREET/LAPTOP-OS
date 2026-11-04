@@ -29,6 +29,8 @@ jobs:
         run: |
           npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/heads/main.tar.gz -- eden doctor --json > eden-doctor.json
           node -e "const fs=require('fs');const v=JSON.parse(fs.readFileSync('eden-doctor.json','utf8'));if(v.can_preview!==true||v.os_installed!==false||v.hardware_verified!==false)process.exit(1);console.log('EDEN npm public tarball: verified preview only')"
+          npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/heads/main.tar.gz -- eden reboot-plan --json > eden-reboot-plan.json
+          node -e "const fs=require('fs');const v=JSON.parse(fs.readFileSync('eden-reboot-plan.json','utf8'));if(v.result!=='BLOCKED_INDEPENDENT_REVIEW_REQUIRED'||v.requirements.independent_gates.length!==8||v.execution.reboot_triggered!==false||v.execution.windows_removed!==false||v.execution.disk_modified!==false)process.exit(1);console.log('EDEN public npm reboot-plan: read-only gates verified')"
       - name: Review package command status
         shell: bash
         run: |
