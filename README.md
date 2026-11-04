@@ -146,3 +146,15 @@ Der npm-Starter öffnet die EDEN-Term-Workbench. Von dort sind die **drei Hauptb
 - **Projekte/Kanban:** `http://127.0.0.1:8765/projects.html` – getrennte lokale Projektspuren für Wiki, Handbuch, LAPTOP-OS sowie spätere ROUTER/PIXEL-Strecken; Backlog/In Arbeit/Prüfung/Erledigt, lokaler JSON-Export/Import.
 
 **Achtung:** Das Kanban wird nur in diesem Browserprofil gespeichert, es wird nicht mit GitHub Projects synchronisiert. Keine Passwörter oder PRIVATE-Quellen eintragen. Siehe `docs/WIKI_UND_HANDBUCH.md` und `docs/PROJEKTE_KANBAN.md`.
+
+
+## EDEN Ultimate Hub
+
+Der Feature-Branch `feature/ultimate-hub-tool-suite` ergänzt die bestehende EDEN-Oberfläche um einen zentralen Hub und lokale Werkzeuge:
+
+- `web/ultimate-hub.html` – Modulregister, Ereignisse und Next-Step-Pipeline.
+- `web/image-studio.html` – lokaler Bildeditor ohne Cloud-Upload.
+- `web/local-tools.html` – SHA-256, JSON, Textstatistik und Dateinamen-Werkzeuge.
+- `web/toolbox.html` – gemeinsame Registry für vorhandene, neue und geplante Module.
+
+Geplante Systemadapter bleiben ausdrücklich als `planned` oder `preview` markiert. Die Browserwerkzeuge führen keine Firmware-, Bootloader-, Partitions- oder Routeränderungen aus.
