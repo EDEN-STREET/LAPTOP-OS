@@ -55,7 +55,7 @@ test('Qubes/Whonix/Tails architecture page is served by loopback-only EDEN HTTP 
     const address=`http://127.0.0.1:${server.address().port}`;
     const res=await fetch(address+'/security-architecture.html');
     assert.equal(res.status,200);
-    assert.match(res.headers.get('content-type'),/text\\/html/i);
+    assert.ok(res.headers.get('content-type').includes('text/html'));
     const text=await res.text();
     assert.match(text,/anon-whonix/);
     assert.match(text,/sys-whonix/);
