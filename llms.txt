@@ -11,8 +11,10 @@
 - [Workflow 15](https://github.com/EDEN-STREET/.github/blob/main/docs/prompts/15-quality.md)
 - [GitHub PRs](https://github.com/EDEN-STREET/LAPTOP-OS/pulls)
 
+- [Reboot-to-Installer-Gates (nur lesender Plan)](https://github.com/EDEN-STREET/LAPTOP-OS/blob/main/docs/REBOOT-TO-INSTALLER-WORKFLOW.md)
+
 ## Zustände
-Npm-Starter und HTML-Weboberfläche sind Anwendungs-/Entwicklungsbausteine. Ein vollständig automatisierter Betriebssysteminstaller ist nicht vorhanden und nicht freigegeben. Qubes/Whonix werden als gesondert zu prüfendes Ziel behandelt.
+Npm-Starter und HTML-Weboberfläche sind Anwendungs-/Entwicklungsbausteine. Ein vollständig automatisierter Betriebssysteminstaller ist nicht vorhanden und nicht freigegeben. Qubes/Whonix werden als gesondert zu prüfendes Ziel behandelt. `reboot-plan` implementiert nur gesperrte Gateprüfung und JSON-Planung; `reboot_engine` und `installation_engine` bleiben `NOT_IMPLEMENTED`. Tails ist ein separates Live-System.
 
 ## Arbeitsvertrag
 1. Tatsächlichen Branch/Commit und parallele PRs abgleichen.

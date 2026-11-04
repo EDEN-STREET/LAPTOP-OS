@@ -10,3 +10,7 @@
 8. Statusinformationen in der UI sind **synthetisch** und belegen keine tatsächliche Sicherheitslage oder Hardwareprüfung.
 9. Reale Aktionen brauchen nachweislich einen unabhängigen Policy Broker, Gerätefreigabe, Wiederherstellungsprüfung und externe Verifikation.
 10. Änderungen an den GitHub-Quellen auf separaten Branches prüfen, Quellen/Lizenzen/Hashes kontrollieren und keine privaten Inhalte veröffentlichen.
+
+11. `eden reboot-plan` erzeugt lediglich einen **lesenden Qubes-Migrationsprüfplan** und startet weder Installer noch Neustart; `--save-plan` speichert nur neue lokale JSON-Datei ohne Überschreiben.
+12. Sämtliche Installationsfreigaben bleiben auf `BLOCKED_INDEPENDENT_REVIEW_REQUIRED`, bis Gerät, Backup, Signaturen, Zielmedium, Bootweg und gesonderte Entscheidung unabhängig verifiziert sind. Die App-Zustimmung kann dafür nicht verwendet werden.
+13. Tails bleibt ein separates Live-System; Whonix in Qubes und Tor-/Leak-Isolation sind nicht durch npm implementiert oder verifiziert.

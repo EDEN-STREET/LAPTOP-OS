@@ -44,3 +44,10 @@ Vor dem Merge: PR schließen, `main` bleibt unverändert.
 Nach einem Merge: Commit gezielt revertieren; vorhandene EDEN-Versionen und Zustimmungsnachweise bleiben in den jeweiligen Benutzerverzeichnissen. Keine pauschale Löschung von Benutzerdaten.
 
 **OS-Installationen oder Netzwerkfreigaben** erfordern separate spätere Gate-Checks und werden durch das Bestehen dieser Tests nicht autorisiert.
+
+
+## Neue Gateplan-Regressionstests
+
+Die Datei `tests/reboot-plan.test.mjs` prüft read-only JSON, manipulierte Pflichtgates, nicht autorisierte Neustarts, unzureichenden Arbeitsspeicher, nicht unterstützte Architektur, gefälschte Attestationen, die virtuelle Windows-Sentinel, `--strict` und `--save-plan` ohne Überschreiben sowie die lokale HTML-Vorschau.
+
+`npm run test:reboot` kann unabhängig vom umfassenden `npm test` ausgeführt werden. Die Windows-/Linux-CI-Testumgebung dient nur der **App-/Workflowprüfung**, nicht der Installation eines Hypervisors oder dem Überschreiben eines Datenträgers.

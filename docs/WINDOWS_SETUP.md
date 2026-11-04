@@ -5,7 +5,7 @@
 1. Windows 10/11 mit einer unterstützten Node.js-Version, mindestens 22. Ein veraltetes Windows 7/8 ist für aktuelle Node-LTS-Ausgaben nicht regulär unterstützt.
 2. `npm --version` in **CMD als normaler Benutzer** funktioniert. Ein npm-Installer kann npm nicht selbst zur Verfügung stellen, wenn es noch nicht installiert ist.
 3. Internetzugang für den einmaligen Abruf des freigegebenen GitHub-Quellpakets.
-4. Der freigegebene GitHub-Branch muss die EDEN-Version 0.8.0-preview.5 enthalten; bis zum Merge liegt sie ausschließlich im Review-Branch.
+4. Der freigegebene GitHub-Branch muss die EDEN-Version 0.8.0-preview.6 enthalten; bis zum Merge liegt sie ausschließlich im Review-Branch.
 
 ## Ein npm-Befehl
 
@@ -29,7 +29,7 @@ Bei einem bereits belegten Port 8765 stoppt EDEN mit einer Fehlermeldung. Es bee
 
 ## Aufbewahrung, Updates und Rückkehr
 
-Die kopierte App liegt pro Benutzer unter `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.5\web`. Ein erneuter Start überschreibt diese Version nicht. Pläne liegen separat im `state`-Ordner und werden nur mit `wx` angelegt, nicht still ersetzt. Für eine spätere Version wird ein neuer Versionsordner verwendet.
+Die kopierte App liegt pro Benutzer unter `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.6\web`. Ein erneuter Start überschreibt diese Version nicht. Pläne liegen separat im `state`-Ordner und werden nur mit `wx` angelegt, nicht still ersetzt. Für eine spätere Version wird ein neuer Versionsordner verwendet.
 
 EDEN konfiguriert kein Windows-Autostart und keine Administratorrechte. Eine spätere vollständige Betriebssysteminstallation ist **kein Teil dieses npm-Starters**.
 
@@ -47,4 +47,11 @@ EDEN konfiguriert kein Windows-Autostart und keine Administratorrechte. Eine sp�
 
 ## Nachvollziehbarkeit
 
-EDEN v0.8.0-preview.5 ist ein lokaler sicherer Einstieg. Installationsfreigabe ist ausdrücklich **nur** die Zustimmung zu einer neuen App-Kopie im Benutzerprofil und, falls gewünscht, einer JSON-Plan-Datei. Sie ist **niemals** eine Zustimmung zu Formatierung, Firmware-Flash oder einer echten Linux-/Qubes-Installation.
+EDEN v0.8.0-preview.6 ist ein lokaler sicherer Einstieg. Installationsfreigabe ist ausdrücklich **nur** die Zustimmung zu einer neuen App-Kopie im Benutzerprofil und, falls gewünscht, einer JSON-Plan-Datei. Sie ist **niemals** eine Zustimmung zu Formatierung, Firmware-Flash oder einer echten Linux-/Qubes-Installation.
+
+
+## Optional: Reboot-to-Installer-Prüfplan (keine Installation)
+
+`npm run reboot:plan` liest nur Basisdaten und markiert alle unbestätigten Installationsvoraussetzungen. Der tatsächliche Windows-Ersatz, der Start eines Qubes-Installers und die Datenlöschung sind nicht implementiert oder durch die lokale App-Zustimmung freigegeben.
+
+[Reboot-Workflow](REBOOT-TO-INSTALLER-WORKFLOW.md)

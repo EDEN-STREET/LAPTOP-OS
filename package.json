@@ -1,6 +1,6 @@
 {
   "name": "eden-laptop-os",
-  "version": "0.8.0-preview.5",
+  "version": "0.8.0-preview.6",
   "private": true,
   "description": "EDEN LAPTOP-OS single-consent local npm preview for Windows/Linux; no operating-system or disk changes",
   "type": "module",
@@ -17,13 +17,16 @@
     "launch": "node bin/eden.mjs launch",
     "publish:preview": "node bin/eden.mjs publish-github --dry-run",
     "go": "node bin/eden.mjs quickstart",
-    "test:quickstart": "node --test tests/quickstart.test.mjs"
+    "test:quickstart": "node --test tests/quickstart.test.mjs",
+    "reboot:plan": "node bin/eden.mjs reboot-plan",
+    "test:reboot": "node --test tests/reboot-plan.test.mjs"
   },
   "engines": {
     "node": ">=22"
   },
   "license": "MIT",
   "files": [
+    "config/",
     "bin/",
     "lib/",
     "web/",
@@ -44,6 +47,8 @@
     "virtual-machine",
     "one-consent",
     "qubes-whonix-plan",
-    "tails-live-separate"
+    "tails-live-separate",
+    "reboot-readiness-plan",
+    "read-only-qubes-migration"
   ]
 }

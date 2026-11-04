@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1.0",
+  "target": "qubes-os-standalone",
+  "mode": "READ_ONLY_PLAN",
+  "official_docs": {
+    "installation": "https://www.qubes-os.org/doc/InstallationGuide/",
+    "hardware": "https://www.qubes-os.org/doc/system-requirements/",
+    "verification": "https://doc.qubes-os.org/en/r4.3/project-security/verifying-signatures.html",
+    "compatibility": "https://www.qubes-os.org/hcl/"
+  },
+  "thresholds": {
+    "architecture": "x64",
+    "minimum_ram_gib": 6,
+    "recommended_ram_gib": 16,
+    "minimum_target_storage_gib": 32,
+    "recommended_target_storage_gib": 128
+  },
+  "mandatory_independent_gates": [
+    "hardware_compatibility",
+    "virtualization_iommu",
+    "verified_recovery_backup",
+    "trusted_installer_signature",
+    "unambiguous_target_disk",
+    "boot_environment_recovery",
+    "independent_preboot_review",
+    "separate_os_change_consent"
+  ],
+  "installation_engine": "NOT_IMPLEMENTED",
+  "reboot_engine": "NOT_IMPLEMENTED",
+  "source_of_truth": "OFFICIAL_QUBES_DOCUMENTATION",
+  "allow_disk_mutations": false,
+  "allow_firmware_mutations": false,
+  "allow_boot_changes": false,
+  "allow_automatic_reboot": false,
+  "allow_windows_removal": false,
+  "tor_network_isolation": "POST_INSTALL_INDEPENDENT_REVIEW",
+  "tails_role": "SEPARATE_LIVE_SYSTEM"
+}
