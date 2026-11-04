@@ -48,3 +48,13 @@
 - [ ] Tatsächliche Qubes-/Whonix-Installation und Live-Tor-Leak-Tests (nicht Teil dieses Releases).
 
 [Dokumentierter Workflow](REBOOT-TO-INSTALLER-WORKFLOW.md)
+
+
+## Gate 5 – aktualisierte Hauptzweig-Integration
+
+- [x] Read-only Windows-/Linux-Preflight mit zehn versionierten Gates und drei Zuständen.
+- [x] Fail-closed bei untrusted Medienmanifest, Restore-Datei und ungeprüften Zielmedienangaben.
+- [x] Separates Maschinendatenformat und gemeinsamer 10+8-Bericht mit Reboot-Plan.
+- [ ] Verlässliche externe Signatur-/Provenienzprüfung der offiziellen Qubes-Installationsmedien.
+- [ ] Tatsächliche Backup-Restore-Abnahme und geräteseitig bestätigte Zielmedieninventur.
+- [ ] Echte Installation/Reboot nur nach unabhängiger Hardware- und Freigabeprüfung.

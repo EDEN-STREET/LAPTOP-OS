@@ -78,6 +78,22 @@ async function run() {
         await page.waitForURL(origin+'/reboot-plan.html');
         return 'setup → reboot-plan navigation';
       });
+      await check(name+' · Gate-5 hardware read-only visualization',async()=>{
+        const res=await page.goto(origin+'/hardware-readiness.html',{waitUntil:'domcontentloaded'});
+        assert.equal(res.status(),200);
+        assert.equal(await page.locator('.gates li').count(),10);
+        assert.match(await page.locator('h1').innerText(),/Hardware-Preflight/);
+        assert.match(await page.locator('.notice').innerText(),/keine unabhängigen Nachweise/);
+        const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3);
+        assert.equal(overflow,false,'No horizontal overflow');
+        assert.equal(errors.length,0,JSON.stringify(errors));
+        const file=path.join(artifacts,'hardware-readiness-'+name+'.png');
+        await page.screenshot({path:file,fullPage:true,animations:'disabled'});
+        const bytes=fs.statSync(file).size;
+        assert.ok(bytes>6000,'Nonblank Gate-5 screenshot');
+        report.screenshots.push({name:'hardware-'+name,filename:path.basename(file),bytes});
+        return '10/10 gates; honest UNKNOWN labels; desktop/mobile no overflow';
+      });
       await context.close();
     }
   } finally {

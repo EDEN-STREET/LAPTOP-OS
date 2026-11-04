@@ -13,6 +13,9 @@
 
 - [Reboot-to-Installer-Gates (nur lesender Plan)](https://github.com/EDEN-STREET/LAPTOP-OS/blob/main/docs/REBOOT-TO-INSTALLER-WORKFLOW.md)
 
+- [Gate 5 Hardware Read-only Preflight](https://github.com/EDEN-STREET/LAPTOP-OS/blob/main/docs/gate5/BEDIENUNGSANLEITUNG-GATE5.md)
+- [Kombinierte Reboot-/Gate-5-Sicherheitsprüfung](https://github.com/EDEN-STREET/LAPTOP-OS/blob/main/docs/REBOOT-TO-INSTALLER-WORKFLOW.md)
+
 ## Zustände
 Npm-Starter und HTML-Weboberfläche sind Anwendungs-/Entwicklungsbausteine. Ein vollständig automatisierter Betriebssysteminstaller ist nicht vorhanden und nicht freigegeben. Qubes/Whonix werden als gesondert zu prüfendes Ziel behandelt. `reboot-plan` implementiert nur gesperrte Gateprüfung und JSON-Planung; `reboot_engine` und `installation_engine` bleiben `NOT_IMPLEMENTED`. Tails ist ein separates Live-System.
 

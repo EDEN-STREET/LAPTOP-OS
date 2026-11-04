@@ -51,3 +51,10 @@ Nach einem Merge: Commit gezielt revertieren; vorhandene EDEN-Versionen und Zust
 Die Datei `tests/reboot-plan.test.mjs` prüft read-only JSON, manipulierte Pflichtgates, nicht autorisierte Neustarts, unzureichenden Arbeitsspeicher, nicht unterstützte Architektur, gefälschte Attestationen, die virtuelle Windows-Sentinel, `--strict` und `--save-plan` ohne Überschreiben sowie die lokale HTML-Vorschau.
 
 `npm run test:reboot` kann unabhängig vom umfassenden `npm test` ausgeführt werden. Die Windows-/Linux-CI-Testumgebung dient nur der **App-/Workflowprüfung**, nicht der Installation eines Hypervisors oder dem Überschreiben eines Datenträgers.
+
+
+## Gate-5-Integrationsmatrix v0.8.0-preview.7
+
+`tests/gate5-preflight.test.mjs` umfasst Windows-/Linux-Inventur, physische CPU-Kerne, Hash-Streaming, untrusted Manifestdaten, Zieldatenträger, Backup-Hash, strikte Exit-Codes und read-only JSON.
+
+`tests/readiness-bridge.test.mjs` kontrolliert 10+8 kombinierte Gates, anti-spoofing, Konfigurationsfehler und die CLI-Exit-Semantik. Reale Boot-, Restore- und Qubes-Netzwerktests werden dadurch nicht ersetzt.

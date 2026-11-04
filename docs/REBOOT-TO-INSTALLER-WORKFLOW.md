@@ -83,3 +83,8 @@ Weitere Schritte nur nach **echter Geräteeignung, erfolgreichem Backup-Restore,
 ## 6. Wichtige Begrenzung
 
 Der Reboot-Plan kann nur die vorhandene Grundinventur lesen, nicht eine echte Qubes-Installation oder einen Tor-Kill-Switch validieren. Erst in einer späteren, separat freigegebenen Hardware-Testphase können Qubes-/Whonix- und Tor-Netzwerkeigenschaften geprüft werden. Eine Aussage wie „nur sichere Verbindung“ kann nicht pauschal garantiert werden.
+
+
+## Integration mit Gate 5
+
+`node bin/eden.mjs assess --json` kombiniert den lesenden Gate-5-Bericht (`G5-01` bis `G5-10`) mit dem Reboot-Plan (`G0` bis `G7`). Die Brücke zeigt beide Statusmodelle getrennt; ein selbst übergebenes ISO-Prüfmanifest, eine Backup-Nachweisdatei oder ein Datenträger-Flag gelten **nicht** als unabhängiger Herkunfts-, Restore- oder Zieldatenträgernachweis. Der Gesamtwert `installation_authorized` bleibt `false`.

@@ -1,0 +1,225 @@
+{
+  "schema_version": "0.1.0",
+  "gate_id": "GATE-5",
+  "title": "EDEN LAPTOP-OS Universal Hardware Preflight v0.1.0",
+  "policy": {
+    "read_only": true,
+    "fail_closed": true,
+    "allow_destructive_actions": false,
+    "allow_partitioning": false,
+    "allow_firmware_changes": false,
+    "allow_bootloader_changes": false,
+    "redact_sensitive_identifiers": true,
+    "allowed_capability_states": [
+      "available",
+      "unavailable",
+      "unknown"
+    ],
+    "allowed_gate_states": [
+      "PASS",
+      "FAIL",
+      "UNKNOWN",
+      "BLOCKED"
+    ],
+    "forbidden_commands": [
+      "diskpart",
+      "format",
+      "bcdedit",
+      "efibootmgr",
+      "dd",
+      "parted",
+      "fdisk",
+      "gdisk",
+      "sfdisk",
+      "mkfs",
+      "cryptsetup",
+      "lvcreate",
+      "vgcreate",
+      "pvcreate",
+      "wsl --install"
+    ]
+  },
+  "default_profile": "qubes-whonix",
+  "profiles": {
+    "qubes-whonix": {
+      "id": "qubes-whonix",
+      "label": "Qubes OS + Whonix (Hardware-Isolationsprofil; Versionsstand nach offiziellen Quellen prüfen)",
+      "description": "Erfordert Hardware-Virtualisierung (VT-x/AMD-V), Second-Level Address Translation (EPT/RVI), zwingend aktives IOMMU (VT-d/AMD-Vi) fuer PCI-Passthrough-Isolation (`sys-net`/`sys-usb`) sowie mindestens 16 GB RAM und 128 GB freien NVMe/SSD-Speicher.",
+      "min_ram_gb": 16,
+      "recommended_ram_gb": 32,
+      "min_free_disk_gb": 128,
+      "recommended_free_disk_gb": 256,
+      "min_cpu_cores": 4,
+      "required_arch": [
+        "x64"
+      ],
+      "required_capabilities": {
+        "cpu_virtualization": true,
+        "slat": true,
+        "iommu": true,
+        "uefi": true,
+        "tpm2": false
+      },
+      "requires_backup_attestation": true,
+      "requires_verified_media": true,
+      "requires_unique_target_disk": true
+    },
+    "linux-kvm": {
+      "id": "linux-kvm",
+      "label": "Linux Host + KVM/QEMU + EDEN-Term",
+      "description": "Erfordert CPU-Virtualisierung (VT-x/AMD-V/KVM) und SLAT fuer isolierte virtuelle Maschinen sowie mindestens 8 GB RAM und 64 GB freien Speicher.",
+      "min_ram_gb": 8,
+      "recommended_ram_gb": 16,
+      "min_free_disk_gb": 64,
+      "recommended_free_disk_gb": 128,
+      "min_cpu_cores": 4,
+      "required_arch": [
+        "x64",
+        "arm64"
+      ],
+      "required_capabilities": {
+        "cpu_virtualization": true,
+        "slat": true,
+        "iommu": false,
+        "uefi": true,
+        "tpm2": false
+      },
+      "requires_backup_attestation": true,
+      "requires_verified_media": true,
+      "requires_unique_target_disk": true
+    },
+    "windows-workbench": {
+      "id": "windows-workbench",
+      "label": "Windows 11 Host + EDEN-Term Workbench",
+      "description": "Lokale EDEN-Term-Oberflaeche auf bestehendem Windows-System ohne Partitionseingriff; fuer spaetere Hyper-V/WSL2-Isolation werden VT-x/AMD-V und SLAT empfohlen.",
+      "min_ram_gb": 8,
+      "recommended_ram_gb": 16,
+      "min_free_disk_gb": 20,
+      "recommended_free_disk_gb": 64,
+      "min_cpu_cores": 2,
+      "required_arch": [
+        "x64",
+        "arm64"
+      ],
+      "required_capabilities": {
+        "cpu_virtualization": false,
+        "slat": false,
+        "iommu": false,
+        "uefi": false,
+        "tpm2": false
+      },
+      "requires_backup_attestation": true,
+      "requires_verified_media": true,
+      "requires_unique_target_disk": true
+    },
+    "tails-live": {
+      "id": "tails-live",
+      "label": "Tails OS Live-USB (Amnesischer Modus)",
+      "description": "Startet vollstaendig aus dem Arbeitsspeicher ueber ein kryptografisch verifiziertes USB-Medium auf x86_64-UEFI-Systemen.",
+      "min_ram_gb": 4,
+      "recommended_ram_gb": 8,
+      "min_free_disk_gb": 16,
+      "recommended_free_disk_gb": 32,
+      "min_cpu_cores": 2,
+      "required_arch": [
+        "x64"
+      ],
+      "required_capabilities": {
+        "cpu_virtualization": false,
+        "slat": false,
+        "iommu": false,
+        "uefi": true,
+        "tpm2": false
+      },
+      "requires_backup_attestation": true,
+      "requires_verified_media": true,
+      "requires_unique_target_disk": true
+    },
+    "kali-audit": {
+      "id": "kali-audit",
+      "label": "Kali Linux Isoliertes Audit-Profil (VM / Live)",
+      "description": "Isolierte Sicherheitspruefungsumgebung als VM oder Live-Medium mit mindestens 8 GB RAM und 40 GB freiem Speicher.",
+      "min_ram_gb": 8,
+      "recommended_ram_gb": 16,
+      "min_free_disk_gb": 40,
+      "recommended_free_disk_gb": 80,
+      "min_cpu_cores": 2,
+      "required_arch": [
+        "x64",
+        "arm64"
+      ],
+      "required_capabilities": {
+        "cpu_virtualization": true,
+        "slat": false,
+        "iommu": false,
+        "uefi": true,
+        "tpm2": false
+      },
+      "requires_backup_attestation": true,
+      "requires_verified_media": true,
+      "requires_unique_target_disk": true
+    }
+  },
+  "gates": [
+    {
+      "id": "G5-01",
+      "title": "Lesende System- und Hardware-Inventur",
+      "skill": "hardware.inventory.read",
+      "critical": true
+    },
+    {
+      "id": "G5-02",
+      "title": "CPU-Virtualisierung (VT-x / AMD-V / SLAT)",
+      "skill": "hardware.virtualization.assess",
+      "critical": true
+    },
+    {
+      "id": "G5-03",
+      "title": "IOMMU / VT-d / AMD-Vi Isolationsfaehigkeit",
+      "skill": "qubes.compatibility.assess",
+      "critical": true
+    },
+    {
+      "id": "G5-04",
+      "title": "Arbeitsspeicher-Schwellenwert fuer Zielprofil",
+      "skill": "hardware.inventory.read",
+      "critical": true
+    },
+    {
+      "id": "G5-05",
+      "title": "Freier nicht-destruktiver Speicherplatz",
+      "skill": "hardware.inventory.read",
+      "critical": true
+    },
+    {
+      "id": "G5-06",
+      "title": "Eindeutige Datentraeger- und Partitionsidentifikation",
+      "skill": "hardware.inventory.read",
+      "critical": true
+    },
+    {
+      "id": "G5-07",
+      "title": "UEFI- / Secure-Boot- und TPM-2.0-Zustandserfassung",
+      "skill": "hardware.virtualization.assess",
+      "critical": true
+    },
+    {
+      "id": "G5-08",
+      "title": "Backup- und Wiederherstellungsnachweis",
+      "skill": "backup.restore.verify",
+      "critical": true
+    },
+    {
+      "id": "G5-09",
+      "title": "Kryptografische Verifikation der Installationsmedien",
+      "skill": "installation.media.verify",
+      "critical": true
+    },
+    {
+      "id": "G5-10",
+      "title": "Menschliche Einzelfreigabe vor jedem Schreibschritt",
+      "skill": "gate5.verify",
+      "critical": true
+    }
+  ]
+}

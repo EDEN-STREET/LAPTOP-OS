@@ -23,10 +23,10 @@ function isolatedTest(fn) {
   }
 }
 
-test('npm start and npm go use one-consent quickstart on preview.6',()=>{
+test('npm start and npm go use one-consent quickstart on preview.7',()=>{
   const pkg=JSON.parse(fs.readFileSync(path.join(ROOT,'package.json'),'utf8'));
   const lock=JSON.parse(fs.readFileSync(path.join(ROOT,'npm-shrinkwrap.json'),'utf8'));
-  assert.equal(pkg.version,'0.8.0-preview.6');
+  assert.equal(pkg.version,'0.8.0-preview.7');
   assert.equal(pkg.version,lock.packages[''].version);
   assert.equal(pkg.version,BUILD);
   assert.equal(pkg.scripts.start,'node bin/eden.mjs quickstart');
@@ -61,7 +61,7 @@ test('one explicit approval installs only bundled UI and non-destructive Qubes p
     assert.equal(result.os_installation_authorized,false);
     assert.equal(result.firmware_changes_authorized,false);
     assert.equal(result.tor_enforcement_verified,false);
-    for(const file of ['index.html','setup.html','wiki.html','projects.js','eden-hub.css','reboot-plan.html']) {
+    for(const file of ['index.html','setup.html','wiki.html','projects.js','eden-hub.css','reboot-plan.html','hardware-readiness.html']) {
       assert.ok(fs.statSync(path.join(installedWebRoot(),file)).isFile());
     }
     const plan=JSON.parse(fs.readFileSync(safePlanPath(),'utf8'));
