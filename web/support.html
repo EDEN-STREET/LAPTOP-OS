@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EDEN Support Center</title><link rel="stylesheet" href="eden-hub.css">
+<style>.tree button{width:100%;text-align:left;margin:6px 0}.result{border-left:3px solid var(--accent)}.steps li{margin:8px 0}</style></head>
+<body><header><nav class="topnav"><span class="brand">◆ EDEN SUPPORT CENTER</span><a href="ultimate-hub.html">ULTIMATE HUB</a><a href="setup.html">SETUP</a><a href="testlab.html">TESTLAB</a><a href="wiki.html">WIKI</a></nav></header>
+<main class="shell"><span class="eyebrow">DIAGNOSE / READ-ONLY</span><h1 class="headline">Fehler eingrenzen, bevor etwas geändert wird.</h1><p class="lead">Der Diagnosebaum schlägt ausschließlich lesende oder dokumentierende Schritte vor. Er installiert nichts und verändert keine Geräte.</p>
+<div class="grid"><section class="panel tree"><h2>Was ist das Problem?</h2><div id="topics"></div></section><section class="panel result"><h2 id="resultTitle">Problem auswählen</h2><p id="resultText" class="muted">Wähle links eine Fehlerklasse.</p><ol id="resultSteps" class="steps"></ol><div id="resultLinks" class="actions"></div></section></div>
+<section class="panel"><h2>Support-Regel</h2><p>Wenn Diagnoseinformationen einen realen Systemeingriff nahelegen, endet dieser Assistent beim <strong>Plan</strong>. Schreibende Reparaturen brauchen eigenen Skill, Preflight, Backup/Recovery, ausdrückliche Freigabe und Verifikation.</p></section>
+</main><footer>EDEN Support Center · Diagnose ohne automatische Systemänderung</footer>
+<script>
+'use strict';
+const cases=[
+ {title:'EDEN-Seite lädt nicht',text:'Zuerst lokalen Server, URL und Paketbestand prüfen.',steps:['Prüfen, ob EDEN über den dokumentierten lokalen Start geöffnet wurde.','Browserfehler und HTTP-Status dokumentieren.','Mit npm test die Repository-Tests ausführen, falls eine Entwicklungsumgebung vorliegt.','Keine Dateien blind ersetzen; fehlerhafte Datei und Version festhalten.'],links:[['Setup','setup.html'],['Testlab','testlab.html']]},
+ {title:'Test ist rot',text:'Fehler reproduzieren und die erste fehlschlagende Assertion isolieren.',steps:['Exakten Testnamen und Exit-Code notieren.','Änderung seit letztem grünen Stand eingrenzen.','Ursache beheben statt Test abzuschwächen.','Gesamte Suite erneut ausführen und Ergebnis dokumentieren.'],links:[['Testlab','testlab.html'],['Projekte','projects.html']]},
+ {title:'Hardwarestatus ist UNKNOWN',text:'UNKNOWN ist ein gültiger Sicherheitszustand, kein Fehler zum Wegklicken.',steps:['Fehlenden Messwert identifizieren.','Nur lesende Bestandsaufnahme verwenden.','Quelle und Messmethode dokumentieren.','Erst nach unabhängigem Nachweis Status ändern.'],links:[['Gate 5','hardware-readiness.html']]},
+ {title:'Tool fehlt im Hub',text:'Registry und tatsächliche Datei müssen übereinstimmen.',steps:['Tool-Registry prüfen.','Existenz der Zielseite im Web-Bundle prüfen.','Status active/preview/planned korrekt setzen.','UI_BUNDLE_FILES und Integritätstest aktualisieren.'],links:[['Toolbox','toolbox.html'],['Builder','builder.html']]},
+ {title:'Quellen widersprechen sich',text:'Widerspruch sichtbar halten statt still auflösen.',steps:['Beide Aussagen mit Herkunft und Version erfassen.','Primärquelle priorisieren, wenn vorhanden.','Ungeprüfte Behauptung markieren.','Entscheidung und Restrisiko dokumentieren.'],links:[['Quellen','quellen.html'],['Wiki','wiki.html']]}
+];
+const $=s=>document.querySelector(s),box=$('#topics');
+cases.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.textContent=c.title;b.onclick=()=>show(i);box.append(b)});
+function show(i){const c=cases[i];$('#resultTitle').textContent=c.title;$('#resultText').textContent=c.text;const ol=$('#resultSteps');ol.replaceChildren();c.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;ol.append(li)});const links=$('#resultLinks');links.replaceChildren();c.links.forEach(([t,h])=>{const a=document.createElement('a');a.className='btn';a.href=h;a.textContent=t;links.append(a)})}
+</script></body></html>
