@@ -43,5 +43,5 @@ test('architecture demo is bundled and makes simulation and Tails separation exp
   assert.match(page,/anon-whonix/);
   assert.match(page,/Tails ist kein Qubes-Unterbau/);
   assert.match(page,/Netzwerkfreigabe: NEIN/);
-  assert.match(page,/keine echte/i);
+  assert.match(page,/kein echtes Betriebssystem/i);
 });
