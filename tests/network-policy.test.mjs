@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT } from '../lib/core.mjs';
+import { startServer } from '../lib/server.mjs';
 import { NETWORK_DESIGN, evaluateTorDesignEvidence } from '../lib/network-policy.mjs';
 
 const baseline={
@@ -44,4 +45,22 @@ test('architecture demo is bundled and makes simulation and Tails separation exp
   assert.match(page,/Tails ist kein Qubes-Unterbau/);
   assert.match(page,/Netzwerkfreigabe: NEIN/);
   assert.match(page,/kein echtes Betriebssystem/i);
+});
+
+
+test('Qubes/Whonix/Tails architecture page is served by loopback-only EDEN HTTP server',async()=>{
+  const server=await startServer({port:0,root:path.join(ROOT,'web')});
+  try{
+    assert.equal(server.address().address,'127.0.0.1');
+    const address=`http://127.0.0.1:${server.address().port}`;
+    const res=await fetch(address+'/security-architecture.html');
+    assert.equal(res.status,200);
+    assert.ok(res.headers.get('content-type').includes('text/html'));
+    const text=await res.text();
+    assert.match(text,/anon-whonix/);
+    assert.match(text,/sys-whonix/);
+    assert.match(text,/Tails Live-System/);
+  }finally{
+    await new Promise(resolve=>server.close(resolve));
+  }
 });

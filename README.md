@@ -48,7 +48,7 @@ Nachdem **dieses Projekt** im GitHub-Repository `EDEN-STREET/LAPTOP-OS` veröffe
 npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/heads/main.tar.gz -- eden
 ```
 
-Dieser Befehl lädt den GitHub-Quellcode **direkt als Tarball über npm**. **Git muss dafür nicht installiert sein.** `npm exec` startet den EDEN-Assistenten aus dem heruntergeladenen Paket. Nach Zustimmung legt er ausschließlich eine neue EDEN-Version im Benutzerverzeichnis an, fragt nach einem optionalen Installationsplan und öffnet die **lokale EDEN-Term-Workbench**.
+Dieser Befehl lädt den GitHub-Quellcode **direkt als Tarball über npm**. **Git muss dafür nicht installiert sein.** `npm exec` startet den EDEN-Assistenten aus dem heruntergeladenen Paket. Nach der **einmaligen** Zustimmung zur lokalen EDEN-App legt er die neue Version im Benutzerverzeichnis an, speichert bei Bedarf automatisch einen reinen Qubes/Whonix-Plan und öffnet die **lokale EDEN-Term-Workbench**. Bei erneuten Starts derselben Version ist keine weitere Zustimmung nötig.
 
 **Voraussetzung:** Auf Windows 10/11 muss Node.js 22 oder neuer inklusive npm bereits installiert sein. Ohne npm lässt sich kein npm-Befehl ausführen. Node.js bitte von [nodejs.org](https://nodejs.org/) installieren und CMD neu öffnen.
 
@@ -62,13 +62,13 @@ npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/h
 npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/heads/main.tar.gz -- eden status
 ```
 
-`doctor`: nur lesen. `launch`: Browser starten ohne Dateien im Benutzerprofil zu schreiben. `status`: bestehenden Installationsplan anzeigen. `eden` ohne Argument: geführtes Setup mit ausdrücklicher lokaler Freigabe.
+`doctor`: nur lesen. `launch`: Browser starten ohne Dateien im Benutzerprofil zu schreiben. `status`: bestehenden Installationsplan anzeigen. `eden` ohne Argument: Ein-Kommando-Schnellstart mit einer lokalen Erstfreigabe; `eden setup` ist der ältere erweiterte Planassistent.
 
 ## Wohin wird die Anwendung installiert?
 
 Nur nach Bestätigung:
 
-- App: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.4\web\`
+- App: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.5\web\`
 - Optionaler Plan: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\state\setup-plan.json`
 - Weboberfläche: <http://127.0.0.1:8765/setup.html> (nur auf dem eigenen Rechner erreichbar)
 - Server stoppen: **Strg+C**
@@ -105,7 +105,7 @@ Lizenz: MIT. Status: **Vorschau**, noch nicht hardware- oder produktiv verifizie
 Der lokale Nutzer hat gemaess dem vorhandenen Pruefbericht bereits eine authentifizierte GitHub CLI (`gh`). Der ChatGPT-GitHub-Connector selbst hat **keinen** Schreibzugriff. Daher kann der npm-Starter auf dem Laptop den Upload sicher ausloesen, ohne manuelle Git-Befehle.
 
 ```cmd
-npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.4.tgz" -- eden publish-github
+npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.5.tgz" -- eden publish-github
 ```
 
 Der Befehl zeigt zuvor eine exakte Dateiliste, verlangt die Eingabe `PUBLISH EDEN-STREET/LAPTOP-OS`, erstellt nur einen neuen Branch und ein Draft PR. Kein ungepruefter Merge in `main`. Mehr dazu in [Playwright und Release](docs/PLAYWRIGHT_UND_RELEASE.md).
