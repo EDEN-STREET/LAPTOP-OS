@@ -5,9 +5,10 @@ import { spawn } from 'node:child_process';
 import { stdin as input, stdout as output } from 'node:process';
 import { BUILD, TARGETS, systemSnapshot, buildPlan, safePlanPath, savePlanOnce, publicRoot, resolvePublicFile, installedWebRoot, installUserUI } from '../lib/core.mjs';
 import { startServer } from '../lib/server.mjs';
+import { QUICKSTART_CONSENT, prepareSafeQuickstart, quickstartPreview } from '../lib/quickstart.mjs';
 import { publishGithub } from '../lib/github-publisher.mjs';
 
-const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'onboard';
+const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'ready';
 const json = process.argv.includes('--json');
 const noOpen = process.argv.includes('--no-open');
 const planOnly = process.argv.includes('--plan-only');
@@ -29,6 +30,42 @@ function doctor() {
   for(const c of checks) console.log(`${c.ok?'[OK]':c.optional?'[OPTIONAL]':'[FEHLER]'} ${c.message}`);
   console.log('Keine Gerätekennungen ausgelesen, keine Diagnose hochgeladen. Kein Windows-/Linux-System installiert.');
   return ok?0:1;
+}
+
+async function ready() {
+  // Safe dry-run for CI and untrusted hosts: no prompts, writes, network or browser.
+  const preflight = quickstartPreview();
+  if (process.argv.includes('--dry-run')) {
+    if (json) console.log(JSON.stringify(preflight, null, 2));
+    else console.log('EDEN QUICKSTART / DRY-RUN · Kein Windows-Löschen, keine Installation von Qubes/Tails/Tor.\n' + JSON.stringify(preflight.gates, null, 2));
+    return preflight.node_compatible && preflight.ui_present ? 0 : 1;
+  }
+  banner();
+  if (doctor() !== 0) return 1;
+  if (!input.isTTY || !output.isTTY) {
+    console.error('EDEN Quickstart benötigt eine interaktive Terminal-Bestätigung. Test: eden ready --dry-run --json');
+    return 2;
+  }
+  console.log('\nEin-Kommando-Einstieg: EDEN-UI im Benutzerprofil anlegen, Qubes/Whonix-Plan speichern, lokale Oberfläche öffnen.');
+  console.log('WICHTIG: Windows bleibt bestehen. Kein Datenträger, keine Firmware, kein Tor-Netzwerk wird verändert.');
+  const rl = readline.createInterface({ input, output });
+  let answer;
+  try {
+    answer = (await rl.question('Nur diese lokalen, nicht-destruktiven Schritte bestätigen? [JA/NEIN]: ')).trim().toUpperCase();
+  } finally { rl.close(); }
+  if (answer !== QUICKSTART_CONSENT) {
+    console.log('Abgebrochen: Es wurden keine EDEN-Dateien erstellt.');
+    return 3;
+  }
+  try {
+    const result = prepareSafeQuickstart({ consent: true });
+    console.log('\nEDEN Quickstart: ' + JSON.stringify(result, null, 2));
+  } catch (e) {
+    console.error('EDEN Quickstart gestoppt: ' + (e.code || e.message) + '. Keine bestehenden Dateien überschrieben.');
+    return 1;
+  }
+  if (process.argv.includes('--no-launch')) return 0; // only used for automation tests
+  return await launch();
 }
 
 async function setup({launchAfter=true}={}) {
@@ -106,7 +143,8 @@ function help(){
   console.log('\nNur npm benötigt (Node.js inkl. npm muss bereits installiert sein).\nKeine Disk-/Firmware-/Router-/OS-Modifikation.');return 0;
 }
 try{
-  const rc=command==='onboard'||command==='setup'?await setup():
+  const rc=command==='ready'||command==='onboard'?await ready():
+    command==='setup'?await setup():
     command==='launch'||command==='start'?await launch():
     command==='doctor'?doctor():command==='status'?status():
     command==='verify'?verify():command==='publish-github'?(await publishGithub({dryRun:process.argv.includes('--dry-run')}),0):help();
