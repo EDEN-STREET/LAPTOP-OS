@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const read = p => readFile(new URL('../'+p, import.meta.url),'utf8');
 
 test('Ultimate Hub and local tools are packaged', async () => {
-  for (const path of ['web/ultimate-hub.html','web/tool-registry.js','web/image-studio.html','web/local-tools.html']) {
+  for (const path of ['web/ultimate-hub.html','web/tool-registry.js','web/image-studio.html','web/local-tools.html','web/academy.html','web/support.html','web/markdown-studio.html','web/diff-studio.html']) {
     const body = await read(path);
     assert.ok(body.length > 500, path+' should contain a real implementation');
   }
@@ -36,4 +36,26 @@ test('utility lab contains SHA-256, JSON and filename tools', async () => {
   assert.match(page,/crypto\.subtle\.digest\('SHA-256'/);
   assert.match(page,/JSON\.parse/);
   assert.match(page,/sanitizeName/);
+});
+
+
+test('Academy and Support are implemented as local non-privileged surfaces', async () => {
+  const academy = await read('web/academy.html');
+  const support = await read('web/support.html');
+  assert.match(academy,/Wissenscheck/);
+  assert.match(academy,/kein Security-Zertifikat/i);
+  assert.match(support,/READ-ONLY/);
+  assert.match(support,/Ursache beheben statt Test abzuschwächen/);
+});
+
+test('writing and diff studios avoid remote execution paths', async () => {
+  for (const path of ['web/markdown-studio.html','web/diff-studio.html']) {
+    const page = await read(path);
+    assert.doesNotMatch(page,/\bfetch\s*\(|XMLHttpRequest|WebSocket|child_process|exec\s*\(/);
+  }
+});
+
+test('image studio includes a local text layer stack', async () => {
+  const page = await read('web/image-studio.html');
+  for (const marker of ['id="layers"','id="addLayer"','state.layers','Text-Layer']) assert.match(page,new RegExp(marker.replace(/[.*+?^$()|[\]{}]/g,'\\$&')));
 });
