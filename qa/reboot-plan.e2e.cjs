@@ -94,6 +94,34 @@ async function run() {
         report.screenshots.push({name:'hardware-'+name,filename:path.basename(file),bytes});
         return '10/10 gates; honest UNKNOWN labels; desktop/mobile no overflow';
       });
+      await check(name+' · complete application screen inventory',async()=>{
+        const screens=[
+          'index.html','setup.html','builder.html','handbuch.html','toolbox.html',
+          'grimoire.html','testlab.html','quellen.html','wiki.html','projects.html',
+          'security-architecture.html','reboot-plan.html','hardware-readiness.html',
+        ];
+        const failed=[];
+        for(const screen of screens){
+          errors.length=0;
+          const response=await page.goto(origin+'/'+screen,{waitUntil:'domcontentloaded'});
+          if(response.status()!==200){failed.push(screen+': HTTP '+response.status());continue;}
+          const details=await page.evaluate(()=>({
+            visibleText:document.body.innerText.trim().length,
+            title:document.title.trim(),
+            overflow:document.documentElement.scrollWidth>window.innerWidth+4,
+          }));
+          if(details.visibleText<70||!details.title||details.overflow||errors.length){
+            failed.push(screen+': '+JSON.stringify({details,errors}));
+          }
+          const file=path.join(artifacts,'full-suite-'+screen.replace('.html','')+'-'+name+'.png');
+          await page.screenshot({path:file,fullPage:false,animations:'disabled'});
+          const bytes=fs.statSync(file).size;
+          if(bytes<3500)failed.push(screen+': screenshot is blank');
+          report.screenshots.push({name:screen+' '+name,filename:path.basename(file),bytes});
+        }
+        assert.deepEqual(failed,[]);
+        return screens.length+' complete screens rendered; no blank, broken, error or horizontal overflow';
+      });
       await context.close();
     }
   } finally {
