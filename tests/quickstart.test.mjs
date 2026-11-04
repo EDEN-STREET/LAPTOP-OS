@@ -61,7 +61,7 @@ test('one explicit approval installs only bundled UI and non-destructive Qubes p
     assert.equal(result.os_installation_authorized,false);
     assert.equal(result.firmware_changes_authorized,false);
     assert.equal(result.tor_enforcement_verified,false);
-    for(const file of ['index.html','setup.html','wiki.html','projects.js','eden-hub.css']) {
+    for(const file of ['index.html','setup.html','wiki.html','projects.js','eden-hub.css','reboot-plan.html']) {
       assert.ok(fs.statSync(path.join(installedWebRoot(),file)).isFile());
     }
     const plan=JSON.parse(fs.readFileSync(safePlanPath(),'utf8'));
