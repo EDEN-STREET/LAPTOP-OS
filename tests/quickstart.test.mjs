@@ -23,10 +23,10 @@ function isolatedTest(fn) {
   }
 }
 
-test('npm start and npm go use one-consent quickstart on preview.5',()=>{
+test('npm start and npm go use one-consent quickstart on preview.6',()=>{
   const pkg=JSON.parse(fs.readFileSync(path.join(ROOT,'package.json'),'utf8'));
   const lock=JSON.parse(fs.readFileSync(path.join(ROOT,'npm-shrinkwrap.json'),'utf8'));
-  assert.equal(pkg.version,'0.8.0-preview.5');
+  assert.equal(pkg.version,'0.8.0-preview.6');
   assert.equal(pkg.version,lock.packages[''].version);
   assert.equal(pkg.version,BUILD);
   assert.equal(pkg.scripts.start,'node bin/eden.mjs quickstart');
