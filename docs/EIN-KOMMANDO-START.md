@@ -1,4 +1,4 @@
-# EDEN LAPTOP-OS – Ein-Kommando-Start v0.8.0-preview.6
+# EDEN LAPTOP-OS – Ein-Kommando-Start v0.8.0-preview.7
 
 **Ziel:** EDEN als lokale Browser-App mit **einer einmaligen Zustimmung** installieren und bei weiteren Starts automatisch öffnen. Keine Partitionen, kein Windows- oder Linux-System werden verändert.
 
@@ -42,9 +42,9 @@ Der Befehl startet ebenfalls den lokalen EDEN-Einstieg. Solange der PR noch nich
 
 ## Versions- und Datensicherheit
 
-- Windows: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.6\web`
-- Linux: `~/.local/share/eden/laptop-os/app/0.8.0-preview.6/web`
-- Zustimmungsnachweis: `state/quickstart-consent-0.8.0-preview.6.json`
+- Windows: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.7\web`
+- Linux: `~/.local/share/eden/laptop-os/app/0.8.0-preview.7/web`
+- Zustimmungsnachweis: `state/quickstart-consent-0.8.0-preview.7.json`
 - Geplanter Zielzustand: `state/setup-plan.json`, mit `PLAN_ONLY`.
 - Unvollständige Installationen und ungültige Einwilligungsdateien stoppen den Start; keine automatische Reparatur durch Überschreiben.
 - Ein bereits existierender Plan wird nicht überschrieben.
@@ -88,3 +88,10 @@ Die GitHub-Actions-Runner sind isolierte Windows-/Linux-Umgebungen. Die Tests pr
 `npm run reboot:plan` zeigt die acht Freigabestufen. `node bin/eden.mjs reboot-plan --json` gibt JSON aus. Beide Befehle führen **keinen Neustart und keine Installation** aus. `--save-plan` legt nur nach separater Angabe eine neue JSON-Datei an.
 
 [Ausführlicher Workflow](REBOOT-TO-INSTALLER-WORKFLOW.md) · [Workflow-Vorschau](../web/reboot-plan.html)
+
+
+## Kombinierte Gate-5- und Reboot-Prüfung
+
+- `npm run gate5`: hardwarebezogener **Read-only**-Bericht; `--strict` meldet ungeklärte Pflichtnachweise als Fehler.
+- `node bin/eden.mjs assess --json`: gemeinsamer Bericht aus 10 Hardware-Gates und 8 Neustart-Stufen. Keine Systemänderung.
+- Kein Prüfbericht berechtigt zum Überschreiben oder Löschen von Windows. Für Qubes OS bleiben echte Hardwareeignung, Signaturprüfung und Wiederherstellungsprüfung erforderlich.
