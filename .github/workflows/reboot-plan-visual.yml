@@ -1,0 +1,49 @@
+name: "EDEN Reboot Plan Visual QA"
+
+on:
+  pull_request:
+    paths:
+      - "web/**"
+      - "lib/**"
+      - "qa/**"
+      - ".github/workflows/reboot-plan-visual.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "web/**"
+      - "lib/**"
+      - "qa/**"
+      - ".github/workflows/reboot-plan-visual.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    name: "Read-only Chromium render / desktop & mobile"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Clean runtime install
+        run: npm ci --ignore-scripts
+      - name: Install test-only Playwright runtime
+        run: npm install --no-save --package-lock=false --ignore-scripts playwright@1.56.1
+      - name: Install Chromium with dependencies
+        run: npx playwright install --with-deps chromium
+      - name: Render and inspect protected reboot-plan
+        run: node qa/reboot-plan.e2e.cjs
+      - name: Upload screenshots and reproducible JSON evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eden-reboot-plan-visual-${{ github.run_id }}
+          path: qa/artifacts/
+          if-no-files-found: warn
+          retention-days: 14
