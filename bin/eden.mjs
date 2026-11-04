@@ -7,6 +7,7 @@ import { BUILD, TARGETS, systemSnapshot, buildPlan, safePlanPath, savePlanOnce, 
 import { startServer } from '../lib/server.mjs';
 import { publishGithub } from '../lib/github-publisher.mjs';
 import { quickstartState, prepareQuickstart } from '../lib/quickstart.mjs';
+import { buildRebootPlan, saveRebootPlanOnce, REBOOT_PLAN_STATUS } from '../lib/reboot-plan.mjs';
 
 const command = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : 'quickstart';
 const json = process.argv.includes('--json');
@@ -103,6 +104,37 @@ async function quickstart() {
   }
 }
 
+/** READ ONLY. A plan cannot reboot, partition, remove Windows or configure Tor. */
+function rebootPlan() {
+  let plan;
+  try { plan=buildRebootPlan(); }
+  catch(e) { console.error('Reboot-Plan konnte nicht lesend erstellt werden: '+e.message); return 2; }
+  if(process.argv.includes('--save-plan')) {
+    try {
+      const dest=saveRebootPlanOnce(plan);
+      console.error('Nur lokaler Reboot-PLAN gespeichert (kein OS-/Boot-Eingriff): '+dest);
+    } catch(e) {
+      console.error('Reboot-Plan nicht gespeichert: '+(e.code||e.message));
+      return 2;
+    }
+  }
+  if(json) console.log(JSON.stringify(plan,null,2));
+  else {
+    banner();
+    console.log('Reboot-to-Installer PLAN · Keine automatisierte Betriebssysteminstallation');
+    console.log('Status: '+REBOOT_PLAN_STATUS);
+    console.log('Erkannt: '+plan.host_inventory.host_os+' / '+plan.host_inventory.arch+
+      ' · RAM '+(plan.host_inventory.ram_gib??'?')+' GiB');
+    console.log('WARNUNG: CPU-/RAM-Daten belegen weder IOMMU noch Laufwerks- oder Boot-Kompatibilitaet.');
+    for(const stage of plan.stages) console.log('['+stage.status+'] '+stage.id+' · '+stage.label);
+    console.log('Windows-Loeschung: NEIN · Neustart: NEIN · Tor-Kill-Switch: NICHT VERIFIZIERT');
+    console.log('Qubes-Installationsleitfaden: '+plan.requirements.source.installation);
+    console.log('Der Qubes-/Whonix-/Tails-Umbau braucht separate, unabhaengige Hardware-/Backup-Abnahme.');
+  }
+  // A successful read-only assessment is not the same as approval to reboot.
+  return process.argv.includes('--strict') ? 3 : 0;
+}
+
 function status() {
   banner();
   console.log(fs.existsSync(installedWebRoot())?'App-Version lokal vorhanden.':'Keine dauerhafte EDEN-App-Kopie.');
@@ -143,14 +175,14 @@ async function launch() {
 }
 function help(){
   banner();
-  console.log('eden                Einmalige Zustimmung, dann automatische lokale EDEN-UI\neden quickstart     Sicherer Ein-Kommando-Start\neden setup          Erweiterter gefuehrter Planassistent\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
+  console.log('eden                Einmalige Zustimmung, dann automatische lokale EDEN-UI\neden quickstart     Sicherer Ein-Kommando-Start\neden setup          Erweiterter gefuehrter Planassistent\neden reboot-plan    Lesenden Qubes-Reboot-Installationsplan pruefen (--json, --save-plan, --strict)\neden launch         EDEN-Oberfläche sofort starten\neden doctor         Lesende Systemprüfung\neden status         Vorhandenen Plan anzeigen\neden verify         UI-Dateiprüfung\neden publish-github GitHub-Branch+Draft-PR (nur nach Bestaetigung)\neden help           Hilfe');
   console.log('\nNur npm benötigt (Node.js inkl. npm muss bereits installiert sein).\nKeine Disk-/Firmware-/Router-/OS-Modifikation.');return 0;
 }
 try{
   const rc=command==='onboard'||command==='quickstart'?await quickstart():
     command==='setup'?await setup():
     command==='launch'||command==='start'?await launch():
-    command==='doctor'?doctor():command==='status'?status():
+    command==='doctor'?doctor():command==='reboot-plan'?rebootPlan():command==='status'?status():
     command==='verify'?verify():command==='publish-github'?(await publishGithub({dryRun:process.argv.includes('--dry-run')}),0):help();
   process.exitCode=rc;
 }catch(e){console.error(`EDEN hat sicher gestoppt: ${e.message}`);process.exitCode=1;}
