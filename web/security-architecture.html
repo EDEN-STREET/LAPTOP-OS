@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDEN Suite – Qubes/Whonix, Tails und Netzwerkgrenzen</title>
+<style>
+:root{color-scheme:dark;--bg:#07120f;--panel:#10221b;--line:#315a43;--text:#e6fbed;--muted:#adc8b6;--green:#7ff4a2;--amber:#eaca85}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 45% -20%,#153a22,#07120f 70%);color:var(--text);font:15px/1.55 system-ui,sans-serif}
+header{padding:17px max(20px,calc((100% - 1120px)/2));border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+a{color:#a8d8ff}a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #aaffc1;outline-offset:3px}
+main{max-width:1160px;margin:auto;padding:38px 20px 75px}h1{font-size:clamp(29px,4vw,48px);letter-spacing:-.035em;margin:8px 0}
+h2{font-size:21px}.lead{color:var(--muted);max-width:850px}.chips{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0 23px}
+.chip{color:var(--amber);border:1px solid #866a35;border-radius:999px;padding:5px 10px;font-weight:700;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:#10251d;border:1px solid var(--line);padding:19px;border-radius:15px;min-width:0}.card h3{margin:0 0 8px;color:var(--green)}.card p{color:var(--muted)}
+.arrow{color:var(--green);text-align:center;font-size:26px;font-weight:800}
+.track{padding:15px 18px;border:1px solid #416749;border-radius:12px;background:#0c2519;margin:9px 0}
+.track b{color:#9effb9}.separate{border-color:#69573f;background:#271e12}
+button{background:#72eaa3;border:0;color:#07301b;font-weight:800;cursor:pointer;padding:11px 14px;border-radius:10px}
+.result{background:#231f15;border:1px solid #846d3d;color:#f1d79d;padding:17px;border-radius:13px;margin-top:14px;white-space:pre-wrap}
+footer{border-top:1px solid var(--line);margin-top:35px;padding-top:19px;color:var(--muted)}
+@media(max-width:800px){.grid{grid-template-columns:1fr}main{padding:25px 13px}}
+</style></head>
+<body><header><b style="color:#93ffb4">◆ EDEN STREET / EDEN Suite</b><nav><a href="setup.html">Setup</a> · <a href="index.html">EDEN-Term</a> · <a href="wiki.html">Wiki</a></nav></header>
+<main><div style="color:var(--green);font-weight:900;letter-spacing:.15em">ARCHITEKTUR · ENTWURF</div>
+<h1>Qubes + Whonix. Tails separat.</h1>
+<p class="lead">Dies ist ein interaktiver Architekturentwurf, kein echtes Betriebssystem, kein installiertes Firewallprofil und kein Nachweis einer anonymen Netzwerkverbindung.</p>
+<div class="chips"><span class="chip">Windows unverändert</span><span class="chip">PLAN_ONLY</span><span class="chip">Keine Tor-Verbindung getestet</span><span class="chip">Default: DENY_UNVERIFIED</span></div>
+<section class="grid" aria-label="Geplante Qubes Systemkomponenten">
+<article class="card"><h3>1 · Laptop / Qubes OS</h3><p>Qubes ist das geplante eigenständige Host-Betriebssystem. Installation erst nach offizieller Hardwareprüfung, unabhängiger Datensicherung und expliziter Gerätemedienfreigabe.</p></article>
+<article class="card"><h3>2 · sys-whonix</h3><p>In der Qubes-Zielarchitektur der Tor-Gateway-Qube. Der korrekte Netzwerkprovider und dessen tatsächlicher Status müssen nach einem echten Qubes-Setup überprüft werden.</p></article>
+<article class="card"><h3>3 · anon-whonix</h3><p>Separate Arbeits-Qube für Tor-Anwendungen. Der Netzwerkprovider ist nur im Zielbild <code>sys-whonix</code>; keine live geprüfte Netzwerkregel.</p></article>
+</section>
+<h2>Geplanter Datenfluss</h2><div class="track"><b>anon-whonix</b> (Arbeits-Qube)</div><div class="arrow">↓</div><div class="track"><b>sys-whonix</b> (Tor-Gateway)</div><div class="arrow">↓</div><div class="track"><b>Tor-Netzwerk</b> (nur nach realer Router-/Leak-/Bootstrapprüfung)</div>
+<h2>Tails ist kein Qubes-Unterbau</h2><div class="track separate"><b>Tails Live-System</b> – getrennt startbares System mit eigenem Tor-Setup. Kein automatisches „Tails in Qubes in Tor“ und keine Veränderung eines vorhandenen Boot- oder USB-Mediums.</div>
+<section class="card"><h2>Interaktive Sicherheitszustands-Demo</h2><p>Die Schaltfläche demonstriert lediglich, wie die EDEN UI bei fehlenden Nachweisen sperrt. Kein Gerät oder Netzwerk wird angesprochen.</p>
+<button id="show" type="button">Simulierte Zustandsprüfung anzeigen</button>
+<div class="result" id="result" role="status" aria-live="polite">Status: NICHT GEPRÜFT. Netzwerkfreigabe: NEIN.</div></section>
+<footer>EDEN Suite v0.8.0-preview.5 · Simulation · Echte Qubes-/Tor-/Tails-Installation und Kill-Switch-Funktion sind NICHT implementiert. <a href="https://www.qubes-os.org/doc/installation-guide/" target="_blank" rel="noopener noreferrer">Offizielle Qubes-Dokumentation</a></footer>
+</main><script>
+document.getElementById('show').addEventListener('click',()=>{
+ document.getElementById('result').textContent='SIMULATION – FAIL CLOSED\nQubes OS: nicht installiert / UNKNOWN\nsys-whonix: nicht verifiziert / UNKNOWN\nTor-Bootstrap: nicht verifiziert / UNKNOWN\nLeak-Test: nicht durchgeführt / UNKNOWN\nNetzwerkfreigabe: NEIN\nDatenträgeränderung: NEIN';
+});
+</script></body></html>
