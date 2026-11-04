@@ -1,12 +1,12 @@
 {
   "name": "eden-laptop-os",
-  "version": "0.8.0-preview.4",
+  "version": "0.8.0-preview.5",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
       "name": "eden-laptop-os",
-      "version": "0.8.0-preview.4",
+      "version": "0.8.0-preview.5",
       "license": "MIT",
       "bin": {
         "eden": "bin/eden.mjs"
