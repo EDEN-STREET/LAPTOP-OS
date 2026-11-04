@@ -33,7 +33,7 @@ footer{border-top:1px solid var(--line);margin-top:35px;padding-top:19px;color:v
 <section class="card"><h2>Interaktive Sicherheitszustands-Demo</h2><p>Die Schaltfläche demonstriert lediglich, wie die EDEN UI bei fehlenden Nachweisen sperrt. Kein Gerät oder Netzwerk wird angesprochen.</p>
 <button id="show" type="button">Simulierte Zustandsprüfung anzeigen</button>
 <div class="result" id="result" role="status" aria-live="polite">Status: NICHT GEPRÜFT. Netzwerkfreigabe: NEIN.</div></section>
-<footer>EDEN Suite v0.8.0-preview.5 · Simulation · Echte Qubes-/Tor-/Tails-Installation und Kill-Switch-Funktion sind NICHT implementiert. <a href="https://www.qubes-os.org/doc/installation-guide/" target="_blank" rel="noopener noreferrer">Offizielle Qubes-Dokumentation</a></footer>
+<footer>EDEN Suite v0.8.0-preview.8 · Simulation · Echte Qubes-/Tor-/Tails-Installation und Kill-Switch-Funktion sind NICHT implementiert. <a href="https://www.qubes-os.org/doc/installation-guide/" target="_blank" rel="noopener noreferrer">Offizielle Qubes-Dokumentation</a></footer>
 </main><script>
 document.getElementById('show').addEventListener('click',()=>{
  document.getElementById('result').textContent='SIMULATION – FAIL CLOSED\nQubes OS: nicht installiert / UNKNOWN\nsys-whonix: nicht verifiziert / UNKNOWN\nTor-Bootstrap: nicht verifiziert / UNKNOWN\nLeak-Test: nicht durchgeführt / UNKNOWN\nNetzwerkfreigabe: NEIN\nDatenträgeränderung: NEIN';
