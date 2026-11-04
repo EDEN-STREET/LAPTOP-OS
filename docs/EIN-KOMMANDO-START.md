@@ -1,4 +1,4 @@
-# EDEN LAPTOP-OS – Ein-Kommando-Start v0.8.0-preview.8
+# EDEN LAPTOP-OS – Ein-Kommando-Start v0.8.0-preview.9
 
 **Ziel:** EDEN als lokale Browser-App mit **einer einmaligen Zustimmung** installieren und bei weiteren Starts automatisch öffnen. Keine Partitionen, kein Windows- oder Linux-System werden verändert.
 
@@ -42,9 +42,9 @@ Der Befehl startet ebenfalls den lokalen EDEN-Einstieg. Solange der PR noch nich
 
 ## Versions- und Datensicherheit
 
-- Windows: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.8\web`
-- Linux: `~/.local/share/eden/laptop-os/app/0.8.0-preview.8/web`
-- Zustimmungsnachweis: `state/quickstart-consent-0.8.0-preview.8.json`
+- Windows: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.9\web`
+- Linux: `~/.local/share/eden/laptop-os/app/0.8.0-preview.9/web`
+- Zustimmungsnachweis: `state/quickstart-consent-0.8.0-preview.9.json`
 - Geplanter Zielzustand: `state/setup-plan.json`, mit `PLAN_ONLY`.
 - Unvollständige Installationen und ungültige Einwilligungsdateien stoppen den Start; keine automatische Reparatur durch Überschreiben.
 - Ein bereits existierender Plan wird nicht überschrieben.
