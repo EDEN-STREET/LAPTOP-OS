@@ -40,6 +40,14 @@ test('npm tarball can be installed offline and run in an isolated virtual user p
     });
     assert.equal(diagnosis.status,0,diagnosis.stderr);
     assert.equal(JSON.parse(diagnosis.stdout).can_preview,true);
+    const reboot=spawnSync(process.execPath,[path.join(root,'bin','eden.mjs'),'reboot-plan','--json'],{
+      cwd:root,encoding:'utf8',timeout:12000,env:{...process.env,EDEN_DATA_HOME:data},
+    });
+    assert.equal(reboot.status,0,reboot.stderr);
+    const migration=JSON.parse(reboot.stdout);
+    assert.equal(migration.result,'BLOCKED_INDEPENDENT_REVIEW_REQUIRED');
+    assert.equal(migration.execution.windows_removed,false);
+    assert.equal(migration.execution.reboot_triggered,false);
     process.env.EDEN_DATA_HOME=data;
     const quick=await import(pathToFileURL(path.join(root,'lib','quickstart.mjs')).href);
     const installed=quick.prepareQuickstart({confirmed:true});
@@ -49,6 +57,7 @@ test('npm tarball can be installed offline and run in an isolated virtual user p
     assert.equal(again.reused_consent,true);
     assert.equal(again.status,'READY');
     assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.6','web','security-architecture.html')).isFile());
+    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.6','web','reboot-plan.html')).isFile());
   }finally{
     if(old===undefined)delete process.env.EDEN_DATA_HOME;
     else process.env.EDEN_DATA_HOME=old;
