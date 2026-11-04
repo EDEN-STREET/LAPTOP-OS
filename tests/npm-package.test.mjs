@@ -31,7 +31,7 @@ test('npm tarball can be installed offline and run in an isolated virtual user p
     assert.equal(install.status,0,install.stderr);
     const root=path.join(prefix,'node_modules','eden-laptop-os');
     for(const name of ['bin/eden.mjs','lib/quickstart.mjs','lib/network-policy.mjs',
-      'web/index.html','web/security-architecture.html','web/eden-hub.css']){
+      'web/index.html','web/security-architecture.html','web/reboot-plan.html','config/reboot-workflow.v0.1.0.json','lib/reboot-plan.mjs','web/eden-hub.css']){
       assert.ok(fs.statSync(path.join(root,name)).isFile(),name);
     }
     const data=path.join(tmp,'simulated-user-profile');
@@ -48,7 +48,7 @@ test('npm tarball can be installed offline and run in an isolated virtual user p
     const again=quick.prepareQuickstart();
     assert.equal(again.reused_consent,true);
     assert.equal(again.status,'READY');
-    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.5','web','security-architecture.html')).isFile());
+    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.6','web','security-architecture.html')).isFile());
   }finally{
     if(old===undefined)delete process.env.EDEN_DATA_HOME;
     else process.env.EDEN_DATA_HOME=old;
