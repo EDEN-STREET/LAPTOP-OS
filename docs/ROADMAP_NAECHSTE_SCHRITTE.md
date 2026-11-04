@@ -22,3 +22,15 @@
 | Handbuch | Historische 21/22 Kapitel mit öffentlichen Ergänzungen abgleichen | Diff/Hash, keine Originaldatei entfernt |
 | Projekt-Kanban | GitHub-Issue-/Projects-Anbindung erst nach Schnittstellenfreigabe | Derzeit nur browserlokaler JSON-Export |
 | Windows/npm | Realer Windows-E2E-Test und grünes CI | `npm test`, `npm exec`, Playwright, Statusbericht |
+
+
+## Phase v0.8.0-preview.5 – Ein-Kommando-App (Review)
+- [x] Einmaliger lokaler Zustimmungsnachweis pro App-Build; weitere `npm start`-Ausführungen ohne Folgefragen.
+- [x] Versionierte EDEN-UI und separater `PLAN_ONLY`-Qubes-/Whonix-Plan.
+- [x] Fail-closed-Negativtests gegen defekte Zustimmungsdatei und unvollständige Installation.
+- [x] Qubes/Whonix-Zielbild und **getrennte** Tails-Live-Architektur visuell erklärt.
+- [ ] Echtes Qubes-/Tails-System installiert (**nicht Teil von npm**).
+- [ ] Echte Netzwerkisolierung/Kill-Switch im Betrieb verifiziert (**noch nicht implementiert**).
+- [ ] Reale Windows-Datenträger-/Backup-Verifikation und explizit gesonderte OS-Installationsfreigabe (**nicht Teil dieses PRs**).
+
+[Technische Anleitung](EIN-KOMMANDO-START.md) · [Virtuelle Tests](VM-TESTMATRIX.md)
