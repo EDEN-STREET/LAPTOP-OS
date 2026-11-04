@@ -30,3 +30,17 @@ Ein Datei-Hash belegt nur Byte-Gleichheit, nicht Herkunft oder Authentizität. B
 ## Weiterer Ausbau
 
 Reale Integrationen dürfen erst nach Preflight, Berechtigungsmodell, Recovery, Tests und Review vom Status `planned` oder `preview` auf einen produktiven Status wechseln.
+
+
+## Erweiterungspaket
+
+Zusätzlich zum Kern-Hub enthält der Branch jetzt:
+
+- EDEN Academy
+- EDEN Support Center
+- EDEN Markdown Studio
+- EDEN Diff Studio
+- Image Studio mit Text-Layer-MVP
+- dedizierte Playwright-QA für Desktop und Mobile
+
+Der vollständige Statuskatalog liegt in `docs/TOOL-CATALOG.md`.
