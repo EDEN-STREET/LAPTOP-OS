@@ -1,8 +1,8 @@
 {
   "name": "eden-laptop-os",
-  "version": "0.8.0-preview.6",
+  "version": "0.8.0-preview.7",
   "private": true,
-  "description": "EDEN LAPTOP-OS single-consent local npm preview for Windows/Linux; no operating-system or disk changes",
+  "description": "EDEN LAPTOP-OS single-consent npm preview with read-only Gate 5 and reboot-readiness planning",
   "type": "module",
   "bin": {
     "eden": "./bin/eden.mjs"
@@ -19,7 +19,9 @@
     "go": "node bin/eden.mjs quickstart",
     "test:quickstart": "node --test tests/quickstart.test.mjs",
     "reboot:plan": "node bin/eden.mjs reboot-plan",
-    "test:reboot": "node --test tests/reboot-plan.test.mjs"
+    "test:reboot": "node --test tests/reboot-plan.test.mjs",
+    "gate5": "node bin/eden.mjs gate5",
+    "test:gate5": "node --test tests/gate5-preflight.test.mjs"
   },
   "engines": {
     "node": ">=22"
@@ -49,6 +51,9 @@
     "qubes-whonix-plan",
     "tails-live-separate",
     "reboot-readiness-plan",
-    "read-only-qubes-migration"
+    "read-only-qubes-migration",
+    "hardware-preflight",
+    "fail-closed",
+    "non-destructive"
   ]
 }
