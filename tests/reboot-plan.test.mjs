@@ -91,6 +91,8 @@ test('config cannot bypass minimum hardware thresholds or safety switches',()=>{
     x=>{x.mandatory_independent_gates=x.mandatory_independent_gates.slice(1);},
     x=>{x.tails_role='QUBES_DEFAULT_GATEWAY';},
     x=>{x.official_docs.verification='http://untrusted.example/';},
+    x=>{x.official_docs.verification='https://untrusted.example/qubes';},
+    x=>{x.official_docs.hardware='https://www.qubes-os.org.untrusted.example/hcl';},
   ]){
     const cloned=structuredClone(original);
     modify(cloned);
