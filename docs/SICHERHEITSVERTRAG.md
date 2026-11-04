@@ -14,3 +14,6 @@
 11. `eden reboot-plan` erzeugt lediglich einen **lesenden Qubes-Migrationsprüfplan** und startet weder Installer noch Neustart; `--save-plan` speichert nur neue lokale JSON-Datei ohne Überschreiben.
 12. Sämtliche Installationsfreigaben bleiben auf `BLOCKED_INDEPENDENT_REVIEW_REQUIRED`, bis Gerät, Backup, Signaturen, Zielmedium, Bootweg und gesonderte Entscheidung unabhängig verifiziert sind. Die App-Zustimmung kann dafür nicht verwendet werden.
 13. Tails bleibt ein separates Live-System; Whonix in Qubes und Tor-/Leak-Isolation sind nicht durch npm implementiert oder verifiziert.
+
+14. Gate 5 und `eden assess` sind rein lesende Diagnosen; kein übergebener Hash, Backup-JSON-Text oder Gerätepfad kann eine unabhängige Installationsfreigabe erzeugen.
+15. `--strict` prüft Readiness und bleibt nonzero, solange echte unabhängige Voraussetzungen fehlen; CLI-Erfolg ohne `--strict` bestätigt ausschließlich die Berichterstellung.
