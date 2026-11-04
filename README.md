@@ -22,9 +22,21 @@
 
 ---
 
+## Neues sicheres Ein-Kommando-Setup (v0.8.0-preview.5)
+
+**Aus einem lokalen Repo:** `npm start` (oder `npm run go`).
+
+Bei der ersten Ausführung fragt EDEN **genau einmal** nach Zustimmung für die **lokale Browser-App**. Es kopiert die App in ein versionsgebundenes Benutzerverzeichnis, erzeugt bei Bedarf einen **rein dokumentarischen Qubes/Whonix-Plan** und öffnet die Weboberfläche automatisch. Spätere Starts derselben Version verwenden die vorhandene lokale Zustimmung.
+
+**Dies löscht Windows nicht.** Die npm-App installiert weder Qubes noch Tails noch einen Tor-Kill-Switch. Tails ist ein getrennt gestartetes Live-System; Qubes verwendet für Tor üblicherweise Whonix mit `sys-whonix` und `anon-whonix`. Der reale Netzwerkschutz bleibt bis zu eigenen Tests **nicht verifiziert**.
+
+[Ein-Kommando-Bedienungsanleitung](docs/EIN-KOMMANDO-START.md) · [Virtuelle Testmatrix](docs/VM-TESTMATRIX.md) · [Visualisierung der Netzwerkarchitektur](web/security-architecture.html)
+
+---
+
 ## Bestehender LAPTOP-OS-Schnellstart
 
-**V0.8.0-preview.4 · EDEN-Term UI · geführter, nicht-destruktiver Einstieg**
+**V0.8.0-preview.5 · EDEN-Term UI · geführter, nicht-destruktiver Einstieg**
 
 > Die npm-Version installiert eine **lokale EDEN-Browseranwendung und einen Einrichtungsassistenten**. Sie ersetzt **nicht** Windows, Kali, Tails oder Qubes OS und verändert weder Partitionen noch Firmware. Reale OS-Installation erfordert später separate Hardwareprüfung, Backup, offizielle Installationsmedien und Freigabe.
 
