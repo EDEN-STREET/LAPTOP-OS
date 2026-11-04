@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDEN – Reboot-to-Installer Gateplan (nur Vorschau)</title>
+<style>
+:root{color-scheme:dark;--bg:#06100c;--panel:#101b15;--line:#32523d;--green:#70f69e;--text:#e8f6ed;--muted:#b5c4b9;--warning:#ffdc95}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 70% -10%,#17482b,#06100c 60%);color:var(--text);font:15px/1.6 system-ui,sans-serif}
+a{color:#b5d5ff}a:focus-visible,button:focus-visible{outline:3px solid #e2ff9a;outline-offset:3px}
+header{padding:15px max(16px,calc((100vw - 1150px)/2));border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+header b,h1,h2{color:var(--green)}
+main{max-width:1160px;margin:auto;padding:30px 17px 70px}
+h1{font-size:clamp(30px,4.4vw,50px);line-height:1.12;margin:12px 0}h2{font-size:21px}
+.lead{max-width:900px;color:var(--muted)}
+.status{display:inline-block;border:1px solid #b78b4e;border-radius:99px;padding:5px 11px;color:var(--warning);font-weight:700;font-size:12px}
+.panels{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-top:20px}
+.card{border:1px solid var(--line);background:rgba(16,27,21,.9);padding:21px;border-radius:17px;min-width:0}
+.timeline{list-style:none;margin:13px 0;padding:0;display:grid;gap:9px}
+.timeline li{display:grid;grid-template-columns:58px 1fr auto;gap:10px;align-items:center;border:1px solid #30463a;border-radius:12px;padding:10px 13px;background:#0a1810}
+.step{color:var(--green);font-weight:800;font:800 13px ui-monospace,monospace}
+.state{font:700 11px ui-monospace,monospace;color:var(--warning)}
+.small{color:var(--muted);font-size:13px}.links{display:grid;gap:8px}
+button{background:#134c2d;border:1px solid #63d890;color:#ecfff2;padding:11px 15px;border-radius:10px;font-weight:700;cursor:pointer}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:15px;border-radius:12px;background:#051009;border:1px solid #416448;color:#c0f9d5}
+.alert{margin:17px 0;border:1px solid #7d633e;background:#291d0d;color:#ffe0a0;padding:14px 18px;border-radius:12px}
+footer{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted)}
+@media(max-width:800px){.panels{grid-template-columns:1fr}.timeline li{grid-template-columns:42px 1fr}.state{grid-column:2}}
+</style></head>
+<body>
+<header><b>◆ EDEN STREET / EDEN Suite</b><nav><a href="setup.html">Setup</a> · <a href="security-architecture.html">Qubes / Whonix / Tails</a> · <a href="index.html">EDEN-Term</a></nav></header>
+<main>
+<span class="status" role="status">INSTALLATION GESPERRT · NUR PLANUNG</span>
+<h1>Reboot-to-Installer: kontrollierter Ablauf</h1>
+<p class="lead">Das ist die vorbereitete Installationsreise, kein automatischer Neustart. Die erste npm-Zustimmung deckt ausschließlich die lokale EDEN-App ab. Jeder Schritt zur echten Betriebssystemänderung benötigt später unabhängige Nachweise und eine gesonderte Entscheidung.</p>
+<div class="panels">
+<section class="card" aria-labelledby="planTitle">
+<h2 id="planTitle">Acht Freigabestufen</h2>
+<ol class="timeline">
+<li><span class="step">G0</span><span>Systemgrunddaten ausschließlich lesen</span><span class="state">INVENTORY</span></li>
+<li><span class="step">G1</span><span>Qubes-Hardwarekompatibilität und IOMMU prüfen</span><span class="state">UNBEKANNT</span></li>
+<li><span class="step">G2</span><span>Offizielles Installationsabbild samt Signatur prüfen</span><span class="state">UNBEKANNT</span></li>
+<li><span class="step">G3</span><span>Backup und reale Wiederherstellbarkeit nachweisen</span><span class="state">UNBEKANNT</span></li>
+<li><span class="step">G4</span><span>Zieldatenträger eindeutig getrennt vom Bestand identifizieren</span><span class="state">UNBEKANNT</span></li>
+<li><span class="step">G5</span><span>Änderung am Betriebssystem separat bestätigen</span><span class="state">NICHT ERTEILT</span></li>
+<li><span class="step">G6</span><span>Offizielle Installationsumgebung starten</span><span class="state">NICHT IMPLEMENTIERT</span></li>
+<li><span class="step">G7</span><span>Qubes + Whonix und Tor-Netzwerkisolation real prüfen</span><span class="state">NICHT IMPLEMENTIERT</span></li>
+</ol>
+</section>
+<aside class="card" aria-labelledby="qaTitle"><h2 id="qaTitle">Aktueller Sicherheitszustand</h2>
+<p><strong>Windows:</strong> unverändert<br>
+<strong>Neustart:</strong> nicht erlaubt<br>
+<strong>Qubes-Installation:</strong> nicht ausgeführt<br>
+<strong>Tor / Kill-Switch:</strong> nicht verifiziert<br>
+<strong>Tails:</strong> eigenständiges Live-System</p>
+<p class="small">CPU- und RAM-Werte aus einer lokalen Bestandsaufnahme beweisen weder IOMMU-Unterstützung noch die Eignung eines Zieldatenträgers.</p>
+<button id="details" type="button" aria-expanded="false" aria-controls="terminal">Lesenden npm-Prüfbefehl anzeigen</button>
+<pre id="terminal" hidden>npm run reboot:plan
+node bin/eden.mjs reboot-plan --json
+node bin/eden.mjs reboot-plan --save-plan</pre>
+<h2>Offizielle Dokumentation</h2><div class="links">
+<a href="https://www.qubes-os.org/doc/InstallationGuide/" target="_blank" rel="noopener noreferrer">Qubes-Installationsanleitung</a>
+<a href="https://www.qubes-os.org/doc/system-requirements/" target="_blank" rel="noopener noreferrer">Qubes-Hardwarevoraussetzungen</a>
+<a href="https://doc.qubes-os.org/en/r4.3/project-security/verifying-signatures.html" target="_blank" rel="noopener noreferrer">Signaturprüfung der Installationsmedien</a>
+<a href="https://www.qubes-os.org/hcl/" target="_blank" rel="noopener noreferrer">Hardware-Kompatibilitätsliste</a></div></aside></div>
+<div class="alert"><strong>Keine Ein-Klick-Löschung.</strong> Dieses Modul kann keine Windows-Partition löschen, kein Installationsmedium flashen, keinen Bootloader verändern und keinen Neustart veranlassen. Es erzeugt bei ausdrücklichem Wunsch lediglich einen neuen, lokalen JSON-Prüfplan.</div>
+<footer>EDEN LAPTOP-OS · Reboot-Gates v0.1.0 · Simulation/Planung · tatsächliche Hardware- und Wiederherstellungsnachweise ausstehend.</footer>
+</main>
+<script>
+const trigger=document.getElementById('details'), panel=document.getElementById('terminal');
+trigger.addEventListener('click',()=>{const show=panel.hidden;panel.hidden=!show;trigger.setAttribute('aria-expanded',String(show));});
+</script>
+</body></html>
