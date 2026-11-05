@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const read = p => readFile(new URL('../'+p, import.meta.url),'utf8');
 
 test('Ultimate Hub and local tools are packaged', async () => {
-  for (const path of ['web/ultimate-hub.html','web/tool-registry.js','web/image-studio.html','web/local-tools.html','web/academy.html','web/support.html','web/markdown-studio.html','web/diff-studio.html']) {
+  for (const path of ['web/ultimate-hub.html','web/tool-registry.js','web/image-studio.html','web/local-tools.html','web/academy.html','web/support.html','web/markdown-studio.html','web/diff-studio.html','web/portable-toolbox.html']) {
     const body = await read(path);
     assert.ok(body.length > 500, path+' should contain a real implementation');
   }
@@ -58,4 +58,17 @@ test('writing and diff studios avoid remote execution paths', async () => {
 test('image studio includes a local text layer stack', async () => {
   const page = await read('web/image-studio.html');
   for (const marker of ['id="layers"','id="addLayer"','state.layers','Text-Layer']) assert.match(page,new RegExp(marker.replace(/[.*+?^$()|[\]{}]/g,'\\$&')));
+});
+
+
+test('portable toolbox profiles preserve trust boundaries', async () => {
+  const page = await read('web/portable-toolbox.html');
+  const profiles = JSON.parse(await read('config/toolbox-profiles.json'));
+  assert.match(page,/dom0/);
+  assert.match(page,/sys-whonix/);
+  assert.match(page,/Persistent Storage/);
+  assert.equal(profiles.build, '0.8.0-preview.10');
+  assert.deepEqual(profiles.profiles['qubes-app'].forbidden_targets, ['dom0']);
+  assert.deepEqual(profiles.profiles['whonix-workstation'].forbidden_targets, ['sys-whonix','dom0']);
+  assert.deepEqual(profiles.profiles['tails-persistent'].forbidden_targets, ['tails-base-image']);
 });
