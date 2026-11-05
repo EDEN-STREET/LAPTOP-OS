@@ -29,7 +29,7 @@ Bei einem bereits belegten Port 8765 stoppt EDEN mit einer Fehlermeldung. Es bee
 
 ## Aufbewahrung, Updates und Rückkehr
 
-Die kopierte App liegt pro Benutzer unter `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.9\web`. Ein erneuter Start überschreibt diese Version nicht. Pläne liegen separat im `state`-Ordner und werden nur mit `wx` angelegt, nicht still ersetzt. Für eine spätere Version wird ein neuer Versionsordner verwendet.
+Die kopierte App liegt pro Benutzer unter `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.10\web`. Ein erneuter Start überschreibt diese Version nicht. Pläne liegen separat im `state`-Ordner und werden nur mit `wx` angelegt, nicht still ersetzt. Für eine spätere Version wird ein neuer Versionsordner verwendet.
 
 EDEN konfiguriert kein Windows-Autostart und keine Administratorrechte. Eine spätere vollständige Betriebssysteminstallation ist **kein Teil dieses npm-Starters**.
 
@@ -47,7 +47,7 @@ EDEN konfiguriert kein Windows-Autostart und keine Administratorrechte. Eine sp�
 
 ## Nachvollziehbarkeit
 
-EDEN v0.8.0-preview.9 ist ein lokaler sicherer Einstieg. Installationsfreigabe ist ausdrücklich **nur** die Zustimmung zu einer neuen App-Kopie im Benutzerprofil und, falls gewünscht, einer JSON-Plan-Datei. Sie ist **niemals** eine Zustimmung zu Formatierung, Firmware-Flash oder einer echten Linux-/Qubes-Installation.
+EDEN v0.8.0-preview.10 ist ein lokaler sicherer Einstieg. Installationsfreigabe ist ausdrücklich **nur** die Zustimmung zu einer neuen App-Kopie im Benutzerprofil und, falls gewünscht, einer JSON-Plan-Datei. Sie ist **niemals** eine Zustimmung zu Formatierung, Firmware-Flash oder einer echten Linux-/Qubes-Installation.
 
 
 ## Optional: Reboot-to-Installer-Prüfplan (keine Installation)
