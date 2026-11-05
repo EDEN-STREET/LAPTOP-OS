@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "profile": "ANONYMITY_FIRST",
+  "default": true,
+  "principle": "minimize collection before protecting storage",
+  "telemetry": {
+    "enabled": false,
+    "remote_analytics": false,
+    "crash_uploads": false
+  },
+  "identity": {
+    "real_names_required": false,
+    "personal_accounts_required": false,
+    "cross_compartment_identifiers": false,
+    "case_ids": "random-local-pseudonymous"
+  },
+  "storage": {
+    "session_default": "ephemeral",
+    "duckdb_default": "temporary-or-encrypted-local",
+    "remote_sync_default": false,
+    "full_prompt_logging": false,
+    "raw_chat_logging": false,
+    "contact_graph_logging": false,
+    "retention": "minimum-required",
+    "automatic_expiry_supported": true
+  },
+  "embeddings": {
+    "generation": "local-only-by-default",
+    "raw_document_upload": false,
+    "store_minimum_chunk_text": true,
+    "provenance": ["source_hash", "local_case_id", "snapshot_id"],
+    "cross_compartment_search": false
+  },
+  "remote_data_layers": {
+    "postgres_pgvector": "opt-in-minimized",
+    "supabase": "opt-in-minimized",
+    "iceberg": "opt-in-versioned-evidence",
+    "gitea": "code-and-config-only-by-default",
+    "source_material": "never-sync-by-default"
+  },
+  "models": {
+    "minimum_context": true,
+    "planner_receives_only_needed_context": true,
+    "worker_receives_reduced_task_contract": true,
+    "model_outputs_not_persisted_by_default": true
+  },
+  "compartments": [
+    "everyday",
+    "editorial",
+    "source-sensitive",
+    "testcafe"
+  ],
+  "network": {
+    "offline_capable": true,
+    "remote_required": false,
+    "sync_requires_explicit_profile": true
+  },
+  "forbidden_defaults": [
+    "centralized-source-contact-graph",
+    "global-search-across-sensitive-compartments",
+    "automatic-cloud-backup-of-source-data",
+    "persistent-full-session-transcripts",
+    "remote-embedding-of-sensitive-documents"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "EDEN-Term Natural Language Router",
+  "confidence_threshold": 0.82,
+  "model_priority": ["needle2", "deterministic-fallback"],
+  "rules": [
+    "Model output never executes shell commands.",
+    "Only allowlisted intents may reach the action dispatcher.",
+    "Unknown or low-confidence decisions fall back to deterministic parsing.",
+    "Write-like requests become PLAN_ONLY until a separate approval gate exists.",
+    "Navigation targets must be part of the EDEN local UI allowlist."
+  ],
+  "intents": {
+    "open_module": {"risk":"safe","fields":["module"]},
+    "show_next_step": {"risk":"safe","fields":["area"]},
+    "readonly_check": {"risk":"safe","fields":["check"]},
+    "create_plan": {"risk":"plan-only","fields":["goal"]},
+    "explain": {"risk":"safe","fields":["topic"]},
+    "unknown": {"risk":"safe","fields":[]}
+  }
+}

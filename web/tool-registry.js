@@ -14,6 +14,7 @@ window.EDEN_TOOL_REGISTRY = [
   {id:'projects',title:'Projekte / Kanban',category:'Operations',href:'projects.html',status:'active',mode:'local',origin:'existing',description:'Lokale Projekt- und Aufgabenplanung.'},
   {id:'sources',title:'Quellenregister',category:'Knowledge',href:'quellen.html',status:'active',mode:'read-only',origin:'existing',description:'Provenienz, Freigabegrenzen und Quellenstatus.'},
   {id:'toolbox',title:'Werkzeugkoffer',category:'Tools',href:'toolbox.html',status:'active',mode:'local',origin:'existing',description:'Zentrale Registry aller bestätigten und neu integrierten EDEN-Werkzeuge.'},
+  {id:'model-gateway',title:'EDEN Model Gateway',category:'AI',href:'model-gateway.html',status:'active',mode:'local-broker',origin:'new',description:'Session-only Verbindung zu OpenRouter, Hugging Face und NVIDIA NIM mit lokaler Modellrollen-Auswahl.'},
   {id:'image-studio',title:'EDEN Image Studio',category:'Tools',href:'image-studio.html',status:'active',mode:'local',origin:'new',description:'Lokaler Bildeditor mit nicht-destruktiven Filtern, Drehen, Spiegeln, Undo/Redo und Export.'},
   {id:'local-tools',title:'Local Utility Lab',category:'Tools',href:'local-tools.html',status:'active',mode:'local',origin:'new',description:'Lokale SHA-256-, JSON-, Text- und Dateinamen-Werkzeuge ohne Upload.'},
   {id:'markdown-studio',title:'EDEN Markdown Studio',category:'Tools',href:'markdown-studio.html',status:'active',mode:'local',origin:'new',description:'Lokaler Markdown-Editor mit sicherer DOM-Vorschau und Dateiimport/-export.'},
