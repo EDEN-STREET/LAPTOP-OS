@@ -89,3 +89,15 @@ test('OpenLLM custom endpoint remains loopback-only', () => {
   assert.throws(()=>g.setBaseUrl('openllm-local','https://remote.example/v1'),/loopback/i);
   assert.throws(()=>g.setBaseUrl('openai','http://127.0.0.1:9999/v1'),/not allowed/i);
 });
+
+
+test('server CSP permits local API only on Model Gateway page', async t => {
+  const server=buildServer(path.join(ROOT,'web'),{modelGateway:new ModelGateway({fetchImpl:fakeFetch(),env:{}})});
+  await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve)});
+  t.after(()=>new Promise(resolve=>server.close(()=>resolve())));
+  const origin='http://127.0.0.1:'+server.address().port;
+  const home=await fetch(origin+'/index.html');
+  const gateway=await fetch(origin+'/model-gateway.html');
+  assert.match(home.headers.get('content-security-policy'),/connect-src 'none'/);
+  assert.match(gateway.headers.get('content-security-policy'),/connect-src 'self'/);
+});
