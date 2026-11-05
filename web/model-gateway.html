@@ -19,7 +19,7 @@ input,select{width:100%}.models{max-height:220px;overflow:auto;font:12px ui-mono
 <script>
 'use strict';
 const $=s=>document.querySelector(s);
-const labels={openrouter:'OpenRouter',huggingface:'Hugging Face', 'nvidia-hosted':'NVIDIA NIM Hosted','nvidia-local':'NVIDIA NIM Local'};
+const labels={openai:'OpenAI API',openrouter:'OpenRouter',huggingface:'Hugging Face','nvidia-hosted':'NVIDIA NIM Hosted','nvidia-local':'NVIDIA NIM Local','openllm-local':'OpenLLM Local'};
 const roles=['planner','compiler','worker','judge','embedder'];
 const state={providers:[],catalogs:{},selection:{}};
 
@@ -36,8 +36,8 @@ function providerCard(p){
  const h=document.createElement('h3');h.textContent=p.label||labels[p.id]||p.id;
  const st=document.createElement('div');st.className='status '+(p.connected?'connected':'offline');st.textContent=p.connected?'● verifiziert':p.configured?'◐ konfiguriert · noch nicht geprüft':'○ nicht verbunden';
  const privacy=document.createElement('p');privacy.className='small';privacy.textContent=p.remote?'Remote: Daten verlassen EDEN erst nach deinem Verbindungs-Klick.':'Lokal: nur Loopback-Verbindung.';
- const token=document.createElement('input');token.type='password';token.autocomplete='off';token.placeholder=p.id==='nvidia-local'?'Token optional':'API-Key / Access Token';token.setAttribute('aria-label',h.textContent+' Zugangsschlüssel');
- const url=document.createElement('input');url.type='url';url.value=p.base_url||'';url.placeholder='http://127.0.0.1:8000/v1';url.hidden=p.id!=='nvidia-local';url.setAttribute('aria-label','Lokale NVIDIA NIM URL');
+ const token=document.createElement('input');token.type='password';token.autocomplete='off';token.placeholder=p.remote?'API-Key / Access Token':'Token optional';token.setAttribute('aria-label',h.textContent+' Zugangsschlüssel');
+ const url=document.createElement('input');url.type='url';url.value=p.base_url||'';url.placeholder=p.base_url||'http://127.0.0.1:3000/v1';url.hidden=!p.configurable_base_url;url.setAttribute('aria-label','Lokale NVIDIA NIM URL');
  const row=document.createElement('div');row.className='row';
  const connect=document.createElement('button');connect.type='button';connect.textContent=p.connected?'Neu verbinden':'Verbinden';
  const disconnect=document.createElement('button');disconnect.type='button';disconnect.textContent='Trennen';disconnect.disabled=!p.connected;
@@ -46,7 +46,7 @@ function providerCard(p){
  connect.onclick=async()=>{
    connect.disabled=true;setStatus('Verbindung wird geprüft …');
    try{
-     const body={provider:p.id};if(token.value)body.token=token.value;if(p.id==='nvidia-local')body.base_url=url.value;
+     const body={provider:p.id};if(token.value)body.token=token.value;if(p.configurable_base_url)body.base_url=url.value;
      const r=await api('/api/model-gateway/connect',{method:'POST',body:JSON.stringify(body)});
      token.value='';state.catalogs[p.id]=r.models||[];setStatus((r.models||[]).length+' Modelle geladen · '+h.textContent);await refresh();
    }catch(e){setStatus(e.message,true)}finally{connect.disabled=false}
