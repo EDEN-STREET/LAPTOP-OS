@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {validate} from '../src/cli.mjs';
+const good=JSON.parse(fs.readFileSync(new URL('../workflows/example.json',import.meta.url)));
+test('example valid',()=>assert.equal(validate(good).valid,true));
+test('unknown executable skill fails',()=>assert.equal(validate({...good,steps:[{skillId:'shell.execute',parameters:{}}]}).valid,false));
+test('duplicate step fails',()=>assert.equal(validate({...good,steps:[good.steps[0],good.steps[0]]}).valid,false));
+test('unexpected fields fail',()=>assert.equal(validate({...good,execute:true}).valid,false));
+test('arguments blocked',()=>assert.equal(validate({...good,steps:[{skillId:'docs.inventory',parameters:{command:'not allowed'}}]}).valid,false));
