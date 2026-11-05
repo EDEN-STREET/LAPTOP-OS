@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "product": "EDEN OneFile Runtime",
+  "build": "0.8.0-preview.10",
+  "distribution": "single-executable-per-platform",
+  "network_installation": false,
+  "first_run": {
+    "action": "extract-verified-internal-payload",
+    "cache": "versioned-user-cache",
+    "requires_admin": false,
+    "downloads": false
+  },
+  "embedded": {
+    "eden_ui": true,
+    "node_runtime": true,
+    "python_runtime": true,
+    "duckdb": true,
+    "needle2": {
+      "enabled": true,
+      "role": "primary-intent-router",
+      "weights": "embedded",
+      "network_required": false
+    },
+    "jev": {
+      "enabled": true,
+      "role": "secondary-structured-decision-engine",
+      "runtime": "embedded",
+      "weights": "embedded-full-profile",
+      "note": "Full profile is large because model weights and accelerator runtimes are bundled."
+    },
+    "nanobot": {
+      "enabled": true,
+      "role": "agent-framework",
+      "runtime": "embedded-python-environment",
+      "shell_tools_default": false
+    }
+  },
+  "policy": {
+    "model_output_is_advisory": true,
+    "shell_from_model_output": false,
+    "writes_require_separate_approval": true,
+    "low_confidence": "fallback-or-block",
+    "remote_model_downloads": false
+  },
+  "profiles": {
+    "windows-x64": {"artifact":"EDEN-OneFile-Windows-x64.exe"},
+    "linux-x86_64": {"artifact":"EDEN-OneFile-Linux-x86_64.run","targets":["Linux","Qubes AppVM","Whonix Workstation","Tails Persistent Storage"]}
+  }
+}
