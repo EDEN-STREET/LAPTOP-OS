@@ -1,38 +1,283 @@
 {
-  "schema_version": 1,
-  "name": "EDEN Goal Mesh",
+  "schema_version": 2,
+  "name": "EDEN NEC Goal Mesh",
   "default_profile": "ANONYMITY_FIRST",
   "core": {
-    "name": "Goal Core",
-    "protocol": "A2A",
-    "responsibilities": ["goal-state","task-routing","verification-state","policy-handoff"],
+    "name": "NEC Goal Core",
+    "architecture": "orchestrator-with-feasibility-feedback",
+    "authoritative_goal": true,
+    "protocol_bus": "A2A",
+    "internal_envelope": "Ponytails",
+    "responsibilities": [
+      "hold-global-goal",
+      "decompose-into-subgoals",
+      "assign-bmad-arm",
+      "collect-feasibility-feedback",
+      "replan-on-failure-or-drift",
+      "track-verification-state",
+      "handoff-to-node-policy-broker"
+    ],
     "raw_identity_data": false
   },
   "method": {
-    "orchestration": "NEC-style plan/delegate/feasibility-feedback",
-    "workflow": "BMAD-inspired role-and-artifact phases",
-    "iteration": "RALF loop per arm",
+    "orchestration": "NEC real-world-agent pattern: orchestrator -> subagents -> feasibility validation -> feedback -> replan",
+    "lifecycle": "BMAD role-and-artifact system",
+    "iteration": "Ralph loop per arm and optional deterministic BMAD loop for build work",
     "skills": "Superpowers-compatible skill packs",
-    "communication": "Ponytails envelope mapped to A2A tasks at agent boundaries"
+    "communication": "Ponytails envelope internally; A2A task/message boundary between independent agents"
   },
-  "model_cascade": {
-    "planner": {"preferred_role":"planner","default_local_class":"qwen-3b"},
-    "compiler": {"preferred_role":"compiler","default_local_class":"qwen-1.5b"},
-    "worker": {"preferred_role":"worker","default_local_class":"qwen-0.5b"},
-    "judge": {"preferred_role":"judge","verification":["compiler","planner","node-policy-broker"]},
-    "embedder": {"preferred_role":"embedder","local_only_default":true}
-  },
-  "arms": [
-    {"id":"research","goal_loop":true,"superpowers":["brainstorming","writing-plans"],"writes":"blocked"},
-    {"id":"build","goal_loop":true,"superpowers":["test-driven-development","executing-plans"],"writes":"plan-only"},
-    {"id":"qa","goal_loop":true,"superpowers":["systematic-debugging","verification-before-completion"],"writes":"blocked"},
-    {"id":"security","goal_loop":true,"superpowers":["systematic-debugging","verification-before-completion"],"writes":"blocked"},
-    {"id":"knowledge","goal_loop":true,"superpowers":["writing-skills"],"writes":"plan-only"},
-    {"id":"ops","goal_loop":true,"superpowers":["finishing-a-development-branch"],"writes":"approval-required"}
+  "bmad_ring": [
+    {
+      "id": "analyst",
+      "role": "Analyst",
+      "goal": "understand problem/domain",
+      "artifacts": [
+        "research",
+        "project-context"
+      ],
+      "writes": "blocked"
+    },
+    {
+      "id": "pm",
+      "role": "Product Manager",
+      "goal": "define product intent",
+      "artifacts": [
+        "product-brief",
+        "prd"
+      ],
+      "writes": "plan-only"
+    },
+    {
+      "id": "po",
+      "role": "Product Owner",
+      "goal": "slice and refine executable work",
+      "artifacts": [
+        "spec",
+        "tickets",
+        "board"
+      ],
+      "writes": "plan-only"
+    },
+    {
+      "id": "architect",
+      "role": "Architect",
+      "goal": "preserve architecture consistency",
+      "artifacts": [
+        "architecture"
+      ],
+      "writes": "plan-only"
+    },
+    {
+      "id": "dev",
+      "role": "Developer",
+      "goal": "build verified change",
+      "artifacts": [
+        "implementation",
+        "tests",
+        "review"
+      ],
+      "writes": "approval-required"
+    },
+    {
+      "id": "ux",
+      "role": "UX Designer",
+      "goal": "define experience",
+      "artifacts": [
+        "design",
+        "experience"
+      ],
+      "writes": "plan-only"
+    }
   ],
-  "ralf_loop": ["goal","plan","delegate","execute-narrow-step","observe","verify","feed-back","repeat-or-complete"],
+  "arms": [
+    {
+      "id": "research",
+      "bmad_owner": "analyst",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "brainstorming",
+        "writing-plans"
+      ],
+      "feasibility": [
+        "source-check",
+        "scope-check"
+      ],
+      "writes": "blocked"
+    },
+    {
+      "id": "product",
+      "bmad_owner": "pm+po",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "writing-plans"
+      ],
+      "feasibility": [
+        "requirements-check",
+        "acceptance-criteria"
+      ],
+      "writes": "plan-only"
+    },
+    {
+      "id": "architecture",
+      "bmad_owner": "architect",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "writing-plans",
+        "systematic-debugging"
+      ],
+      "feasibility": [
+        "dependency-check",
+        "trust-boundary-check"
+      ],
+      "writes": "plan-only"
+    },
+    {
+      "id": "build",
+      "bmad_owner": "dev",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "test-driven-development",
+        "executing-plans"
+      ],
+      "feasibility": [
+        "tests",
+        "lint",
+        "build",
+        "policy"
+      ],
+      "writes": "approval-required"
+    },
+    {
+      "id": "qa",
+      "bmad_owner": "dev",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "systematic-debugging",
+        "verification-before-completion"
+      ],
+      "feasibility": [
+        "e2e",
+        "negative-tests",
+        "regression"
+      ],
+      "writes": "blocked"
+    },
+    {
+      "id": "ux",
+      "bmad_owner": "ux",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "brainstorming",
+        "verification-before-completion"
+      ],
+      "feasibility": [
+        "responsive-check",
+        "accessibility-check"
+      ],
+      "writes": "plan-only"
+    },
+    {
+      "id": "security",
+      "bmad_owner": "cross-cutting",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "systematic-debugging",
+        "verification-before-completion"
+      ],
+      "feasibility": [
+        "policy",
+        "privacy",
+        "anonymity-first",
+        "evidence"
+      ],
+      "writes": "blocked"
+    },
+    {
+      "id": "ops",
+      "bmad_owner": "dev+po",
+      "local_goal": true,
+      "ralph_loop": true,
+      "superpowers": [
+        "finishing-a-development-branch"
+      ],
+      "feasibility": [
+        "ci",
+        "rollback",
+        "release-evidence"
+      ],
+      "writes": "approval-required"
+    }
+  ],
+  "model_cascade": {
+    "nec_orchestrator": {
+      "preferred_role": "planner",
+      "default_local_class": "qwen-3b",
+      "sees": "minimum-global-goal-context"
+    },
+    "arm_compiler": {
+      "preferred_role": "compiler",
+      "default_local_class": "qwen-1.5b",
+      "sees": "assigned-subgoal-and-required-artifacts"
+    },
+    "arm_worker": {
+      "preferred_role": "worker",
+      "default_local_class": "qwen-0.5b",
+      "sees": "narrow-allowlisted-task-contract"
+    },
+    "verifier": {
+      "preferred_role": "judge",
+      "verification": [
+        "arm-compiler",
+        "nec-orchestrator",
+        "node-policy-broker"
+      ]
+    },
+    "embedder": {
+      "preferred_role": "embedder",
+      "local_only_default": true
+    }
+  },
+  "ralph_loop": [
+    "receive-subgoal",
+    "plan-local-step",
+    "execute-narrow-step",
+    "observe",
+    "verify",
+    "emit-feasibility-feedback",
+    "repeat-or-return"
+  ],
+  "nec_feedback_loop": [
+    "global-goal",
+    "decompose",
+    "delegate-to-bmad-arms",
+    "arm-ralph-loops",
+    "feasibility-validation",
+    "collect-feedback",
+    "replan",
+    "global-verification",
+    "complete-or-repeat"
+  ],
+  "communication": {
+    "center_bus": "A2A",
+    "internal_message_schema": "Ponytails",
+    "cross_arm_allowed": true,
+    "cross_compartment_context_default": "deny",
+    "source_sensitive_minimization": true
+  },
   "execution_gate": {
-    "small_worker_executes_only_after": ["compiler-check","planner-check","node-policy-check"],
+    "small_worker_executes_only_after": [
+      "arm-compiler-check",
+      "nec-orchestrator-check",
+      "node-policy-check"
+    ],
+    "feasibility_proof_required": true,
     "llm_consensus_is_not_authorization": true
   }
 }
