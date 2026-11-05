@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "name": "EDEN Governance Core",
+  "default_profile": "ANONYMITY_FIRST",
+  "evidence_levels": {
+    "E0": "goal-or-architecture-only",
+    "E1": "reported-or-claimed",
+    "E2": "artifact-trace-present",
+    "E3": "current-runtime-evidence",
+    "E4": "independently-reproduced-and-documented"
+  },
+  "required_registries": {
+    "machine_inventory": "machine-inventory.json",
+    "service_registry": "service-registry.yaml",
+    "port_registry": "ports.csv",
+    "model_registry": "model-registry.yaml",
+    "git_source_of_truth": "GIT_SOURCE_OF_TRUTH.md",
+    "skill_registry": "skill-registry.json"
+  },
+  "task_contract": {
+    "atomic_subtasks_min": 1,
+    "atomic_subtasks_typical_max": 7,
+    "qualities": ["specific","context-rich","measurable","isolated","verifiable"],
+    "completion_requires": ["expected-output-compared","tests-read","evidence-recorded","original-goal-rechecked"]
+  },
+  "architecture_records": {
+    "ubiquitous_language": "UBIQUITOUS_LANGUAGE.md",
+    "adr_directory": ".decisions/",
+    "progress_checkpoint": "PROGRESS.md",
+    "design_contract": "DESIGN.md",
+    "llm_bootstrap": "docs/llms.txt"
+  },
+  "cross_cutting_agents": [
+    "discovery-agent",
+    "documentation-agent",
+    "security-analyst",
+    "workflow-planner",
+    "verification-agent",
+    "audit-agent",
+    "incident-rca-agent"
+  ],
+  "reliability": {
+    "root_cause_before_fix": true,
+    "graceful_degradation": true,
+    "timeouts_required_for_external_calls": true,
+    "duplicate_action_guard": true,
+    "idempotency_required_for_writes": true,
+    "retry_budget_required": true
+  },
+  "events": {
+    "id": "uuid",
+    "minimum_fields": ["event_id","goal_id","actor","model","action","result","classification","evidence_level"],
+    "append_only_default": true,
+    "integrity": "hash-chain-or-signature",
+    "full_prompt_logging_default": false,
+    "source_contact_graph_default": false,
+    "retention": "minimum-required"
+  },
+  "execution_boundaries": {
+    "raw_terminal_bridge": false,
+    "docker_socket_to_agents": false,
+    "cluster_admin_to_workflow_engine": false,
+    "browser_runner_as_root": false,
+    "unrestricted_shell_from_llm": false,
+    "runner_isolation_required": true
+  },
+  "credentials": {
+    "agents_receive_raw_secrets_by_default": false,
+    "session_or_single_use_tokens_preferred": true,
+    "ttl_required": true,
+    "secret_values_in_logs": false,
+    "legacy_hardcoded_secrets": "treat-as-compromised-and-rotate"
+  },
+  "knowledge_planes": {
+    "code_graph": "separate",
+    "document_graph": "separate",
+    "raw_terminal_history": "separate",
+    "summaries": "derived-and-backlinked",
+    "source_sensitive_cross_compartment_search": false
+  },
+  "data_rules": {
+    "copy_only_for_personal_originals": true,
+    "imports_require": ["source-reference","sha256","timestamp","classification"],
+    "backup_valid_only_after_restore_test": true,
+    "active_databases_on_unreliable_remote_mounts": false
+  },
+  "release_gate": {
+    "required": ["plan","task-ledger","tests","screenshots-when-ui","commit","walkthrough","changelog","rollback"],
+    "simulation_must_not_be_reported_as_runtime": true,
+    "signed_release_preferred": true
+  }
+}
