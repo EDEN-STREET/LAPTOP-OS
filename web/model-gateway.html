@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDEN Model Gateway</title><link rel="stylesheet" href="eden-hub.css">
+<style>
+.providers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.provider{border:1px solid var(--edge);border-radius:14px;padding:14px;background:var(--card)}
+.provider h3{margin:0 0 5px}.provider .status{font:12px ui-monospace,monospace}.connected{color:var(--accent)}.offline{color:var(--amber)}
+.row{display:grid;grid-template-columns:1fr auto;gap:8px}.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.role{border:1px solid var(--edge);border-radius:12px;padding:12px}
+input,select{width:100%}.models{max-height:220px;overflow:auto;font:12px ui-monospace,monospace}.models button{display:block;width:100%;text-align:left;margin:5px 0}
+.privacy{border-color:#6d5c2e;background:#28230e}.small{font:12px ui-monospace,monospace;color:var(--muted)}
+</style></head><body>
+<header><nav class="topnav"><span class="brand">◆ EDEN MODEL GATEWAY</span><a href="index.html">EDEN-TERM</a><a href="ultimate-hub.html">ULTIMATE HUB</a><a href="toolbox.html">TOOLBOX</a></nav></header>
+<main class="shell"><span class="eyebrow">LOCAL BROKER / REMOTE OPT-IN</span><h1 class="headline">Modelle verbinden, ohne EDENs Policy zu umgehen.</h1>
+<p class="lead">OpenRouter, Hugging Face Inference Providers und NVIDIA NIM werden über den lokalen Node-Broker angebunden. Schlüssel bleiben standardmäßig nur im laufenden EDEN-Prozess.</p>
+<div class="note privacy"><strong>Anonymity First:</strong> Sobald du einen Remote-Provider verwendest, erhält dieser mindestens Netzwerkmetadaten und den Inhalt der gesendeten Anfrage. Für source-sensitive Arbeit bleiben die eingebetteten lokalen Modelle der Standard.</div>
+<section class="panel"><h2>Provider</h2><div id="providers" class="providers"></div><p id="status" class="status" aria-live="polite"></p></section>
+<section class="panel"><h2>Modellrollen</h2><p class="muted">Das größte Modell plant, das mittlere kompiliert den Auftrag, der kleine Worker erzeugt den engsten Tool-Vertrag. Judge und Policy prüfen vor einer Ausführung.</p><div id="roles" class="roles"></div></section>
+<section class="panel"><h2>Aktive Auswahl</h2><pre id="selection">{}</pre></section>
+</main><footer>EDEN Model Gateway · Session-Credentials · kein Token-Logging</footer>
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+const labels={openrouter:'OpenRouter',huggingface:'Hugging Face', 'nvidia-hosted':'NVIDIA NIM Hosted','nvidia-local':'NVIDIA NIM Local'};
+const roles=['planner','compiler','worker','judge','embedder'];
+const state={providers:[],catalogs:{},selection:{}};
+
+async function api(path,opts={}){
+ const res=await fetch(path,{...opts,headers:{'content-type':'application/json',...(opts.headers||{})}});
+ const body=await res.json().catch(()=>({}));
+ if(!res.ok)throw new Error(body.error||('HTTP '+res.status));
+ return body;
+}
+function setStatus(t,bad=false){$('#status').textContent=t;$('#status').style.color=bad?'var(--red)':'var(--accent)'}
+
+function providerCard(p){
+ const box=document.createElement('article');box.className='provider';box.dataset.provider=p.id;
+ const h=document.createElement('h3');h.textContent=p.label||labels[p.id]||p.id;
+ const st=document.createElement('div');st.className='status '+(p.connected?'connected':'offline');st.textContent=p.connected?'● verbunden'+(p.credential_source?' · '+p.credential_source:''):'○ nicht verbunden';
+ const privacy=document.createElement('p');privacy.className='small';privacy.textContent=p.remote?'Remote: Daten verlassen EDEN erst nach deinem Verbindungs-Klick.':'Lokal: nur Loopback-Verbindung.';
+ const token=document.createElement('input');token.type='password';token.autocomplete='off';token.placeholder=p.id==='nvidia-local'?'Token optional':'API-Key / Access Token';token.setAttribute('aria-label',h.textContent+' Zugangsschlüssel');
+ const url=document.createElement('input');url.type='url';url.value=p.base_url||'';url.placeholder='http://127.0.0.1:8000/v1';url.hidden=p.id!=='nvidia-local';url.setAttribute('aria-label','Lokale NVIDIA NIM URL');
+ const row=document.createElement('div');row.className='row';
+ const connect=document.createElement('button');connect.type='button';connect.textContent=p.connected?'Neu verbinden':'Verbinden';
+ const disconnect=document.createElement('button');disconnect.type='button';disconnect.textContent='Trennen';disconnect.disabled=!p.connected;
+ row.append(connect,disconnect);
+ const models=document.createElement('div');models.className='models';models.textContent='Noch kein Modellkatalog geladen.';
+ connect.onclick=async()=>{
+   connect.disabled=true;setStatus('Verbindung wird geprüft …');
+   try{
+     const body={provider:p.id};if(token.value)body.token=token.value;if(p.id==='nvidia-local')body.base_url=url.value;
+     const r=await api('/api/model-gateway/connect',{method:'POST',body:JSON.stringify(body)});
+     token.value='';state.catalogs[p.id]=r.models||[];setStatus((r.models||[]).length+' Modelle geladen · '+h.textContent);await refresh();
+   }catch(e){setStatus(e.message,true)}finally{connect.disabled=false}
+ };
+ disconnect.onclick=async()=>{try{await api('/api/model-gateway/disconnect',{method:'POST',body:JSON.stringify({provider:p.id})});delete state.catalogs[p.id];setStatus(h.textContent+' getrennt.');await refresh()}catch(e){setStatus(e.message,true)}};
+ box.append(h,st,privacy,token,url,row,models);return box;
+}
+
+function renderProviders(){
+ const root=$('#providers');root.replaceChildren();
+ state.providers.forEach(p=>{const card=providerCard(p);root.append(card);const models=card.querySelector('.models'),list=state.catalogs[p.id]||[];models.replaceChildren();
+   if(!list.length){models.textContent=p.connected?'Verbunden. Katalog wird erst bei Verbindung/Refresh geladen.':'Noch kein Modellkatalog geladen.';return}
+   list.slice(0,300).forEach(m=>{const b=document.createElement('button');b.type='button';b.textContent=m.id;b.onclick=()=>{document.querySelectorAll('.role select[data-provider]').forEach(s=>{s.dataset.provider=p.id;s.innerHTML='<option>'+m.id.replaceAll('<','&lt;')+'</option>'})};models.append(b)})
+ });
+}
+function renderRoles(){
+ const root=$('#roles');root.replaceChildren();
+ roles.forEach(role=>{const c=document.createElement('article');c.className='role';const h=document.createElement('h3');h.textContent=role.toUpperCase();
+   const provider=document.createElement('select');provider.innerHTML='<option value="">Provider wählen</option>'+state.providers.filter(p=>p.connected).map(p=>'<option value="'+p.id+'">'+p.label+'</option>').join('');
+   const model=document.createElement('select');model.dataset.provider='';model.innerHTML='<option value="">Modell wählen</option>';
+   provider.onchange=()=>{const list=state.catalogs[provider.value]||[];model.innerHTML='<option value="">Modell wählen</option>'+list.slice(0,1000).map(x=>'<option></option>').join('');[...model.options].slice(1).forEach((o,i)=>o.textContent=o.value=list[i].id)};
+   const save=document.createElement('button');save.type='button';save.textContent='Rolle zuweisen';save.onclick=async()=>{if(!provider.value||!model.value){setStatus('Provider und Modell auswählen.',true);return}try{await api('/api/model-gateway/select',{method:'POST',body:JSON.stringify({role,provider:provider.value,model:model.value})});setStatus(role+' → '+model.value);await refresh()}catch(e){setStatus(e.message,true)}};
+   const cur=document.createElement('p');cur.className='small';const s=state.selection[role];cur.textContent=s?'Aktiv: '+s.provider+' / '+s.model:'Noch keine externe Auswahl.';
+   c.append(h,provider,model,save,cur);root.append(c)
+ });
+}
+async function refresh(){
+ const r=await api('/api/model-gateway/status');state.providers=r.providers||[];state.selection=r.selection||{};renderProviders();renderRoles();$('#selection').textContent=JSON.stringify(state.selection,null,2);
+}
+refresh().catch(e=>setStatus('Lokaler Model Gateway nicht erreichbar: '+e.message,true));
+</script></body></html>
