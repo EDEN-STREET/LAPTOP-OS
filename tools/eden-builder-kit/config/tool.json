@@ -1,0 +1,29 @@
+{
+  "project": "EDEN STREET / EDEN Suite",
+  "version": "0.1.0",
+  "mode": "read-only",
+  "maxSteps": 25,
+  "allowedClasses": [
+    "read_only",
+    "documentation",
+    "simulation"
+  ],
+  "skills": {
+    "docs.inventory": {
+      "class": "read_only",
+      "source": "web/builder.html"
+    },
+    "docs.conflict.review": {
+      "class": "documentation",
+      "source": "web/builder.html"
+    },
+    "ui.accessibility.inspect": {
+      "class": "simulation",
+      "source": "web/builder.html"
+    },
+    "security.policy.describe": {
+      "class": "documentation",
+      "source": "web/builder.html"
+    }
+  }
+}
