@@ -20,7 +20,7 @@ test('model gateway is network-idle until an explicit provider request', () => {
   const s=g.providers();
   assert.equal(calls.length,0);
   assert.equal(s.find(x=>x.id==='openrouter').connected,false);
-  assert.equal(s.find(x=>x.id==='nvidia-local').connected,true);
+  assert.equal(s.find(x=>x.id==='nvidia-local').configured,true);\n  assert.equal(s.find(x=>x.id==='nvidia-local').connected,false);
 });
 
 test('remote credential stays session-only and is never exposed by status', async () => {
