@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDEN Portable Toolbox</title><link rel="stylesheet" href="eden-hub.css">
+<style>
+.profiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.profile{border:1px solid var(--edge);border-radius:14px;padding:14px;background:var(--card)}.profile strong{display:block;margin-bottom:5px}.ok{color:var(--accent)}.warn{color:var(--amber)}.matrix{overflow:auto}.matrix table{width:100%;border-collapse:collapse}.matrix th,.matrix td{padding:9px;border-bottom:1px solid var(--edge);text-align:left;vertical-align:top}.matrix th{color:var(--accent)}.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+</style></head><body>
+<header><nav class="topnav"><span class="brand">◆ EDEN PORTABLE TOOLBOX</span><a href="ultimate-hub.html">ULTIMATE HUB</a><a href="toolbox.html">TOOLBOX</a><a href="security-architecture.html">SECURITY</a></nav></header>
+<main class="shell"><span class="eyebrow">ONE TOOLBOX · MULTIPLE PROFILES</span><h1 class="headline">Ein Werkzeugkoffer. Portable und integriert.</h1>
+<p class="lead">EDEN verwendet dieselbe geprüfte Toolbox in allen unterstützten Umgebungen. Portable-Dateien bleiben identisch; nur der sichere Einbaupunkt ändert sich.</p>
+<div class="note"><strong>Grenze:</strong> Nicht in Qubes <code>dom0</code>, nicht in <code>sys-whonix</code> und nicht in den unveränderlichen Tails-Systemkern installieren. Qubes/Whonix nutzen App-/Workstation-Qubes; Tails nutzt Persistent Storage oder ein separates USB-Verzeichnis.</div>
+<section class="profiles">
+<article class="profile"><span class="tag">PORTABLE</span><strong>USB / Ordner</strong><p>Lokales HTML-Bundle ohne Systeminstallation. Für Transport, Recovery und Offline-Werkzeuge.</p></article>
+<article class="profile"><span class="tag">QUBES</span><strong>EDEN App Qube</strong><p>Persistente Integration in einem dedizierten App Qube oder einer eigenen Template-Kette, niemals in dom0.</p></article>
+<article class="profile"><span class="tag">WHONIX</span><strong>Whonix-Workstation</strong><p>Toolbox im Workstation-Qube. Das Gateway bleibt schlank und übernimmt nur die Netzwerkrolle.</p></article>
+<article class="profile"><span class="tag">TAILS</span><strong>Persistent Storage</strong><p>Portable Bundle im persistenten Bereich. Sichtbar und direkt startbar, ohne Tails-Basisimage zu patchen.</p></article>
+</section>
+<section class="panel matrix"><h2>Integrationsmatrix</h2><table><thead><tr><th>Umgebung</th><th>Modus</th><th>Ort</th><th>Netzwerk</th><th>Status</th></tr></thead><tbody>
+<tr><td>Windows / Linux</td><td>fest + portable</td><td>Benutzerprofil oder USB</td><td>lokal</td><td class="ok">unterstützt</td></tr>
+<tr><td>Qubes OS</td><td>fest</td><td>EDEN App Qube / dedizierte Template-Kette</td><td>je Qube definieren</td><td class="ok">Zielprofil</td></tr>
+<tr><td>Qubes-Whonix</td><td>fest</td><td>Whonix-Workstation / anon-whonix App Qube</td><td>über sys-whonix</td><td class="ok">Zielprofil</td></tr>
+<tr><td>Tails</td><td>portable + persistent</td><td>Persistent Storage / separates Medium</td><td>Tails-eigenes Tor-Modell</td><td class="ok">sicheres Integrationsprofil</td></tr>
+<tr><td>dom0 / sys-whonix</td><td>nicht installieren</td><td>—</td><td>—</td><td class="warn">absichtlich blockiert</td></tr>
+</tbody></table></section>
+<section class="panel"><h2>Portable-Inhalt</h2><div id="portableList" class="grid"></div><div class="toolbar"><a class="btn" href="toolbox.html">Werkzeugkoffer öffnen</a><a class="btn ghost" href="support.html">Support</a></div></section>
+</main><footer>EDEN Portable Toolbox · gleiche Quelle · getrennte Sicherheitsprofile</footer>
+<script src="tool-registry.js"></script><script>
+'use strict';const box=document.getElementById('portableList');const allowed=['image-studio','local-tools','markdown-studio','diff-studio','academy','support','wiki','handbook'];const reg=Array.isArray(window.EDEN_TOOL_REGISTRY)?window.EDEN_TOOL_REGISTRY:[];for(const x of reg.filter(x=>allowed.includes(x.id))){const a=document.createElement('article');a.className='card';const h=document.createElement('h3');h.textContent=x.title;const p=document.createElement('p');p.textContent=x.description;const l=document.createElement('a');l.className='btn';l.href=x.href;l.textContent='Öffnen';a.append(h,p,l);box.append(a)}
+</script></body></html>
