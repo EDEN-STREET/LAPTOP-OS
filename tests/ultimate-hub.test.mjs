@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 const read = p => readFile(new URL('../'+p, import.meta.url),'utf8');
 
 test('Ultimate Hub and local tools are packaged', async () => {
-  for (const path of ['web/ultimate-hub.html','web/tool-registry.js','web/image-studio.html','web/local-tools.html','web/academy.html','web/support.html','web/markdown-studio.html','web/diff-studio.html']) {
+  for (const path of ['web/ultimate-hub.html','web/tool-registry.js','web/image-studio.html','web/local-tools.html','web/academy.html','web/support.html','web/markdown-studio.html','web/diff-studio.html','web/model-gateway.html']) {
     const body = await read(path);
     assert.ok(body.length > 500, path+' should contain a real implementation');
   }
@@ -58,4 +58,20 @@ test('writing and diff studios avoid remote execution paths', async () => {
 test('image studio includes a local text layer stack', async () => {
   const page = await read('web/image-studio.html');
   for (const marker of ['id="layers"','id="addLayer"','state.layers','Text-Layer']) assert.match(page,new RegExp(marker.replace(/[.*+?^$()|[\]{}]/g,'\\$&')));
+});
+
+
+test('model gateway UI keeps credentials out of browser persistence', async () => {
+  const page = await read('web/model-gateway.html');
+  assert.doesNotMatch(page,/localStorage|sessionStorage|indexedDB/);
+  assert.match(page,/type='password'|type="password"/);
+  assert.match(page,/api\/model-gateway\/connect/);
+});
+
+test('agent mesh encodes cascade verification and anonymity boundary', async () => {
+  const mesh = JSON.parse(await read('config/agent-mesh.json'));
+  assert.equal(mesh.core.protocol,'A2A');
+  assert.equal(mesh.execution_gate.llm_consensus_is_not_authorization,true);
+  assert.deepEqual(mesh.execution_gate.small_worker_executes_only_after,['compiler-check','planner-check','node-policy-check']);
+  assert.ok(mesh.arms.every(x=>x.goal_loop===true));
 });
