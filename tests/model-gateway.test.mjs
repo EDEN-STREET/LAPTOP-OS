@@ -65,3 +65,27 @@ test('local server model API never returns submitted credential', async t => {
   const select=await fetch(origin+'/api/model-gateway/select',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({role:'worker',provider:'openrouter',model:'qwen/test-small'})});
   assert.equal(select.status,200);
 });
+
+
+test('OpenAI is built in as remote opt-in and OpenLLM as loopback-local', () => {
+  const g=new ModelGateway({fetchImpl:fakeFetch(),env:{}});
+  const providers=g.providers();
+  const openai=providers.find(x=>x.id==='openai');
+  const openllm=providers.find(x=>x.id==='openllm-local');
+  assert.equal(openai.remote,true);
+  assert.equal(openai.configured,false);
+  assert.equal(openai.connected,false);
+  assert.equal(openllm.remote,false);
+  assert.equal(openllm.configured,true);
+  assert.equal(openllm.connected,false);
+  assert.equal(openllm.configurable_base_url,true);
+  assert.equal(openllm.base_url,'http://127.0.0.1:3000/v1');
+});
+
+test('OpenLLM custom endpoint remains loopback-only', () => {
+  const g=new ModelGateway({fetchImpl:fakeFetch(),env:{}});
+  g.setBaseUrl('openllm-local','http://localhost:3100/v1');
+  assert.equal(g.baseUrl('openllm-local'),'http://localhost:3100/v1');
+  assert.throws(()=>g.setBaseUrl('openllm-local','https://remote.example/v1'),/loopback/i);
+  assert.throws(()=>g.setBaseUrl('openai','http://127.0.0.1:9999/v1'),/not allowed/i);
+});
