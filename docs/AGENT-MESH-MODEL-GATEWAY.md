@@ -38,10 +38,12 @@ The smallest worker never receives the entire case history by default.
 
 Supported connection adapters:
 
+- OpenAI API
 - OpenRouter
 - Hugging Face Inference Providers
 - NVIDIA NIM hosted endpoint
 - NVIDIA NIM on loopback
+- OpenLLM on loopback (default `http://127.0.0.1:3000/v1`)
 
 Remote provider use is **off until the user explicitly connects it for the current session**.
 
@@ -53,7 +55,7 @@ Credentials:
 - are cleared when the runtime exits.
 
 Environment variables are also supported for controlled deployments:
-`OPENROUTER_API_KEY`, `HF_TOKEN`, `NVIDIA_API_KEY`.
+`OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `HF_TOKEN`, `NVIDIA_API_KEY`, optional `OPENLLM_API_KEY`.
 
 ## Anonymity-first rule
 
