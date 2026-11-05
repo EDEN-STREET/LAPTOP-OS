@@ -3,6 +3,16 @@
   "default_remote_enabled": false,
   "privacy_notice": "Remote providers receive request content and network metadata. Source-sensitive compartments must opt in explicitly for each session.",
   "providers": {
+    "openai": {
+      "label": "OpenAI API",
+      "kind": "openai-compatible",
+      "base_url": "https://api.openai.com/v1",
+      "models_path": "/models",
+      "chat_path": "/chat/completions",
+      "credential_env": "OPENAI_API_KEY",
+      "credential_required": true,
+      "remote": true
+    },
     "openrouter": {
       "label": "OpenRouter",
       "kind": "openai-compatible",
@@ -43,7 +53,24 @@
       "credential_required": false,
       "remote": false,
       "custom_loopback_url": true
+    },
+    "openllm-local": {
+      "label": "OpenLLM Local",
+      "kind": "openai-compatible",
+      "base_url": "http://127.0.0.1:3000/v1",
+      "models_path": "/models",
+      "chat_path": "/chat/completions",
+      "credential_env": "OPENLLM_API_KEY",
+      "credential_required": false,
+      "remote": false,
+      "custom_loopback_url": true
     }
   },
-  "roles": ["planner","compiler","worker","judge","embedder"]
+  "roles": [
+    "planner",
+    "compiler",
+    "worker",
+    "judge",
+    "embedder"
+  ]
 }
