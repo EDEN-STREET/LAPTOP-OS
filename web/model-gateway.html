@@ -34,7 +34,7 @@ function setStatus(t,bad=false){$('#status').textContent=t;$('#status').style.co
 function providerCard(p){
  const box=document.createElement('article');box.className='provider';box.dataset.provider=p.id;
  const h=document.createElement('h3');h.textContent=p.label||labels[p.id]||p.id;
- const st=document.createElement('div');st.className='status '+(p.connected?'connected':'offline');st.textContent=p.connected?'● verbunden'+(p.credential_source?' · '+p.credential_source:''):'○ nicht verbunden';
+ const st=document.createElement('div');st.className='status '+(p.connected?'connected':'offline');st.textContent=p.connected?'● verifiziert':p.configured?'◐ konfiguriert · noch nicht geprüft':'○ nicht verbunden';
  const privacy=document.createElement('p');privacy.className='small';privacy.textContent=p.remote?'Remote: Daten verlassen EDEN erst nach deinem Verbindungs-Klick.':'Lokal: nur Loopback-Verbindung.';
  const token=document.createElement('input');token.type='password';token.autocomplete='off';token.placeholder=p.id==='nvidia-local'?'Token optional':'API-Key / Access Token';token.setAttribute('aria-label',h.textContent+' Zugangsschlüssel');
  const url=document.createElement('input');url.type='url';url.value=p.base_url||'';url.placeholder='http://127.0.0.1:8000/v1';url.hidden=p.id!=='nvidia-local';url.setAttribute('aria-label','Lokale NVIDIA NIM URL');
@@ -59,7 +59,7 @@ function renderProviders(){
  const root=$('#providers');root.replaceChildren();
  state.providers.forEach(p=>{const card=providerCard(p);root.append(card);const models=card.querySelector('.models'),list=state.catalogs[p.id]||[];models.replaceChildren();
    if(!list.length){models.textContent=p.connected?'Verbunden. Katalog wird erst bei Verbindung/Refresh geladen.':'Noch kein Modellkatalog geladen.';return}
-   list.slice(0,300).forEach(m=>{const b=document.createElement('button');b.type='button';b.textContent=m.id;b.onclick=()=>{document.querySelectorAll('.role select[data-provider]').forEach(s=>{s.dataset.provider=p.id;s.innerHTML='<option>'+m.id.replaceAll('<','&lt;')+'</option>'})};models.append(b)})
+   list.slice(0,300).forEach(m=>{const b=document.createElement('button');b.type='button';b.textContent=m.id;b.onclick=()=>setStatus('Katalogmodell: '+m.id);models.append(b)})
  });
 }
 function renderRoles(){
