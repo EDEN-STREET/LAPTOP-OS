@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "default_remote_enabled": false,
+  "privacy_notice": "Remote providers receive request content and network metadata. Source-sensitive compartments must opt in explicitly for each session.",
+  "providers": {
+    "openrouter": {
+      "label": "OpenRouter",
+      "kind": "openai-compatible",
+      "base_url": "https://openrouter.ai/api/v1",
+      "models_path": "/models",
+      "chat_path": "/chat/completions",
+      "credential_env": "OPENROUTER_API_KEY",
+      "credential_required": true,
+      "remote": true
+    },
+    "huggingface": {
+      "label": "Hugging Face Inference Providers",
+      "kind": "openai-compatible",
+      "base_url": "https://router.huggingface.co/v1",
+      "models_path": "/models",
+      "chat_path": "/chat/completions",
+      "credential_env": "HF_TOKEN",
+      "credential_required": true,
+      "remote": true
+    },
+    "nvidia-hosted": {
+      "label": "NVIDIA NIM Hosted",
+      "kind": "openai-compatible",
+      "base_url": "https://integrate.api.nvidia.com/v1",
+      "models_path": "/models",
+      "chat_path": "/chat/completions",
+      "credential_env": "NVIDIA_API_KEY",
+      "credential_required": true,
+      "remote": true
+    },
+    "nvidia-local": {
+      "label": "NVIDIA NIM Local",
+      "kind": "openai-compatible",
+      "base_url": "http://127.0.0.1:8000/v1",
+      "models_path": "/models",
+      "chat_path": "/chat/completions",
+      "health_path": "/health/ready",
+      "credential_required": false,
+      "remote": false,
+      "custom_loopback_url": true
+    }
+  },
+  "roles": ["planner","compiler","worker","judge","embedder"]
+}
