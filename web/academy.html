@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EDEN Academy</title><link rel="stylesheet" href="eden-hub.css">
+<style>.lesson{cursor:pointer}.lesson[aria-current=true]{border-color:var(--accent);background:#12331d88}.quiz label{font-size:14px;font-weight:500;display:flex;gap:10px;align-items:flex-start}.quiz input{width:auto;margin-top:4px}.score{font:800 32px ui-monospace,monospace;color:var(--accent)}</style></head>
+<body><header><nav class="topnav"><span class="brand">◆ EDEN ACADEMY</span><a href="ultimate-hub.html">ULTIMATE HUB</a><a href="wiki.html">WIKI</a><a href="handbuch.html">HANDBUCH</a><a href="testlab.html">TESTLAB</a></nav></header>
+<main class="shell"><span class="eyebrow">LEARN → PRACTICE → VERIFY</span><h1 class="headline">Lernen mit überprüfbaren Ergebnissen.</h1><p class="lead">Kurze lokale Lernmodule zu EDEN-Grundprinzipien. Fortschritt bleibt nur in dieser Seite und wird nicht als Sicherheitsnachweis ausgegeben.</p>
+<div class="grid"><section class="panel"><h2>Lernpfad</h2><div id="lessons"></div></section><section class="panel"><h2 id="lessonTitle">Workflow zuerst</h2><div id="lessonBody"></div><div class="actions"><button id="markDone" type="button">Als gelernt markieren</button></div><p class="status" id="lessonStatus"></p></section></div>
+<section class="panel quiz"><h2>Wissenscheck</h2><form id="quiz"></form><div class="actions"><button type="submit" form="quiz">Auswerten</button><button id="resetQuiz" type="button" class="btn ghost">Zurücksetzen</button></div><p id="quizResult" class="status" aria-live="polite"></p></section>
+</main><footer>EDEN Academy · lokale Lernoberfläche · kein Zertifikat / kein Sicherheitsbeleg</footer>
+<script>
+'use strict';
+const lessons=[
+ {title:'Workflow zuerst',body:'Ein gutes Ergebnis ohne reproduzierbaren Ablauf ist nicht belastbar. EDEN trennt Bestand, Plan, Preflight, Ausführung, Verifikation und Rollback.'},
+ {title:'Simulation ≠ Nachweis',body:'Ein erfolgreicher Demo- oder Browserlauf beweist nicht den Zustand eines realen Geräts. Messdaten, Herkunft und Prüfkontext müssen getrennt dokumentiert werden.'},
+ {title:'Least Privilege',body:'Werkzeuge erhalten nur die Rechte, die für ihren Zweck erforderlich sind. Browser-Demos bekommen keine stillen System- oder Geräteberechtigungen.'},
+ {title:'Datei-Workflow',body:'Original erhalten, Arbeitskopie isolieren, technische und sichtbare Spuren getrennt prüfen und erst danach eine Publikationskopie freigeben.'},
+ {title:'Rollback',body:'Vor schreibenden Änderungen muss bekannt sein, wie der Ausgangszustand wiederhergestellt und der Erfolg unabhängig geprüft wird.'}
+];
+const questions=[
+ {q:'Was ist in EDEN ein bestandener Browser-Demotest?',a:['Beweis für echte Hardwarehärtung','Nachweis für das getestete UI-Verhalten','Freigabe für Firmwareänderungen'],ok:1},
+ {q:'Was gehört vor eine reale schreibende Änderung?',a:['Nur ein grüner Button','Backup/Recovery, Freigabe und Verifikation','Ein Screenshot'],ok:1},
+ {q:'Welche Aussage ist korrekt?',a:['Simulation und Messung sind gleichwertig','Eine UI darf fehlende Nachweise als PASS darstellen','Unbekannt muss als unbekannt sichtbar bleiben'],ok:2}
+];
+let current=0;const done=new Set(),$=s=>document.querySelector(s);
+function drawLessons(){const b=$('#lessons');b.replaceChildren();lessons.forEach((x,i)=>{const el=document.createElement('button');el.type='button';el.className='card lesson';el.style.width='100%';el.style.textAlign='left';el.setAttribute('aria-current',String(i===current));el.textContent=(done.has(i)?'✓ ':'')+(i+1)+'. '+x.title;el.onclick=()=>{current=i;drawLessons();drawLesson()};b.append(el)})}
+function drawLesson(){$('#lessonTitle').textContent=lessons[current].title;$('#lessonBody').textContent=lessons[current].body;$('#lessonStatus').textContent=done.has(current)?'Markiert als gelernt.':'Noch offen.'}
+$('#markDone').onclick=()=>{done.add(current);drawLessons();drawLesson()};
+function drawQuiz(){const f=$('#quiz');f.replaceChildren();questions.forEach((x,i)=>{const s=document.createElement('fieldset');s.className='card';const l=document.createElement('legend');l.textContent=(i+1)+'. '+x.q;s.append(l);x.a.forEach((a,j)=>{const lab=document.createElement('label');const r=document.createElement('input');r.type='radio';r.name='q'+i;r.value=j;lab.append(r,document.createTextNode(a));s.append(lab)});f.append(s)})}
+$('#quiz').onsubmit=e=>{e.preventDefault();let score=0,answered=0;questions.forEach((x,i)=>{const v=document.querySelector('input[name=q'+i+']:checked');if(v){answered++;if(Number(v.value)===x.ok)score++}});$('#quizResult').textContent=score+'/'+questions.length+' richtig · '+answered+' beantwortet. Lernfeedback, kein Security-Zertifikat.'};
+$('#resetQuiz').onclick=()=>{drawQuiz();$('#quizResult').textContent=''};drawLessons();drawLesson();drawQuiz();
+</script></body></html>

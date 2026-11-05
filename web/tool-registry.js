@@ -1,0 +1,26 @@
+'use strict';
+window.EDEN_TOOL_REGISTRY = [
+  {id:'ultimate-hub',title:'EDEN Ultimate Hub',category:'Core',href:'ultimate-hub.html',status:'active',mode:'local',origin:'new',description:'Zentrale Übersicht für Module, Ereignisse, Next Steps und Werkzeugstart.'},
+  {id:'eden-term',title:'EDEN-Term',category:'Core',href:'index.html',status:'preview',mode:'local',origin:'existing',description:'Terminal- und Entwickleroberfläche mit bestehender EDEN-Navigation.'},
+  {id:'setup',title:'Setup Assistant',category:'Core',href:'setup.html',status:'active',mode:'read-only',origin:'existing',description:'Geführter Einstieg und sichere Planung ohne destruktive Systemaktionen.'},
+  {id:'builder',title:'Workflow Builder',category:'Automation',href:'builder.html',status:'preview',mode:'simulation',origin:'existing',description:'Versionierte Skills als nicht ausführendes Workflow-Datenmodell komponieren.'},
+  {id:'grimoire',title:'Grimoire / Command Registry',category:'Automation',href:'grimoire.html',status:'read-only',mode:'read-only',origin:'existing',description:'Beschreibende Kommandoregistry ohne freie Shell-Ausführung.'},
+  {id:'testlab',title:'Testlab / Evidence',category:'QA',href:'testlab.html',status:'active',mode:'read-only',origin:'existing',description:'Tests, Nachweise und klare Trennung zwischen Softwaretest und Hardwarebeleg.'},
+  {id:'hardware',title:'Hardware Gate 5',category:'QA',href:'hardware-readiness.html',status:'preview',mode:'read-only',origin:'existing',description:'Lesende Hardware-Bereitschaftsmatrix mit Fail-closed-Logik.'},
+  {id:'reboot-plan',title:'Reboot Plan',category:'QA',href:'reboot-plan.html',status:'preview',mode:'read-only',origin:'existing',description:'Maschinenlesbarer Installationsplan ohne automatischen Neustart.'},
+  {id:'security-architecture',title:'Security Architecture',category:'Knowledge',href:'security-architecture.html',status:'active',mode:'read-only',origin:'existing',description:'Qubes, Tor, Tails und Vertrauensgrenzen als dokumentierte Architektur.'},
+  {id:'wiki',title:'EDEN Wiki',category:'Knowledge',href:'wiki.html',status:'active',mode:'read-only',origin:'existing',description:'Durchsuchbarer Wissenshub und Quellenstatus.'},
+  {id:'handbook',title:'EDEN Handbuch',category:'Knowledge',href:'handbuch.html',status:'active',mode:'read-only',origin:'existing',description:'Öffentlich freigegebene Navigationsschicht für das historische Handbuch.'},
+  {id:'projects',title:'Projekte / Kanban',category:'Operations',href:'projects.html',status:'active',mode:'local',origin:'existing',description:'Lokale Projekt- und Aufgabenplanung.'},
+  {id:'sources',title:'Quellenregister',category:'Knowledge',href:'quellen.html',status:'active',mode:'read-only',origin:'existing',description:'Provenienz, Freigabegrenzen und Quellenstatus.'},
+  {id:'toolbox',title:'Werkzeugkoffer',category:'Tools',href:'toolbox.html',status:'active',mode:'local',origin:'existing',description:'Zentrale Registry aller bestätigten und neu integrierten EDEN-Werkzeuge.'},
+  {id:'image-studio',title:'EDEN Image Studio',category:'Tools',href:'image-studio.html',status:'active',mode:'local',origin:'new',description:'Lokaler Bildeditor mit nicht-destruktiven Filtern, Drehen, Spiegeln, Undo/Redo und Export.'},
+  {id:'local-tools',title:'Local Utility Lab',category:'Tools',href:'local-tools.html',status:'active',mode:'local',origin:'new',description:'Lokale SHA-256-, JSON-, Text- und Dateinamen-Werkzeuge ohne Upload.'},
+  {id:'markdown-studio',title:'EDEN Markdown Studio',category:'Tools',href:'markdown-studio.html',status:'active',mode:'local',origin:'new',description:'Lokaler Markdown-Editor mit sicherer DOM-Vorschau und Dateiimport/-export.'},
+  {id:'diff-studio',title:'EDEN Diff Studio',category:'Tools',href:'diff-studio.html',status:'active',mode:'local',origin:'new',description:'Lokaler positionsbasierter Textvergleich für Dokumentations- und Konfigurationsstände.'},
+  {id:'academy',title:'EDEN Academy',category:'Learning',href:'academy.html',status:'active',mode:'local',origin:'new',description:'Lokale Lernpfade und Wissenschecks zu reproduzierbaren EDEN-Sicherheitsprinzipien.'},
+  {id:'support',title:'EDEN Support Center',category:'Support',href:'support.html',status:'active',mode:'read-only',origin:'new',description:'Read-only Diagnosebaum für UI-, Test-, Hardware- und Quellenprobleme.'},
+  {id:'superfile',title:'Superfile Adapter',category:'Planned',href:'toolbox.html#planned',status:'planned',mode:'blocked',origin:'existing-plan',description:'Geplanter File-Tower; echte Dateirechte erst nach Policy- und Berechtigungstests.'},
+  {id:'session-adapter',title:'Zellij / Zsh Session Adapter',category:'Planned',href:'toolbox.html#planned',status:'planned',mode:'blocked',origin:'existing-plan',description:'Geplante Terminal-Sitzungsintegration; keine Browser-PTY in diesem Stand.'},
+  {id:'search-adapter',title:'fzf / Navi Search Adapter',category:'Planned',href:'toolbox.html#planned',status:'planned',mode:'read-only',origin:'existing-plan',description:'Geplante lokale Suche und Vorschlagslogik ohne automatische Befehlsausführung.'}
+];

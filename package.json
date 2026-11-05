@@ -1,6 +1,6 @@
 {
   "name": "eden-laptop-os",
-  "version": "0.8.0-preview.8",
+  "version": "0.8.0-preview.9",
   "private": true,
   "description": "EDEN LAPTOP-OS audited one-consent local start with complete UI manifest and Gate 5 read-only planning",
   "type": "module",

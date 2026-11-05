@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EDEN Markdown Studio</title><link rel="stylesheet" href="eden-hub.css">
+<style>.editor{display:grid;grid-template-columns:1fr 1fr;gap:12px}.editor textarea{min-height:520px;font:13px/1.6 ui-monospace,monospace}.preview{white-space:pre-wrap;min-height:520px}.preview h1,.preview h2,.preview h3{color:var(--accent)}.preview blockquote{border-left:3px solid var(--accent);padding-left:12px;color:var(--muted)}@media(max-width:850px){.editor{grid-template-columns:1fr}.editor textarea,.preview{min-height:320px}}</style></head>
+<body><header><nav class="topnav"><span class="brand">◆ EDEN MARKDOWN STUDIO</span><a href="ultimate-hub.html">ULTIMATE HUB</a><a href="toolbox.html">TOOLBOX</a><a href="wiki.html">WIKI</a></nav></header>
+<main class="shell"><span class="eyebrow">LOCAL WRITING TOOL</span><h1 class="headline">Notizen und Dokumentation lokal bearbeiten.</h1><p class="lead">Minimaler sicherer Renderer: Eingaben werden als DOM-Text aufgebaut und nicht als ungeprüftes HTML injiziert.</p>
+<section class="panel"><div class="actions"><button id="newDoc" type="button">Neu</button><button id="exportMd" type="button">.md exportieren</button><label class="btn ghost">.md laden<input id="importMd" hidden type="file" accept=".md,text/markdown,text/plain"></label></div></section>
+<div class="editor"><textarea id="src" aria-label="Markdown Quelle"># EDEN Notiz
+
+## Ziel
+Reproduzierbaren Ablauf dokumentieren.
+
+> Simulation ist kein realer Nachweis.
+
+- Bestand
+- Plan
+- Test
+- Verifikation</textarea><section class="panel preview" id="preview" aria-label="Markdown Vorschau"></section></div>
+<p class="status" id="status"></p></main><footer>EDEN Markdown Studio · lokale Dateioperationen</footer>
+<script>
+'use strict';const $=s=>document.querySelector(s);
+function render(){const out=$('#preview');out.replaceChildren();const lines=$('#src').value.split(/\r?\n/);let list=null;for(const line of lines){if(/^[-*] /.test(line)){if(!list){list=document.createElement('ul');out.append(list)}const li=document.createElement('li');li.textContent=line.slice(2);list.append(li);continue}list=null;let el;if(line.startsWith('### ')){el=document.createElement('h3');el.textContent=line.slice(4)}else if(line.startsWith('## ')){el=document.createElement('h2');el.textContent=line.slice(3)}else if(line.startsWith('# ')){el=document.createElement('h1');el.textContent=line.slice(2)}else if(line.startsWith('> ')){el=document.createElement('blockquote');el.textContent=line.slice(2)}else{el=document.createElement('p');el.textContent=line}out.append(el)}}
+$('#src').addEventListener('input',render);$('#newDoc').onclick=()=>{$('#src').value='';render();$('#status').textContent='Neues leeres Dokument.'};
+$('#exportMd').onclick=()=>{const b=new Blob([$('#src').value],{type:'text/markdown;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='eden-note.md';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);$('#status').textContent='Markdown lokal exportiert.'};
+$('#importMd').onchange=async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(f.size>2*1024*1024){$('#status').textContent='Datei zu groß (max. 2 MB).';return}$('#src').value=await f.text();render();$('#status').textContent='Lokale Datei geladen: '+f.name};render();
+</script></body></html>

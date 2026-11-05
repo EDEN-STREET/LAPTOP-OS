@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EDEN Diff Studio</title><link rel="stylesheet" href="eden-hub.css">
+<style>.twocol{display:grid;grid-template-columns:1fr 1fr;gap:12px}.twocol textarea{min-height:300px;font:12px/1.5 ui-monospace,monospace}.diffrow{display:grid;grid-template-columns:52px 1fr;gap:8px;padding:5px 8px;border-bottom:1px solid #183020;font:12px/1.5 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.same{color:#a8b8ad}.added{background:#0d2f18;color:#b9ffca}.removed{background:#35131a;color:#ffc0ca}@media(max-width:760px){.twocol{grid-template-columns:1fr}}</style></head>
+<body><header><nav class="topnav"><span class="brand">◆ EDEN DIFF STUDIO</span><a href="ultimate-hub.html">ULTIMATE HUB</a><a href="toolbox.html">TOOLBOX</a></nav></header>
+<main class="shell"><span class="eyebrow">LOCAL TEXT COMPARISON</span><h1 class="headline">Zwei Textstände nachvollziehbar vergleichen.</h1><div class="twocol"><label>Version A<textarea id="a">EDEN
+Plan
+Test</textarea></label><label>Version B<textarea id="b">EDEN
+Plan
+Verify</textarea></label></div><div class="actions" style="margin-top:12px"><button id="compare" type="button">Vergleichen</button></div><section class="panel"><h2>Zeilenvergleich</h2><p class="muted">Bewusst einfacher positionsbasierter Vergleich, kein Git-Diff-Algorithmus.</p><div id="out"></div></section></main><footer>EDEN Diff Studio · lokal · keine Git-Schreibaktionen</footer>
+<script>
+'use strict';const $=s=>document.querySelector(s);
+function draw(){const A=$('#a').value.split(/\r?\n/),B=$('#b').value.split(/\r?\n/),n=Math.max(A.length,B.length),out=$('#out');out.replaceChildren();for(let i=0;i<n;i++){const av=A[i],bv=B[i];if(av===bv){row(i+1,'same','  '+(av??''))}else{if(av!==undefined)row(i+1,'removed','- '+av);if(bv!==undefined)row(i+1,'added','+ '+bv)}}function row(no,cls,text){const d=document.createElement('div');d.className='diffrow '+cls;const num=document.createElement('span');num.textContent=no;const t=document.createElement('span');t.textContent=text;d.append(num,t);out.append(d)}}$('#compare').onclick=draw;draw();
+</script></body></html>

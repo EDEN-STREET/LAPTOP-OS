@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDEN Ultimate Hub</title><link rel="stylesheet" href="eden-hub.css">
+<style>
+:root{--ok:#66ff8f;--warn:#ffcf7a;--danger:#ff8fa3}
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:14px}.metric{font:800 clamp(24px,4vw,40px) ui-monospace,monospace;color:var(--accent)}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px}.metric-card{margin:0}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.toolbar label{min-width:180px;flex:1}
+.toolgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px}.toolcard{display:flex;flex-direction:column;gap:8px}.toolcard .actions{margin-top:auto}
+.badge{display:inline-flex;width:max-content;border:1px solid var(--edge);border-radius:999px;padding:3px 8px;font:700 10px ui-monospace,monospace}.badge.active{color:var(--ok);border-color:#346d47}.badge.preview,.badge.planned{color:var(--warn);border-color:#725e2e}.badge.read-only{color:#b8c8bd}
+.event{display:grid;grid-template-columns:86px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--edge)}.event:last-child{border-bottom:0}.step{display:grid;grid-template-columns:42px 1fr;gap:10px;padding:11px;border:1px solid var(--edge);border-radius:12px;margin:9px 0}.step.current{border-color:var(--accent);background:#12331d88}.step.done{opacity:.7}.stepmark{font:800 17px ui-monospace,monospace;color:var(--accent)}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(130px,1fr))}}@media(max-width:520px){.metrics{grid-template-columns:1fr}.event{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header><nav class="topnav" aria-label="EDEN Hauptnavigation"><span class="brand">◆ EDEN ULTIMATE HUB</span><a href="index.html">EDEN-TERM</a><a href="toolbox.html">TOOLBOX</a><a href="builder.html">BUILDER</a><a href="testlab.html">TESTLAB</a><a href="wiki.html">WIKI</a><a href="handbuch.html">HANDBUCH</a></nav></header>
+<main class="shell">
+<section class="hero">
+  <div><span class="eyebrow">EDEN SUITE / CONTROL PLANE</span><h1 class="headline">Ein Hub für Arbeit, Wissen, Werkzeuge und Nachweise.</h1><p class="lead">Der Hub startet nur bestätigte lokale EDEN-Oberflächen. Geplante oder gesperrte Komponenten bleiben sichtbar, werden aber nicht als produktiv ausgegeben.</p><div class="note"><strong>Sicherheitsvertrag:</strong> Simulation ≠ realer Systemzustand. Kein Browser-Button führt Firmware-, Bootloader-, Partitions- oder Routeränderungen aus.</div></div>
+  <section class="panel"><h2>Next Step</h2><p id="nextTitle">Bestand erfassen</p><p class="muted" id="nextText">Module, Status und offene Nachweise erfassen.</p><div class="actions"><button id="advanceStep" type="button">Schritt abschließen</button><button id="resetStep" type="button" class="btn ghost">Zurücksetzen</button></div><p class="status" id="stepStatus" aria-live="polite"></p></section>
+</section>
+<section class="metrics" aria-label="Hub Kennzahlen">
+  <article class="panel metric-card"><span class="eyebrow">REGISTRY</span><div class="metric" id="metricAll">0</div><div class="muted">Module insgesamt</div></article>
+  <article class="panel metric-card"><span class="eyebrow">ACTIVE</span><div class="metric" id="metricActive">0</div><div class="muted">aktive lokale Module</div></article>
+  <article class="panel metric-card"><span class="eyebrow">PREVIEW</span><div class="metric" id="metricPreview">0</div><div class="muted">Preview / geplant</div></article>
+  <article class="panel metric-card"><span class="eyebrow">REMOTE CALLS</span><div class="metric">0</div><div class="muted">Hub benötigt keine Cloud-API</div></article>
+</section>
+<section class="panel"><div class="toolbar"><label>Werkzeuge suchen<input id="toolSearch" type="search" placeholder="z. B. Bild, Builder, Wiki"></label><label>Kategorie<select id="toolCategory"><option value="all">Alle</option></select></label><label>Status<select id="toolStatus"><option value="all">Alle</option><option value="active">Aktiv</option><option value="preview">Preview</option><option value="read-only">Read-only</option><option value="planned">Geplant</option></select></label></div><p class="result-meta" id="toolCount"></p><div id="toolGrid" class="toolgrid"></div></section>
+<div class="grid">
+  <section class="panel"><h2>Ereignisse</h2><div id="events" aria-live="polite"></div><div class="actions"><button id="demoEvent" type="button">Lokales Demo-Ereignis</button></div></section>
+  <section class="panel"><h2>Next-Step-Pipeline</h2><div id="steps"></div></section>
+</div>
+</main><footer>EDEN Ultimate Hub · Feature-Branch · lokale Oberfläche · keine Geräteausführung</footer>
+<script src="tool-registry.js"></script>
+<script>
+'use strict';
+const registry=Array.isArray(window.EDEN_TOOL_REGISTRY)?window.EDEN_TOOL_REGISTRY:[];
+const $=s=>document.querySelector(s);
+const cats=[...new Set(registry.map(x=>x.category))].sort();
+for(const c of cats){const o=document.createElement('option');o.value=c;o.textContent=c;$('#toolCategory').append(o)}
+$('#metricAll').textContent=registry.length;
+$('#metricActive').textContent=registry.filter(x=>x.status==='active').length;
+$('#metricPreview').textContent=registry.filter(x=>['preview','planned'].includes(x.status)).length;
+function safeText(v){return String(v??'')}
+function renderTools(){
+ const q=$('#toolSearch').value.trim().toLocaleLowerCase('de'),cat=$('#toolCategory').value,st=$('#toolStatus').value;
+ const list=registry.filter(x=>(cat==='all'||x.category===cat)&&(st==='all'||x.status===st)&&[x.title,x.description,x.category].join(' ').toLocaleLowerCase('de').includes(q));
+ $('#toolGrid').replaceChildren();
+ for(const x of list){const a=document.createElement('article');a.className='card toolcard';const h=document.createElement('h3');h.textContent=x.title;const b=document.createElement('span');b.className='badge '+x.status;b.textContent=x.status.toUpperCase();const p=document.createElement('p');p.textContent=x.description;const m=document.createElement('div');m.className='muted';m.textContent=x.category+' · '+x.mode+' · '+x.origin;const actions=document.createElement('div');actions.className='actions';const link=document.createElement('a');link.className='btn';link.href=x.href;link.textContent=x.status==='planned'?'Status ansehen':'Öffnen';actions.append(link);a.append(b,h,p,m,actions);$('#toolGrid').append(a)}
+ $('#toolCount').textContent=list.length+' von '+registry.length+' Modulen sichtbar';
+}
+$('#toolSearch').addEventListener('input',renderTools);$('#toolCategory').addEventListener('change',renderTools);$('#toolStatus').addEventListener('change',renderTools);renderTools();
+const eventData=[['START','Ultimate Hub geladen'],['REGISTRY','Bestätigte Module registriert'],['SAFETY','Geplante Systemadapter bleiben blockiert']];
+function renderEvents(){const box=$('#events');box.replaceChildren();for(const [kind,msg] of eventData.slice(0,8)){const e=document.createElement('div');e.className='event';const k=document.createElement('strong');k.textContent=kind;const t=document.createElement('span');t.textContent=msg;e.append(k,t);box.append(e)}}
+$('#demoEvent').addEventListener('click',()=>{eventData.unshift(['LOCAL','Demo-Ereignis '+(eventData.length+1)]);renderEvents()});renderEvents();
+const workflow=[
+ ['Bestand erfassen','Module, Status und offene Nachweise erfassen.'],
+ ['Lücken klassifizieren','Fehlend, geplant, Preview und produktiv klar trennen.'],
+ ['Werkzeug integrieren','Nur lokale, nachvollziehbare Komponenten registrieren.'],
+ ['Tests ausführen','Automatisierte Tests plus manuelle Browserprüfung vorsehen.'],
+ ['Review / Merge','Erst nach bestandenem Review in main übernehmen.']
+];
+let current=0;
+function renderSteps(){const box=$('#steps');box.replaceChildren();workflow.forEach((s,i)=>{const d=document.createElement('div');d.className='step '+(i<current?'done':i===current?'current':'');const mark=document.createElement('div');mark.className='stepmark';mark.textContent=i<current?'✓':String(i+1).padStart(2,'0');const c=document.createElement('div');const b=document.createElement('strong');b.textContent=s[0];const p=document.createElement('div');p.className='muted';p.textContent=s[1];c.append(b,p);d.append(mark,c);box.append(d)});$('#nextTitle').textContent=workflow[current][0];$('#nextText').textContent=workflow[current][1];$('#stepStatus').textContent='Schritt '+(current+1)+' / '+workflow.length}
+$('#advanceStep').addEventListener('click',()=>{if(current<workflow.length-1){eventData.unshift(['NEXT','Abgeschlossen: '+workflow[current][0]]);current++;renderEvents();renderSteps()}else{$('#stepStatus').textContent='Pipeline vollständig durchlaufen – Merge bleibt trotzdem reviewpflichtig.'}});
+$('#resetStep').addEventListener('click',()=>{current=0;renderSteps()});renderSteps();
+</script></body></html>

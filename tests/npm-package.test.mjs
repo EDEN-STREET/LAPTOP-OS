@@ -56,9 +56,9 @@ test('npm tarball can be installed offline and run in an isolated virtual user p
     const again=quick.prepareQuickstart();
     assert.equal(again.reused_consent,true);
     assert.equal(again.status,'READY');
-    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.8','web','security-architecture.html')).isFile());
-    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.8','web','hardware-readiness.html')).isFile());
-    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.8','web','reboot-plan.html')).isFile());
+    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.9','web','security-architecture.html')).isFile());
+    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.9','web','hardware-readiness.html')).isFile());
+    assert.ok(fs.statSync(path.join(data,'app','0.8.0-preview.9','web','reboot-plan.html')).isFile());
   }finally{
     if(old===undefined)delete process.env.EDEN_DATA_HOME;
     else process.env.EDEN_DATA_HOME=old;
