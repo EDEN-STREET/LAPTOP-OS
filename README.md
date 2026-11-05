@@ -22,7 +22,7 @@
 
 ---
 
-## Gate 5 – integrierte, rein lesende Hardwareprüfung (v0.8.0-preview.9)
+## Gate 5 – integrierte, rein lesende Hardwareprüfung (v0.8.0-preview.10)
 
 `npm run gate5` prüft CPU-Kerne, Virtualisierungsindikatoren, IOMMU, RAM, Datenträgerstatus und Nachweislücken. Mit `node bin/eden.mjs gate5 --json --strict` werden unbestätigte Voraussetzungen konsequent als Nichtfreigabe gewertet.
 
@@ -34,7 +34,7 @@
 
 ---
 
-## Neuer Reboot-to-Installer-Plan (v0.8.0-preview.9)
+## Neuer Reboot-to-Installer-Plan (v0.8.0-preview.10)
 
 **Lesende Planung für einen späteren Qubes-Neustart**: acht Sicherheitsgates G0–G7, unveränderliche Sperren für Laufwerk, Firmware und Windows, maschinenlesbarer JSON-Status und eine zusätzliche lokale Workflow-Vorschau.
 
@@ -49,7 +49,7 @@ Ein explizites `--save-plan` speichert **nur einen neuen JSON-Bericht**, nie ein
 
 ---
 
-## Neues sicheres Ein-Kommando-Setup (v0.8.0-preview.9)
+## Neues sicheres Ein-Kommando-Setup (v0.8.0-preview.10)
 
 **Aus einem lokalen Repo:** `npm start` (oder `npm run go`).
 
@@ -63,7 +63,7 @@ Bei der ersten Ausführung fragt EDEN **genau einmal** nach Zustimmung für die 
 
 ## Bestehender LAPTOP-OS-Schnellstart
 
-**V0.8.0-preview.9 · EDEN-Term UI · geführter, nicht-destruktiver Einstieg**
+**V0.8.0-preview.10 · EDEN-Term UI · geführter, nicht-destruktiver Einstieg**
 
 > Die npm-Version installiert eine **lokale EDEN-Browseranwendung und einen Einrichtungsassistenten**. Sie ersetzt **nicht** Windows, Kali, Tails oder Qubes OS und verändert weder Partitionen noch Firmware. Reale OS-Installation erfordert später separate Hardwareprüfung, Backup, offizielle Installationsmedien und Freigabe.
 
@@ -95,7 +95,7 @@ npm exec --yes --package=https://github.com/EDEN-STREET/LAPTOP-OS/archive/refs/h
 
 Nur nach Bestätigung:
 
-- App: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.9\web\`
+- App: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\app\0.8.0-preview.10\web\`
 - Optionaler Plan: `%LOCALAPPDATA%\EDEN\LAPTOP-OS\state\setup-plan.json`
 - Weboberfläche: <http://127.0.0.1:8765/setup.html> (nur auf dem eigenen Rechner erreichbar)
 - Server stoppen: **Strg+C**
@@ -132,7 +132,7 @@ Lizenz: MIT. Status: **Vorschau**, noch nicht hardware- oder produktiv verifizie
 Der lokale Nutzer hat gemaess dem vorhandenen Pruefbericht bereits eine authentifizierte GitHub CLI (`gh`). Der ChatGPT-GitHub-Connector selbst hat **keinen** Schreibzugriff. Daher kann der npm-Starter auf dem Laptop den Upload sicher ausloesen, ohne manuelle Git-Befehle.
 
 ```cmd
-npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.9.tgz" -- eden publish-github
+npm exec --yes --package="%USERPROFILE%\Downloads\eden-laptop-os-0.8.0-preview.10.tgz" -- eden publish-github
 ```
 
 Der Befehl zeigt zuvor eine exakte Dateiliste, verlangt die Eingabe `PUBLISH EDEN-STREET/LAPTOP-OS`, erstellt nur einen neuen Branch und ein Draft PR. Kein ungepruefter Merge in `main`. Mehr dazu in [Playwright und Release](docs/PLAYWRIGHT_UND_RELEASE.md).
