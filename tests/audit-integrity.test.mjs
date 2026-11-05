@@ -25,7 +25,7 @@ function isolated(testBody){
 }
 
 test('one authoritative UI manifest includes every shipped standalone page',()=>{
-  assert.equal(BUILD,'0.8.0-preview.9');
+  assert.equal(BUILD,'0.8.0-preview.10');
   const actual=fs.readdirSync(path.join(ROOT,'web')).filter(x=>/\.(html|css|js)$/.test(x)).sort();
   assert.deepEqual([...UI_BUNDLE_FILES].sort(),actual);
   assert.equal(new Set(UI_BUNDLE_FILES).size,UI_BUNDLE_FILES.length);
