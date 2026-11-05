@@ -257,8 +257,10 @@
     "global-goal",
     "decompose",
     "delegate-to-bmad-arms",
+    "cross-cutting-discovery-and-policy-context",
     "arm-ralph-loops",
     "feasibility-validation",
+    "verification-and-audit",
     "collect-feedback",
     "replan",
     "global-verification",
@@ -279,5 +281,48 @@
     ],
     "feasibility_proof_required": true,
     "llm_consensus_is_not_authorization": true
-  }
+  },
+  "governance": {
+    "policy_file": "config/governance-core.json",
+    "evidence_levels": [
+      "E0",
+      "E1",
+      "E2",
+      "E3",
+      "E4"
+    ],
+    "completion_requires_evidence": true
+  },
+  "cross_cutting_agents": [
+    {
+      "id": "discovery-agent",
+      "purpose": "machine/service/capability discovery",
+      "writes": "blocked"
+    },
+    {
+      "id": "documentation-agent",
+      "purpose": "guides provenance walkthroughs llms synchronization",
+      "writes": "plan-only"
+    },
+    {
+      "id": "verification-agent",
+      "purpose": "independent success-criteria verification",
+      "writes": "blocked"
+    },
+    {
+      "id": "audit-agent",
+      "purpose": "evidence gaps and release completeness",
+      "writes": "blocked"
+    },
+    {
+      "id": "incident-rca-agent",
+      "purpose": "root-cause pattern hypothesis minimal-fix verification loop",
+      "writes": "plan-only"
+    },
+    {
+      "id": "credential-broker",
+      "purpose": "short-lived capability tokens without raw-secret propagation",
+      "writes": "restricted"
+    }
+  ]
 }
