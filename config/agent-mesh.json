@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "name": "EDEN Goal Mesh",
+  "default_profile": "ANONYMITY_FIRST",
+  "core": {
+    "name": "Goal Core",
+    "protocol": "A2A",
+    "responsibilities": ["goal-state","task-routing","verification-state","policy-handoff"],
+    "raw_identity_data": false
+  },
+  "method": {
+    "orchestration": "NEC-style plan/delegate/feasibility-feedback",
+    "workflow": "BMAD-inspired role-and-artifact phases",
+    "iteration": "RALF loop per arm",
+    "skills": "Superpowers-compatible skill packs",
+    "communication": "Ponytails envelope mapped to A2A tasks at agent boundaries"
+  },
+  "model_cascade": {
+    "planner": {"preferred_role":"planner","default_local_class":"qwen-3b"},
+    "compiler": {"preferred_role":"compiler","default_local_class":"qwen-1.5b"},
+    "worker": {"preferred_role":"worker","default_local_class":"qwen-0.5b"},
+    "judge": {"preferred_role":"judge","verification":["compiler","planner","node-policy-broker"]},
+    "embedder": {"preferred_role":"embedder","local_only_default":true}
+  },
+  "arms": [
+    {"id":"research","goal_loop":true,"superpowers":["brainstorming","writing-plans"],"writes":"blocked"},
+    {"id":"build","goal_loop":true,"superpowers":["test-driven-development","executing-plans"],"writes":"plan-only"},
+    {"id":"qa","goal_loop":true,"superpowers":["systematic-debugging","verification-before-completion"],"writes":"blocked"},
+    {"id":"security","goal_loop":true,"superpowers":["systematic-debugging","verification-before-completion"],"writes":"blocked"},
+    {"id":"knowledge","goal_loop":true,"superpowers":["writing-skills"],"writes":"plan-only"},
+    {"id":"ops","goal_loop":true,"superpowers":["finishing-a-development-branch"],"writes":"approval-required"}
+  ],
+  "ralf_loop": ["goal","plan","delegate","execute-narrow-step","observe","verify","feed-back","repeat-or-complete"],
+  "execution_gate": {
+    "small_worker_executes_only_after": ["compiler-check","planner-check","node-policy-check"],
+    "llm_consensus_is_not_authorization": true
+  }
+}
