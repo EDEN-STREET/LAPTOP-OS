@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "product": "EDEN Portable Toolbox",
+  "build": "0.8.0-preview.10",
+  "single_source": true,
+  "profiles": {
+    "portable": {
+      "persistence": "bundle-folder",
+      "install_target": "usb-or-user-folder",
+      "network_policy": "no-network-required-for-core-tools",
+      "privilege": "user",
+      "allowed": true
+    },
+    "qubes-app": {
+      "persistence": "app-qube-home-or-dedicated-template",
+      "install_target": "eden-app-qube",
+      "network_policy": "per-qube",
+      "privilege": "domU",
+      "allowed": true,
+      "forbidden_targets": ["dom0"]
+    },
+    "whonix-workstation": {
+      "persistence": "workstation-app-qube-or-dedicated-template",
+      "install_target": "whonix-workstation",
+      "network_policy": "through-sys-whonix",
+      "privilege": "domU",
+      "allowed": true,
+      "forbidden_targets": ["sys-whonix", "dom0"]
+    },
+    "tails-persistent": {
+      "persistence": "persistent-storage-or-separate-media",
+      "install_target": "user-files",
+      "network_policy": "tails-default",
+      "privilege": "user",
+      "allowed": true,
+      "forbidden_targets": ["tails-base-image"]
+    }
+  }
+}
