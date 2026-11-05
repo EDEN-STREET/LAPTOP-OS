@@ -1,6 +1,6 @@
 {
   "name": "eden-laptop-os",
-  "version": "0.8.0-preview.9",
+  "version": "0.8.0-preview.10",
   "private": true,
   "description": "EDEN LAPTOP-OS audited one-consent local start with complete UI manifest and Gate 5 read-only planning",
   "type": "module",
@@ -21,7 +21,8 @@
     "reboot:plan": "node bin/eden.mjs reboot-plan",
     "test:reboot": "node --test tests/reboot-plan.test.mjs",
     "gate5": "node bin/eden.mjs gate5",
-    "test:gate5": "node --test tests/gate5-preflight.test.mjs"
+    "test:gate5": "node --test tests/gate5-preflight.test.mjs",
+    "build:portable-toolbox": "node scripts/build-portable-toolbox.mjs"
   },
   "engines": {
     "node": ">=22"
