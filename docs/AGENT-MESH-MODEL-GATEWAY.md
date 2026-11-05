@@ -1,12 +1,38 @@
 # EDEN Goal Mesh + Model Gateway
 
-## Goal Core
+## NEC Goal Core
 
-EDEN places the current **Goal** in the center. Around it are specialized arms for research, build, QA, security, knowledge and operations. Each arm runs its own bounded RALF-style goal loop and reports structured results back to the center.
+The center of EDEN is the **NEC Goal Core**. NEC's real-world-agent pattern is used as the orchestration law: the central orchestrator holds the global goal, decomposes it into subgoals, assigns those subgoals to specialist agents, receives feasibility feedback, and replans when a proposed path is not feasible.
 
-The center exposes an A2A-compatible boundary for independent agents. Inside the single-process EDEN runtime, messages use the smaller **Ponytails** envelope and can be mapped to A2A tasks when they cross an agent boundary.
+Around that center sits the **BMAD role ring**: Analyst, Product Manager, Product Owner, Architect, Developer and UX Designer. BMAD provides role ownership, artifacts and lifecycle discipline; it is not the central scheduler.
 
-A2A is used for agent-to-agent interoperability; tools remain separate and policy-gated.
+Each BMAD-owned arm runs its own bounded **Ralph Loop** for its local goal. The arm returns structured feasibility evidence to NEC rather than declaring the whole project complete by itself.
+
+The center exposes an A2A-compatible communication plane for independent agents. Inside the single-process EDEN runtime, messages use the smaller **Ponytails** envelope and can be mapped to A2A tasks/messages at agent boundaries.
+
+A2A is communication, NEC is orchestration, BMAD is role/workflow structure, Ralph is iteration, Superpowers are reusable skills, and the Node Policy Broker remains the execution authority.
+
+```text
+                         GLOBAL GOAL
+                              |
+                        NEC GOAL CORE
+                  /-----------+-----------\
+                 /       A2A / Ponytails   \
+                v                           v
+        BMAD Analyst Arm            BMAD Architect Arm
+          Ralph Loop                    Ralph Loop
+        + Superpowers                 + Superpowers
+                \                           /
+                 \---- feasibility --------/
+                              |
+                         NEC REPLAN
+                              |
+               compiler -> worker -> verify
+                              |
+                    NODE POLICY BROKER
+                              |
+                    ALLOWLISTED EXECUTION
+```
 
 ## Model cascade
 
@@ -65,9 +91,9 @@ Provider connectivity is therefore a capability, not a default route.
 
 ## Framework mapping
 
-- NEC inspiration: orchestrator plans, delegates and consumes feasibility feedback.
-- BMAD inspiration: role-specific artifacts/workflows.
-- RALF: EDEN repeat-until-verified goal loop.
+- NEC: central orchestrator that plans, delegates, validates feasibility feedback and replans.
+- BMAD: role-specific agents, artifacts and lifecycle workflows around the NEC core.
+- Ralph Loop: bounded repeat-until-verified loop inside each arm.
 - Superpowers: composable skill discipline and verification-oriented development workflow.
 - A2A: interoperable agent boundary.
 - Ponytails: EDEN-internal minimized message envelope.
