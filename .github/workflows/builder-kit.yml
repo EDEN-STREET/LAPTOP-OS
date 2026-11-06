@@ -1,0 +1,23 @@
+name: EDEN Builder Kit CI
+on:
+  push:
+    branches: ['feature/eden-builder-toolkit-*']
+  pull_request:
+    paths:
+      - 'tools/eden-builder-kit/**'
+      - '.github/workflows/builder-kit.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/eden-builder-kit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+      - run: npm run validate
+      - run: npm run agent:plan
+      - run: python3 -m unittest discover -s tests -p 'test_*.py'

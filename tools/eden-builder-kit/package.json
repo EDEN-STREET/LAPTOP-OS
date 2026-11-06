@@ -1,0 +1,16 @@
+{
+  "name": "@eden-street/builder-kit",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "validate": "node src/cli.mjs validate workflows/example.json",
+    "status": "node src/cli.mjs status",
+    "goal": "node src/cli.mjs goal",
+    "agent:plan": "node src/agent-plan.mjs"
+  }
+}

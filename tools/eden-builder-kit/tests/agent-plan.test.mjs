@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {plan} from '../src/agent-plan.mjs';
+const get=p=>JSON.parse(fs.readFileSync(new URL('../'+p,import.meta.url),'utf8'));
+const w=get('workflows/full-recovery.json'),a=get('agents/registry.json'),c=get('config/tool.json');
+test('six registered skills have one owner each',()=>{let r=plan(w,a,c);assert.equal(r.valid,true);assert.equal(r.steps.length,6)});
+test('mode cannot authorize real device modification',()=>assert.equal(plan(w,{...a,mayChangeDevices:true},c).valid,false));
+test('private publishing cannot be authorized',()=>assert.equal(plan(w,{...a,mayPublishPrivate:true},c).valid,false));
+test('unknown skill fails closed',()=>{let v=structuredClone(w);v.steps[0].skillId='shell.execute';assert.equal(plan(v,a,c).valid,false)});
+test('duplicate agent permission fails closed',()=>{let v=structuredClone(a);v.agents['release-guardian'].skillIds.push('audit.inventory');assert.equal(plan(w,v,c).valid,false)});
+test('missing SKILL.md fails closed',()=>assert.equal(plan(w,a,c,()=>false).valid,false));
+test('unknown step fields fail closed',()=>{let v=structuredClone(w);v.steps[0].execute=true;assert.equal(plan(v,a,c).valid,false)});

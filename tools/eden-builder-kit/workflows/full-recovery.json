@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "eden-full-project-recovery",
+  "title": "EDEN project audit and skill factory",
+  "purpose": "Defensiver Nachweis-Workflow für Archiv, Präsentation, Skills und Agenten.",
+  "steps": [
+    {
+      "skillId": "audit.inventory",
+      "parameters": {}
+    },
+    {
+      "skillId": "audit.archive.verify",
+      "parameters": {}
+    },
+    {
+      "skillId": "docs.presentation.parity",
+      "parameters": {}
+    },
+    {
+      "skillId": "skills.factory",
+      "parameters": {}
+    },
+    {
+      "skillId": "agents.bind",
+      "parameters": {}
+    },
+    {
+      "skillId": "release.review",
+      "parameters": {}
+    }
+  ]
+}
