@@ -19,3 +19,5 @@ jobs:
           node-version: '22'
       - run: npm test
       - run: npm run validate
+      - run: npm run agent:plan
+      - run: python3 -m unittest discover -s tests -p 'test_*.py'
