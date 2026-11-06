@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "mode": "plan_only",
+  "mayChangeDevices": false,
+  "mayPublishPrivate": false,
+  "mayMergePR": false,
+  "agents": {
+    "project-auditor": {
+      "title": "Project Auditor",
+      "skillIds": [
+        "audit.inventory"
+      ]
+    },
+    "recovery-agent": {
+      "title": "Recovery Agent",
+      "skillIds": [
+        "audit.archive.verify"
+      ]
+    },
+    "documentation-agent": {
+      "title": "Documentation Agent",
+      "skillIds": [
+        "docs.presentation.parity"
+      ]
+    },
+    "skill-architect": {
+      "title": "Skill Architect",
+      "skillIds": [
+        "skills.factory"
+      ]
+    },
+    "workflow-orchestrator": {
+      "title": "Workflow Orchestrator",
+      "skillIds": [
+        "agents.bind"
+      ]
+    },
+    "release-guardian": {
+      "title": "Release Guardian",
+      "skillIds": [
+        "release.review"
+      ]
+    }
+  }
+}
