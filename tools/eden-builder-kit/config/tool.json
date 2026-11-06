@@ -1,6 +1,6 @@
 {
   "project": "EDEN STREET / EDEN Suite",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "mode": "read-only",
   "maxSteps": 25,
   "allowedClasses": [
@@ -24,6 +24,30 @@
     "security.policy.describe": {
       "class": "documentation",
       "source": "web/builder.html"
+    },
+    "audit.inventory": {
+      "class": "read_only",
+      "source": "skills/eden-project-inventory/SKILL.md"
+    },
+    "audit.archive.verify": {
+      "class": "read_only",
+      "source": "skills/eden-archive-integrity/SKILL.md"
+    },
+    "docs.presentation.parity": {
+      "class": "read_only",
+      "source": "skills/eden-slide-pdf-parity/SKILL.md"
+    },
+    "skills.factory": {
+      "class": "read_only",
+      "source": "skills/eden-skill-factory/SKILL.md"
+    },
+    "agents.bind": {
+      "class": "read_only",
+      "source": "skills/eden-agent-binding/SKILL.md"
+    },
+    "release.review": {
+      "class": "read_only",
+      "source": "skills/eden-release-guardian/SKILL.md"
     }
   }
 }
